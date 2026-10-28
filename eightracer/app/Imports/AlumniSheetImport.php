@@ -39,6 +39,7 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
             'MENGETAHUI', 'KEPALA SEKOLAH', 'NIP.', 'NIP ',
             'PERSEBARAN', 'JUMLAH', 'TOTAL', 'REKAP',
             'GURU BK', 'WALI KELAS', 'KOORDINATOR',
+            'DAFTAR PERGURUAN TINGGI', '=UNIQUE', 'DAFTAR PT',
         ];
 
         foreach ($rows as $index => $row) {
@@ -111,7 +112,9 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         $kontak = $kontak ? preg_replace('/[^0-9]/', '', (string) $kontak) : null;
 
         $kipkRaw = $this->getValue($row, $this->config['kipk'] ?? null);
-        $isKipk  = $kipkRaw && Str::upper(trim((string) $kipkRaw)) === 'YA';
+        $isKipk = $kipkRaw && (Str::upper(trim((string) $kipkRaw)) === 'YA' || str_contains(Str::upper(trim((string) $kipkRaw)), 'KIP'));
+
+        $subJalur = $this->config['sub_jalur'] ? $this->getValue($row, $this->config['sub_jalur']) : null;
 
         $skorUtbk = $this->parseFloat($this->getValue($row, $this->config['skor_utbk'] ?? null));
 
@@ -128,6 +131,7 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
                 'status_penerimaan'       => 'diterima',
                 'nilai_rapor_pendaftaran' => null,
                 'skor_utbk'               => $skorUtbk,
+                'sub_jalur_mandiri'       => $subJalur ? trim((string) $subJalur) : null,
                 'kontak_wa_terbaru'       => $kontak,
                 'is_pelamar_kipk'         => $isKipk,
                 'izinkan_tampil_di_buku'  => true,
