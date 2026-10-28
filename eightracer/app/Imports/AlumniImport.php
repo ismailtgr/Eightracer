@@ -10,6 +10,8 @@ class AlumniImport implements Import, WithMultipleSheets
 {
     public array $errors = [];
     public int $successCount = 0;
+    public ?int $bukuAlumniId = null;
+    public array $onlySheets = [];
 
     private ?string $filePath = null;
 
@@ -80,6 +82,14 @@ class AlumniImport implements Import, WithMultipleSheets
             }
 
             if ($matched === null) {
+                continue;
+            }
+
+            if ($this->onlySheets !== [] && ! in_array(
+                strtoupper(trim($matched)),
+                array_map(fn($s) => strtoupper(trim((string) $s)), $this->onlySheets),
+                true
+            )) {
                 continue;
             }
 

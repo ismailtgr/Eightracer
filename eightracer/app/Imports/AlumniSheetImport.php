@@ -14,11 +14,35 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class AlumniSheetImport implements ToCollection, WithHeadingRow
 {
     private const UNIV_KEYWORDS = [
-        'UNIVERSITAS', 'UNIV', 'INSTITUT', 'POLITEKNIK', 'POLITEK',
-        'SEKOLAH TINGGI', 'STIE', 'STIKES', 'STMIK', 'STAI',
-        'UIN', 'IAIN', 'UPN', 'UGM', 'UI', 'ITB', 'ITS', 'UNESA',
-        'UM', 'UB', 'UNAIR', 'UNDIP', 'UNS', 'UNY', 'UNM', 'UNJ',
-        'AKADEMI', 'AKADEMI KOMUNITAS',
+        'UNIVERSITAS',
+        'UNIV',
+        'INSTITUT',
+        'POLITEKNIK',
+        'POLITEK',
+        'SEKOLAH TINGGI',
+        'STIE',
+        'STIKES',
+        'STMIK',
+        'STAI',
+        'UIN',
+        'IAIN',
+        'UPN',
+        'UGM',
+        'UI',
+        'ITB',
+        'ITS',
+        'UNESA',
+        'UM',
+        'UB',
+        'UNAIR',
+        'UNDIP',
+        'UNS',
+        'UNY',
+        'UNM',
+        'UNJ',
+        'AKADEMI',
+        'AKADEMI KOMUNITAS',
+        'NAMA PERGURUAN TINGGI',
     ];
 
     public function __construct(
@@ -36,14 +60,25 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         $stopKeywords = [
-            'MENGETAHUI', 'KEPALA SEKOLAH', 'NIP.', 'NIP ',
-            'PERSEBARAN', 'JUMLAH', 'TOTAL', 'REKAP',
-            'GURU BK', 'WALI KELAS', 'KOORDINATOR',
-            'DAFTAR PERGURUAN TINGGI', '=UNIQUE', 'DAFTAR PT',
+            'MENGETAHUI',
+            'KEPALA SEKOLAH',
+            'NIP.',
+            'NIP ',
+            'PERSEBARAN',
+            'JUMLAH',
+            'TOTAL',
+            'REKAP',
+            'GURU BK',
+            'WALI KELAS',
+            'KOORDINATOR',
+            'DAFTAR PERGURUAN TINGGI',
+            '=UNIQUE',
+            'DAFTAR PT',
+            'NAMA PERGURUAN TINGGI',
         ];
 
         foreach ($rows as $index => $row) {
-            $rowNumber = $index + 2;
+            $rowNumber = $index + 1;
 
             $namaRaw = $this->getValue($row, $this->config['nama']);
             $namaStr = strtoupper(trim((string) $namaRaw));
@@ -114,9 +149,33 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         $kipkRaw = $this->getValue($row, $this->config['kipk'] ?? null);
         $isKipk = $kipkRaw && (Str::upper(trim((string) $kipkRaw)) === 'YA' || str_contains(Str::upper(trim((string) $kipkRaw)), 'KIP'));
 
-        $subJalur = $this->config['sub_jalur'] ? $this->getValue($row, $this->config['sub_jalur']) : null;
+        $subJalur = $this->getValue($row, $this->config['sub_jalur'] ?? null);
+        $subJalur = $subJalur ? trim((string) $subJalur) : null;
 
         $skorUtbk = $this->parseFloat($this->getValue($row, $this->config['skor_utbk'] ?? null));
+
+        $subJalur = $this->getValue($row, $this->config['sub_jalur'] ?? null);
+        $subJalur = $subJalur ? trim((string) $subJalur) : null;
+
+        $nilai = [
+            'strata_pendidikan'       => $strata ?? 'S1',
+            'pilihan_ke'              => $pilihanKe,
+            'status_penerimaan'       => 'diterima',
+            'nilai_rapor_pendaftaran' => null,
+            'skor_utbk'               => $skorUtbk,
+            'kontak_wa_terbaru'       => $kontak,
+            'is_pelamar_kipk'         => $isKipk,
+            'izinkan_tampil_di_buku'  => true,
+            'tanggal_pengisian'       => Carbon::now()->toDateString(),
+        ];
+
+        if ($subJalur) {
+            $nilai['sub_jalur_mandiri'] = $subJalur;
+        }
+
+        if ($this->parent->bukuAlumniId) {
+            $nilai['buku_alumni_id'] = $this->parent->bukuAlumniId;
+        }
 
         StudyTracer::updateOrCreate(
             [
@@ -125,18 +184,7 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
                 'program_studi'       => $prodi,
                 'jalur_masuk'         => $this->config['jalur_masuk'],
             ],
-            [
-                'strata_pendidikan'       => $strata ?? 'S1',
-                'pilihan_ke'              => $pilihanKe,
-                'status_penerimaan'       => 'diterima',
-                'nilai_rapor_pendaftaran' => null,
-                'skor_utbk'               => $skorUtbk,
-                'sub_jalur_mandiri'       => $subJalur ? trim((string) $subJalur) : null,
-                'kontak_wa_terbaru'       => $kontak,
-                'is_pelamar_kipk'         => $isKipk,
-                'izinkan_tampil_di_buku'  => true,
-                'tanggal_pengisian'       => Carbon::now()->toDateString(),
-            ]
+            $nilai
         );
 
         $this->parent->successCount++;
