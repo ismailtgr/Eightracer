@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'sheets' => [
@@ -53,5 +53,32 @@ return [
             'skor_utbk'   => null,
             'jalur_masuk' => 'SIMAMI',
         ],
+
+        'PMDP' => [
+            'nama'        => 'NAMA',
+            'pt'          => 'PERGURUAN TINGGI',
+            'prodi'       => 'JURUSAN/PROGAM STUDI',
+            'strata'      => null,
+            'strata_from' => 'JURUSAN/PROGAM STUDI',
+            'pilihan_ke'  => 'PIL. KE',
+            'kontak_wa'   => 'NO. HP',
+            'kipk'        => null,
+            'skor_utbk'   => null,
+            'jalur_masuk' => 'PMDP',
+        ],
+
+        'UM PTKIN' => [
+            'nama'        => 'Nama',
+            'pt'          => 'Jurusan/Program Studi/Departemen',
+            'prodi'       => '4',
+            'strata'      => 'Nama Perguruan Tinggi',
+            'strata_from' => null,
+            'pilihan_ke'  => 'Pil',
+            'kontak_wa'   => 'Nomor WA',
+            'kipk'        => 'KIPK',
+            'skor_utbk'   => null,
+            'jalur_masuk' => 'UM PTKIN',
+        ],
     ],
 ];
+
