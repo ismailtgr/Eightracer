@@ -75,6 +75,7 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
             '=UNIQUE',
             'DAFTAR PT',
             'NAMA PERGURUAN TINGGI',
+            'KETERANGAN',
         ];
 
         foreach ($rows as $index => $row) {
@@ -113,6 +114,11 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         }
 
         $nama = $this->normalizeName((string) $namaRaw);
+
+        if (($this->config['mode'] ?? null) === 'update_skor') {
+            $this->updateSkorOnly($row, $nama, $rowNumber);
+            return;
+        }
 
         $siswa = Siswa::whereRaw('UPPER(TRIM(nama_lengkap)) = ?', [$nama])->first();
         if (! $siswa) {
@@ -190,6 +196,28 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         $this->parent->successCount++;
     }
 
+    private function updateSkorOnly(Collection $row, string $nama, int $rowNumber): void
+    {
+        $siswa = Siswa::whereRaw('UPPER(TRIM(nama_lengkap)) = ?', [$nama])->first();
+        if (! $siswa) {
+            throw new \Exception("Siswa tidak ditemukan: {$nama}");
+        }
+
+        $skor = $this->parseFloat($this->getValue($row, $this->config['skor_utbk'] ?? null));
+        if ($skor === null || $skor <= 0) {
+            return; // lewati, jangan timpa skor lama dengan 0
+        }
+
+        $updated = StudyTracer::where('siswa_id', $siswa->id)
+            ->where('jalur_masuk', $this->config['jalur_masuk'])
+            ->update(['skor_utbk' => $skor]);
+
+        if ($updated === 0) {
+            throw new \Exception("Siswa belum punya study tracer {$this->config['jalur_masuk']}");
+        }
+
+        $this->parent->successCount++;
+    }
     private function getValue(Collection $row, ?string $key): mixed
     {
         if (! $key) {

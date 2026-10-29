@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'sheets' => [
@@ -86,6 +86,34 @@ return [
             'kipk'        => null,
             'skor_utbk'   => null,
             'jalur_masuk' => 'LUAR NEGERI',
+        ],
+        'SKOR UTBK (SNBT)' => [
+            'nama'        => 'NAMA LENGKAP',
+            'pt'          => 'PTN',
+            'prodi'       => 'PROGRAM STUDI',
+            'strata'      => '4',
+            'strata_from' => null,
+            'pilihan_ke'  => null,
+            'kontak_wa'   => null,
+            'kipk'        => null,
+            'skor_utbk'   => 'RATA2',
+            'sub_jalur'   => null,
+            'jalur_masuk' => 'SNBT',
+            'mode'        => 'update_skor',
+        ],
+        'SKOR UTBK (Mandiri)' => [
+            'nama'        => 'NAMA LENGKAP',
+            'pt'          => 'PTN',
+            'prodi'       => 'PROGRAM STUDI',
+            'strata'      => '4',
+            'strata_from' => null,
+            'pilihan_ke'  => null,
+            'kontak_wa'   => null,
+            'kipk'        => null,
+            'skor_utbk'   => 'RATA2',
+            'sub_jalur'   => null,
+            'jalur_masuk' => 'MANDIRI',
+            'mode'        => 'update_skor',
         ],
     ],
 ];
