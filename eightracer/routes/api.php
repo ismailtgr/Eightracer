@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\Api\AlumniImportController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AlumniFormController;
+use App\Http\Controllers\Api\SiswaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AlumniFormController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
@@ -27,4 +28,5 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/alumni/import', [AlumniImportController::class, 'import']);
+    Route::get('/v1/siswa/profile', [SiswaController::class, 'getProfile']);
 });
