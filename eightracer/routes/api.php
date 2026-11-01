@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AlumniFormController;
 use App\Http\Controllers\Api\SiswaController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\SiswaAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +34,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/v1/siswa/profile', [SiswaController::class, 'updateProfile']);
     Route::put('/v1/siswa/password', [SiswaController::class, 'updatePassword']);
     Route::apiResource('/v1/admin/users', UserController::class);
+    Route::apiResource('/v1/admin/siswa', SiswaAdminController::class);
 });
