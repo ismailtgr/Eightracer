@@ -30,4 +30,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/alumni/import', [AlumniImportController::class, 'import']);
     Route::get('/v1/siswa/profile', [SiswaController::class, 'getProfile']);
     Route::put('/v1/siswa/profile', [SiswaController::class, 'updateProfile']);
+    Route::put('/v1/siswa/password', [SiswaController::class, 'updatePassword']);
 });
