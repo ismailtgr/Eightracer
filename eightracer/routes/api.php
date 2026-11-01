@@ -12,6 +12,14 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/beasiswa', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'index']);
+    Route::post('/beasiswa', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'store']);
+    Route::put('/beasiswa/{beasiswa}', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'update']);
+    Route::delete('/beasiswa/{beasiswa}', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'archive']);
+    Route::get('/rekomendasi-beasiswa/saya', [\App\Http\Controllers\Api\RekomendasiBeasiswaController::class, 'mine']);
+    Route::get('/rekomendasi-beasiswa', [\App\Http\Controllers\Api\RekomendasiBeasiswaController::class, 'index']);
+    Route::post('/siswa/{siswa}/rekomendasi-beasiswa/generate', [\App\Http\Controllers\Api\RekomendasiBeasiswaController::class, 'generate'])->middleware('throttle:5,1');
+    Route::patch('/rekomendasi-beasiswa/{rekomendasi}/review', [\App\Http\Controllers\Api\RekomendasiBeasiswaController::class, 'review']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
         return $request->user();

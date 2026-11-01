@@ -17,6 +17,9 @@ class RekomendasiBeasiswaDetail extends Model
         'skor_kecocokan',
         'alasan_rekomendasi',
         'is_recommended',
+        'evaluasi_kriteria',
+        'beasiswa_snapshot',
+        'persiapan',
     ];
 
     protected function casts(): array
@@ -24,6 +27,9 @@ class RekomendasiBeasiswaDetail extends Model
         return [
             'skor_kecocokan' => 'decimal:4',
             'is_recommended' => 'boolean',
+            'evaluasi_kriteria' => 'array',
+            'beasiswa_snapshot' => 'array',
+            'persiapan' => 'array',
         ];
     }
 

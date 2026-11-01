@@ -1,0 +1,75 @@
+@baseUrl = http://127.0.0.1:8000/api
+@adminToken = GANTI_TOKEN_ADMIN_LOKAL
+@studentToken = GANTI_TOKEN_SISWA_LOKAL
+@siswaId = 1
+@beasiswaId = 1
+@rekomendasiId = 1
+
+### Login administrator (gunakan kredensial lokal, jangan commit kredensial nyata)
+POST {{baseUrl}}/login
+Accept: application/json
+Content-Type: application/json
+
+{"username":"USERNAME_ADMIN","password":"PASSWORD_ADMIN"}
+
+### Identitas pengguna
+GET {{baseUrl}}/me
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+### Daftar katalog
+GET {{baseUrl}}/beasiswa?page=1
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+### Tambah katalog uji (hanya jalankan pada data pengembangan)
+POST {{baseUrl}}/beasiswa
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{"nama_beasiswa":"Beasiswa Contoh Uji","jenjang":"SMA","kriteria":[{"nama_kriteria":"TKA minimum","tipe_kriteria":"nilai_tka","operator":">=","nilai_kriteria":"80","bobot":1}]}
+
+### Edit katalog: body lengkap, daftar kriteria diganti
+PUT {{baseUrl}}/beasiswa/{{beasiswaId}}
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{"nama_beasiswa":"Beasiswa Contoh Uji","jenjang":"SMA","is_active":true,"kriteria":[{"nama_kriteria":"TKA minimum","tipe_kriteria":"nilai_tka","operator":">=","nilai_kriteria":"85","bobot":1}]}
+
+### Generate draft — memanggil Gemini dan memakai kuota
+POST {{baseUrl}}/siswa/{{siswaId}}/rekomendasi-beasiswa/generate
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{}
+
+### Daftar seluruh hasil/draft admin
+GET {{baseUrl}}/rekomendasi-beasiswa?page=1
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+### Publikasikan draft setelah ditinjau
+PATCH {{baseUrl}}/rekomendasi-beasiswa/{{rekomendasiId}}/review
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{"status_review":"disetujui","catatan_admin":"Sudah ditinjau."}
+
+### Siswa: hasil sendiri yang terpublikasi
+GET {{baseUrl}}/rekomendasi-beasiswa/saya?page=1
+Accept: application/json
+Authorization: Bearer {{studentToken}}
+
+### Arsipkan katalog (bukan hard delete)
+DELETE {{baseUrl}}/beasiswa/{{beasiswaId}}
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+### Logout token saat ini
+POST {{baseUrl}}/logout
+Accept: application/json
+Authorization: Bearer {{adminToken}}

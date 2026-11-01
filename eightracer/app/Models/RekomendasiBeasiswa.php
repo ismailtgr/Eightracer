@@ -17,6 +17,11 @@ class RekomendasiBeasiswa extends Model
         'tanggal_rekomendasi',
         'status_review',
         'catatan_admin',
+        'ai_model',
+        'prompt_version',
+        'source_fingerprint',
+        'reviewed_by',
+        'reviewed_at',
     ];
 
     protected function casts(): array
