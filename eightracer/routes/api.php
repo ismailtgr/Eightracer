@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\SiswaController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SiswaAdminController;
 use App\Http\Controllers\Api\AlumniAdminController;
+use App\Http\Controllers\Api\ProdiAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,4 +38,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/v1/admin/users', UserController::class);
     Route::apiResource('/v1/admin/siswa', SiswaAdminController::class);
     Route::apiResource('/v1/admin/alumni', AlumniAdminController::class);
+    Route::apiResource('/v1/admin/prodi', ProdiAdminController::class);
 });
