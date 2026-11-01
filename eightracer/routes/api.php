@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AlumniImportController;
+use App\Http\Controllers\Api\AsesmenImportController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\NilaiRaporImportController;
+use App\Http\Controllers\Api\SiswaImportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,4 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/alumni/import', [AlumniImportController::class, 'import']);
+    Route::post('/siswa/import', [SiswaImportController::class, 'import']);
+    Route::post('/nilai-rapor/import', [NilaiRaporImportController::class, 'import']);
+    Route::post('/asesmen/import', [AsesmenImportController::class, 'import']);
 });

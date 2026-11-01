@@ -13,11 +13,7 @@ class SaudaraTiri extends Model
 
     protected $fillable = [
         'siswa_id',
-        'nama',
-        'jenis_kelamin',
-        'hubungan',
-        'usia',
-        'keterangan',
+        'status',
     ];
 
     public function siswa(): BelongsTo

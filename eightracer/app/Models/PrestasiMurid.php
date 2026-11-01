@@ -17,22 +17,8 @@ class PrestasiMurid extends Model
         'siswa_id',
         'jenis_prestasi',
         'nama_kompetisi',
-        'bidang',
         'tingkat',
-        'peringkat',
-        'bobot_persentase',
-        'status_verifikasi',
-        'penyelenggara',
-        'tahun',
-        'file_bukti_url',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'bobot_persentase' => 'decimal:2',
-        ];
-    }
 
     public function siswa(): BelongsTo
     {
