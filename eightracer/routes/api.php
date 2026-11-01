@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\SiswaAdminController;
 use App\Http\Controllers\Api\AlumniAdminController;
 use App\Http\Controllers\Api\ProdiAdminController;
 use App\Http\Controllers\Api\AsesmenController;
+use App\Http\Controllers\Api\AkademikController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,4 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/v1/admin/prodi', ProdiAdminController::class);
     Route::get('/v1/siswa/asesmen', [AsesmenController::class, 'getAsesmen']);
     Route::post('/v1/siswa/asesmen', [AsesmenController::class, 'storeOrUpdateAsesmen']);
+    Route::get('/v1/siswa/akademik', [AkademikController::class, 'getAkademik']);
+    Route::post('/v1/siswa/akademik/rapor', [AkademikController::class, 'storeOrUpdateNilaiRapor']);
+    Route::post('/v1/siswa/akademik/prestasi', [AkademikController::class, 'storePrestasi']);
+    Route::post('/v1/siswa/akademik/presensi-karakter', [AkademikController::class, 'storePresensiDanKarakter']);
 });
