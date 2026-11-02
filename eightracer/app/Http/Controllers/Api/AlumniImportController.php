@@ -9,12 +9,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AlumniImportController extends Controller
 {
-   public function import(Request $request)
+   public function import(Request $request, \App\Services\Security\SpreadsheetGuard $guard)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+            'file' => 'required|file|extensions:xlsx|mimes:xlsx|max:5120',
         ]);
 
+        $guard->inspect($request->file('file'));
         $import = new AlumniImport();
         $import->setFilePath($request->file('file')->getRealPath());
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
+    use HasApiTokens, \Illuminate\Notifications\Notifiable;
 
     protected $table = 'users';
 
@@ -19,13 +19,13 @@ class User extends Authenticatable
     ];
 
     protected $hidden = [
-        'password',
+        'password', 'remember_token', 'email', 'email_verified_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'password' => 'hashed',
+            'password' => 'hashed', 'email_verified_at' => 'datetime',
         ];
     }
 

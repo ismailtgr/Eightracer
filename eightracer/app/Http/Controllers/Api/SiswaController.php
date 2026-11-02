@@ -14,6 +14,7 @@ class SiswaController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $request->validate(['search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P']);
         $query = Siswa::with(['user', 'wali', 'orangTua']);
 
         if ($request->filled('search')) {
@@ -44,26 +45,26 @@ class SiswaController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'user_id'           => 'nullable|exists:users,id',
+            'user_id'           => [ 'required', \Illuminate\Validation\Rule::exists('users', 'id')->where('role', 'siswa'), 'unique:siswa,user_id' ],
             'nisn'              => 'required|string|max:20|unique:siswa,nisn',
             'nis'               => 'nullable|string|max:20|unique:siswa,nis',
             'nama_lengkap'      => 'required|string|max:150',
             'nama_panggilan'    => 'nullable|string|max:50',
             'jenis_kelamin'     => 'required|in:L,P',
             'tempat_lahir'      => 'nullable|string|max:100',
-            'tanggal_lahir'     => 'nullable|date',
+            'tanggal_lahir'     => 'nullable|date|before_or_equal:today',
             'agama'             => 'nullable|string|max:30',
             'golongan_darah'    => 'nullable|string|max:5',
-            'alamat_rumah'      => 'nullable|string',
+            'alamat_rumah'      => 'nullable|string|max:2000',
             'tinggal_bersama'   => 'nullable|string|max:50',
-            'anak_ke'           => 'nullable|integer',
+            'anak_ke'           => 'nullable|integer|between:1,50',
             'warna_favorit'     => 'nullable|string|max:50',
             'makanan_favorit'   => 'nullable|string|max:100',
             'bahasa_keseharian' => 'nullable|string|max:50',
             'permainan_online'  => 'nullable|string|max:100',
             'permainan_offline' => 'nullable|string|max:100',
-            'nilai_tka'         => 'nullable|numeric',
-            'catatan'           => 'nullable|string',
+            'nilai_tka'         => 'nullable|numeric|between:0,100',
+            'catatan'           => 'nullable|string|max:2000',
         ]);
 
         $siswa = Siswa::create($validated);
@@ -111,19 +112,19 @@ class SiswaController extends Controller
             'nama_panggilan'    => 'nullable|string|max:50',
             'jenis_kelamin'     => 'sometimes|required|in:L,P',
             'tempat_lahir'      => 'nullable|string|max:100',
-            'tanggal_lahir'     => 'nullable|date',
+            'tanggal_lahir'     => 'nullable|date|before_or_equal:today',
             'agama'             => 'nullable|string|max:30',
             'golongan_darah'    => 'nullable|string|max:5',
-            'alamat_rumah'      => 'nullable|string',
+            'alamat_rumah'      => 'nullable|string|max:2000',
             'tinggal_bersama'   => 'nullable|string|max:50',
-            'anak_ke'           => 'nullable|integer',
+            'anak_ke'           => 'nullable|integer|between:1,50',
             'warna_favorit'     => 'nullable|string|max:50',
             'makanan_favorit'   => 'nullable|string|max:100',
             'bahasa_keseharian' => 'nullable|string|max:50',
             'permainan_online'  => 'nullable|string|max:100',
             'permainan_offline' => 'nullable|string|max:100',
-            'nilai_tka'         => 'nullable|numeric',
-            'catatan'           => 'nullable|string',
+            'nilai_tka'         => 'nullable|numeric|between:0,100',
+            'catatan'           => 'nullable|string|max:2000',
         ]);
 
         $siswa->update($validated);

@@ -26,14 +26,14 @@ Kirim `Accept: application/json` dan `Content-Type: application/json`.
 Respons 200 berisi `message`, `user` (termasuk `id`, `username`, `role`), dan `token`.
 Tambahkan `Authorization: Bearer <token>` pada request berikutnya.
 `GET /me` untuk identitas saat ini; `POST /logout` mencabut token saat ini.
-Login saat ini mencabut token lama, mengikuti AuthController yang sudah ada.
+Login admin mencabut token perangkat sebelumnya (maksimal 72 jam). Token siswa/guru berlaku maksimal 7 hari dan boleh beberapa perangkat. Token lama tanpa expiry ditolak.
 Pengaturan lengkap login Google, NISN, dan kebijakan sesi PRD adalah pekerjaan
 auth terpisah dan tidak boleh dianggap selesai oleh fitur beasiswa ini.
 
 Role aktual DB: `administrator` = Admin Sekolah, `siswa` = Siswa. Role `guru`
 tidak diberi akses mengelola beasiswa. Jangan memakai `admin_sekolah` sebagai
 nilai role API sebelum ada migrasi role yang disepakati tim.
-Pendaftaran publik tidak dapat membuat akun administrator.
+Pendaftaran publik ditutup (403) sampai verifikasi identitas sekolah tersedia; akun diprovisikan oleh sekolah.
 
 ## Daftar endpoint
 
@@ -51,7 +51,7 @@ Pendaftaran publik tidak dapat membuat akun administrator.
 Paginator: baca array `data`, `current_page`, `last_page`, `total`, `next_page_url`,
 dan `prev_page_url`. Katalog 20 entri/halaman, rekomendasi 15 entri/halaman.
 Daftar siswa menggunakan endpoint siswa yang sudah dimiliki tim, bukan endpoint
-UI agen. Periksa aturan akses endpoint domain siswa secara terpisah.
+UI agen. Endpoint master siswa/keluarga dan alumni dibatasi untuk administrator.
 
 ## Body katalog
 
@@ -195,3 +195,6 @@ siswa nyata yang dipakai untuk pengujian koneksi tersebut.
 `GEMINI_TIMEOUT` dapat mengatur timeout backend (default 90 detik).
 PHP portabel sudah dilengkapi bundle CA untuk verifikasi HTTPS. Tidak ada
 penonaktifan verifikasi sertifikat.
+
+
+Pengamanan backend, perubahan impor XLSX, dan kontrak reset password: [keamanan-deployment.md](keamanan-deployment.md). Pemulihan password tetap nonaktif sampai email terverifikasi, SMTP dan halaman reset FE tersedia.

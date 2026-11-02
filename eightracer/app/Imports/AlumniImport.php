@@ -2,11 +2,10 @@
 
 namespace App\Imports;
 
-use Maatwebsite\Excel\Concerns\Import;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class AlumniImport implements Import, WithMultipleSheets
+class AlumniImport implements \Maatwebsite\Excel\Concerns\Import, WithMultipleSheets
 {
     public array $errors = [];
     public int $successCount = 0;
@@ -27,7 +26,9 @@ class AlumniImport implements Import, WithMultipleSheets
         $headingRows = [];
 
         if ($this->filePath && file_exists($this->filePath)) {
-            $spreadsheet = IOFactory::load($this->filePath);
+            $reader = IOFactory::createReaderForFile($this->filePath);
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($this->filePath);
 
             foreach ($spreadsheet->getSheetNames() as $name) {
                 $availableSheets[] = $name;
@@ -92,7 +93,7 @@ class AlumniImport implements Import, WithMultipleSheets
         }
 
         if (empty($imports)) {
-            throw new \Exception('Tidak ada sheet yang cocok dengan config. Sheet tersedia: ' . implode(', ', $availableSheets));
+            throw \Illuminate\Validation\ValidationException::withMessages(['file' => 'Nama sheet tidak sesuai template impor sekolah.']);
         }
 
         return $imports;

@@ -8,10 +8,13 @@ use App\Http\Controllers\Api\SiswaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login',    [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
+Route::post('/login',    [AuthController::class, 'login'])->middleware('throttle:login');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::post('/forgot-password', [\App\Http\Controllers\Api\PasswordResetController::class, 'requestLink'])->middleware('throttle:password-reset');
+Route::post('/reset-password', [\App\Http\Controllers\Api\PasswordResetController::class, 'reset'])->middleware('throttle:password-reset');
+
+Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::get('/beasiswa', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'index']);
     Route::post('/beasiswa', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'store']);
     Route::put('/beasiswa/{beasiswa}', [\App\Http\Controllers\Api\BasisDataBeasiswaController::class, 'update']);
@@ -25,8 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    Route::middleware('administrator')->group(function () {
     // --- Kelompok B3 ---
-    Route::post('/alumni/import', [AlumniImportController::class, 'import']);
+    Route::post('/alumni/import', [AlumniImportController::class, 'import'])->middleware('throttle:2,1');
 
     // --- Kelompok B4: Domain 1 (Biodata Murid & Keluarga) ---
     Route::apiResource('siswa', SiswaController::class);
@@ -54,4 +58,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/alumni/{siswa}/progress', [AlumniProgressController::class, 'showBySiswa']);
     Route::post('/alumni/{siswa}/progress', [AlumniProgressController::class, 'store']);
     Route::get('/alumni/{siswa}/timeline', [AlumniProgressController::class, 'timeline']);
+    });
 });

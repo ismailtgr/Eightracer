@@ -11,7 +11,7 @@ class GeminiScholarshipExplainer
     public function explain(array $candidates): array
     {
         $key = config('gemini.api_key');
-        abort_unless(is_string($key) && $key !== '', 503, 'GEMINI_API_KEY belum dikonfigurasi di server.');
+        abort_unless(is_string($key) && $key !== '', 503, 'Layanan rekomendasi belum tersedia.');
         $schema = [
             'type' => 'object', 'required' => ['rekomendasi'],
             'properties' => ['rekomendasi' => [
@@ -62,6 +62,13 @@ class GeminiScholarshipExplainer
             ]);
             if ($validator->fails()) {
                 throw new \RuntimeException('Invalid structure');
+            }
+            foreach ($data['rekomendasi'] as $item) {
+                foreach ([$item['alasan'], ...$item['persiapan']] as $text) {
+                    if (! \App\Support\PlainText::safe($text)) {
+                        throw new \RuntimeException('Unsafe provider text');
+                    }
+                }
             }
             $expected = array_column($candidates, 'beasiswa_id');
             $received = array_column($data['rekomendasi'], 'beasiswa_id');

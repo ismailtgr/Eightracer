@@ -1,0 +1,41 @@
+<?php
+namespace App\Console\Commands;
+use Illuminate\Console\Command;
+
+class SecurityCheck extends Command
+{
+    protected $signature = 'security:check';
+    protected $description = 'Check production configuration without printing secrets';
+
+    public function handle(): int
+    {
+        $db = config('database.connections.'.config('database.default'));
+        $checks = [
+            'APP_ENV production' => app()->isProduction(),
+            'Debug disabled' => config('app.debug') === false,
+            'Application key present' => filled(config('app.key')),
+            'HTTPS application URL' => str_starts_with((string) config('app.url'), 'https://'),
+            'Database runtime user restricted (not root)' => ! in_array($db['username'] ?? '', ['', 'root', 'postgres', 'sa'], true),
+            'Database password present' => filled($db['password'] ?? null),
+            'Encrypted secure HttpOnly sessions' => config('session.encrypt') && config('session.secure') && config('session.http_only'),
+            'Gemini key present' => filled(config('gemini.api_key')),
+            'Explicit HTTPS frontend origins' => count(config('cors.allowed_origins', [])) > 0 && collect(config('cors.allowed_origins', []))->every(fn ($url) => filter_var($url, FILTER_VALIDATE_URL) && str_starts_with($url, 'https://') && ! str_contains($url, '*')),
+            'Recovery email delivery enabled' => config('security.password_reset_enabled') && ! in_array(config('mail.default'), ['log', 'array', null], true) && str_starts_with((string) config('security.password_reset_url'), 'https://'),
+        ];
+        try {
+            $probe = tmpfile();
+            fwrite($probe, 'Eightracer harmless scanner connectivity check');
+            app(\App\Services\Security\ClamAvScanner::class)->assertClean(stream_get_meta_data($probe)['uri']);
+            $checks['ClamAV clean scan reachable'] = true;
+        } catch (\Throwable) {
+            $checks['ClamAV clean scan reachable'] = false;
+        } finally {
+            if (isset($probe) && is_resource($probe)) { fclose($probe); }
+        }
+        foreach ($checks as $name => $passed) {
+            $this->line(($passed ? 'PASS ' : 'FAIL ').$name);
+        }
+        $this->warn('Verify database firewall, actual grants, antivirus signature freshness, HTTPS/proxy setup, backups and FE output encoding on the deployment server separately.');
+        return in_array(false, $checks, true) ? self::FAILURE : self::SUCCESS;
+    }
+}

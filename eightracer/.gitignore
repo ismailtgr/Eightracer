@@ -27,3 +27,13 @@ postman/
 /bootstrap/cache/*
 !/bootstrap/cache/.gitignore
 /database/seeders/SiswaDummySeeder.php
+
+.env.*
+!.env.example
+!.env.gemini.example
+!.env.production.example
+*.sql
+*.pem
+*.p12
+*.pfx
+*.key

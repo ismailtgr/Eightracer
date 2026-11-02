@@ -58,12 +58,12 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
             }
 
             try {
-                $this->processRow($row, $rowNumber);
+                \Illuminate\Support\Facades\DB::transaction(fn () => $this->processRow($row, $rowNumber));
             } catch (\Throwable $e) {
                 $this->parent->errors[] = [
                     'sheet' => $this->sheetName,
                     'baris' => $rowNumber,
-                    'pesan' => $e->getMessage(),
+                    'pesan' => 'Baris tidak sesuai template atau data siswa tidak cocok.',
                 ];
             }
         }
@@ -71,6 +71,11 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
 
     private function processRow(Collection $row, int $rowNumber): void
     {
+        foreach ($row as $cell) {
+            if (is_string($cell) && (mb_strlen($cell) > 255 || ! \App\Support\PlainText::safe($cell))) {
+                throw new \InvalidArgumentException('Invalid cell');
+            }
+        }
         $namaRaw = $this->getValue($row, $this->config['nama']);
         if (! $namaRaw) {
             throw new \Exception('Nama kosong');
@@ -78,10 +83,11 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
 
         $nama = $this->normalizeName((string) $namaRaw);
 
-        $siswa = Siswa::whereRaw('UPPER(TRIM(nama_lengkap)) = ?', [$nama])->first();
-        if (! $siswa) {
-            throw new \Exception("Siswa tidak ditemukan: {$namaRaw}");
+        $matches = Siswa::whereRaw('UPPER(TRIM(nama_lengkap)) = ?', [$nama])->limit(2)->get();
+        if ($matches->count() !== 1) {
+            throw new \InvalidArgumentException('Student identity missing or ambiguous');
         }
+        $siswa = $matches->first();
 
         $ptRaw    = (string) $this->getValue($row, $this->config['pt']);
         $prodiRaw = (string) $this->getValue($row, $this->config['prodi']);
@@ -130,7 +136,7 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
                 'skor_utbk'               => $skorUtbk,
                 'kontak_wa_terbaru'       => $kontak,
                 'is_pelamar_kipk'         => $isKipk,
-                'izinkan_tampil_di_buku'  => true,
+                'izinkan_tampil_di_buku'  => false,
                 'tanggal_pengisian'       => Carbon::now()->toDateString(),
             ]
         );

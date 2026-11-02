@@ -40,8 +40,8 @@ class KeluargaSiswaController extends Controller
             'nama'            => 'required|string|max:150',
             'kondisi'         => 'required|in:hidup,meninggal',
             'pekerjaan'       => 'nullable|string|max:100',
-            'penghasilan'     => 'nullable|numeric',
-            'alamat'          => 'nullable|string',
+            'penghasilan'     => 'nullable|numeric|between:0,9999999999999',
+            'alamat'          => 'nullable|string|max:2000',
             'kontak_wa'       => 'nullable|string|max:20',
         ]);
 
@@ -86,8 +86,8 @@ class KeluargaSiswaController extends Controller
             'nama'        => 'required|string|max:150',
             'hubungan'    => 'nullable|string|max:50',
             'pekerjaan'   => 'nullable|string|max:100',
-            'penghasilan' => 'nullable|numeric',
-            'alamat'      => 'nullable|string',
+            'penghasilan' => 'nullable|numeric|between:0,9999999999999',
+            'alamat'      => 'nullable|string|max:2000',
             'kontak_wa'   => 'nullable|string|max:20',
         ]);
 
@@ -163,8 +163,8 @@ class KeluargaSiswaController extends Controller
 
         $validated = $request->validate([
             'jenis_bantuan_id' => 'required|exists:jenis_bantuan,id',
-            'tahun'            => 'required|string|max:10',
-            'nominal'          => 'nullable|numeric',
+            'tahun'            => 'required|digits:4',
+            'nominal'          => 'nullable|numeric|between:0,9999999999999',
         ]);
 
         $bantuan = $siswa->bantuanSiswa()->create($validated);

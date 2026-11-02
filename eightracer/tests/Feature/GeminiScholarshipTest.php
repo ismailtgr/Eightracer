@@ -26,6 +26,11 @@ class GeminiScholarshipTest extends TestCase
         Http::preventStrayRequests();
     }
 
+    private function signIn(User $user): void
+    {
+        $this->app['auth']->forgetGuards();
+        $this->withToken($user->createToken('test', ['*'], now()->addHour())->plainTextToken);
+    }
     private function user(string $role = 'siswa'): User
     {
         return User::create(['username' => uniqid('test'), 'password' => 'password-test', 'role' => $role]);
@@ -63,21 +68,25 @@ class GeminiScholarshipTest extends TestCase
         $siswa = $this->student($owner);
         $b = $this->scholarship();
         $this->fakeGemini($b->id);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $draft = $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")
             ->assertCreated()->assertJsonPath('data.status_review', 'pending')->json('data.id');
         Http::assertSent(fn ($r) => str_ends_with($r->url(), '/v1beta/interactions') && $r['store'] === false
             && ! str_contains(json_encode($r->data()), 'PRIVATE_NAME')
             && ! str_contains(json_encode($r->data()), $siswa->nisn));
-        Sanctum::actingAs($owner);
+        $this->signIn($owner);
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(0, 'data');
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertForbidden();
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $this->patchJson("/api/rekomendasi-beasiswa/{$draft}/review", ['status_review' => 'disetujui', 'catatan_admin' => 'PRIVATE_NOTE'])->assertOk();
-        Sanctum::actingAs($owner);
+        $this->signIn($owner);
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data')->assertDontSee('PRIVATE_NOTE');
-        Sanctum::actingAs($this->user());
+        $this->signIn($this->user());
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertNotFound();
+        $other = $this->user();
+        $this->student($other);
+        $this->signIn($other);
+        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$siswa->id)->assertOk()->assertJsonCount(0, 'data');
     }
 
     public function test_bad_provider_output_never_creates_draft(): void
@@ -85,7 +94,7 @@ class GeminiScholarshipTest extends TestCase
         $siswa = $this->student($this->user());
         $this->scholarship();
         $this->fakeGemini(999999);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertStatus(503);
         $this->assertSame(0, RekomendasiBeasiswa::count());
     }
@@ -95,7 +104,7 @@ class GeminiScholarshipTest extends TestCase
         $siswa = $this->student($this->user());
         $b = $this->scholarship();
         $this->fakeGemini($b->id);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $id = $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertCreated()->json('data.id');
         $siswa->update(['nilai_tka' => 50]);
         $this->patchJson("/api/rekomendasi-beasiswa/{$id}/review", ['status_review' => 'disetujui'])->assertStatus(409);
@@ -104,7 +113,7 @@ class GeminiScholarshipTest extends TestCase
 
     public function test_self_registration_cannot_create_an_admin(): void
     {
-        $this->postJson('/api/register', ['username' => 'intruder', 'password' => 'password123', 'password_confirmation' => 'password123', 'role' => 'administrator'])->assertUnprocessable();
+        $this->postJson('/api/register', ['username' => 'intruder', 'password' => 'password123', 'password_confirmation' => 'password123', 'role' => 'administrator'])->assertForbidden();
     }
 
     public function test_missing_data_cannot_be_published_and_archiving_preserves_draft(): void
@@ -113,7 +122,7 @@ class GeminiScholarshipTest extends TestCase
         $b = $this->scholarship();
         $b->kriteriaKelayakanBeasiswa()->create(['nama_kriteria' => 'Ekonomi', 'tipe_kriteria' => 'penghasilan_orang_tua', 'operator' => '<=', 'nilai_kriteria' => '3000000']);
         $this->fakeGemini($b->id);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $id = $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertCreated()->json('data.id');
         $this->patchJson("/api/rekomendasi-beasiswa/{$id}/review", ['status_review' => 'disetujui'])->assertUnprocessable();
         $this->deleteJson("/api/beasiswa/{$b->id}")->assertOk();
@@ -126,7 +135,7 @@ class GeminiScholarshipTest extends TestCase
         $siswa = $this->student($this->user());
         $this->scholarship();
         Http::fake(['generativelanguage.googleapis.com/*' => Http::response(['error' => 'test-key'], 429)]);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertStatus(503)->assertDontSee('test-key');
         $this->assertDatabaseCount('rekomendasi_beasiswa', 0);
     }
@@ -136,7 +145,7 @@ class GeminiScholarshipTest extends TestCase
         $siswa = $this->student($this->user());
         $this->scholarship();
         Http::fake(['generativelanguage.googleapis.com/*' => Http::response(['status' => 'in_progress', 'steps' => []])]);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertStatus(503);
         $this->assertDatabaseCount('rekomendasi_beasiswa', 0);
     }
@@ -145,14 +154,14 @@ class GeminiScholarshipTest extends TestCase
     {
         $siswa = $this->student($this->user());
         $this->scholarship()->update(['tanggal_tutup' => today()->subDay()]);
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertUnprocessable();
         Http::assertNothingSent();
     }
 
     public function test_catalog_accepts_deadline_without_start_and_rejects_invalid_threshold(): void
     {
-        Sanctum::actingAs($this->user('administrator'));
+        $this->signIn($this->user('administrator'));
         $body = [
             'nama_beasiswa' => 'Katalog uji', 'jenjang' => 'SMA', 'tanggal_tutup' => today()->addMonth()->toDateString(),
             'kriteria' => [['nama_kriteria' => 'TKA', 'tipe_kriteria' => 'nilai_tka', 'operator' => '>=', 'nilai_kriteria' => '80']],
@@ -160,7 +169,7 @@ class GeminiScholarshipTest extends TestCase
         $this->postJson('/api/beasiswa', $body)->assertCreated();
         $body['kriteria'][0]['nilai_kriteria'] = 'bukan angka';
         $this->postJson('/api/beasiswa', $body)->assertUnprocessable();
-        Sanctum::actingAs($this->user());
+        $this->signIn($this->user());
         $this->postJson('/api/beasiswa', $body)->assertForbidden();
     }
 }

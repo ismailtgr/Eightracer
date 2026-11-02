@@ -16,6 +16,7 @@ class AlumniProgressController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $request->validate(['tahun_lulus' => 'nullable|digits:4', 'status_pendidikan' => 'nullable|string|max:50', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1']);
         $query = AlumniProgress::with(['siswa', 'studyTracer.perguruanTinggi', 'alumniProgressBeasiswa.beasiswa']);
 
         if ($request->filled('tahun_lulus')) {
@@ -67,19 +68,20 @@ class AlumniProgressController extends Controller
         $siswa = Siswa::findOrFail($siswaId);
 
         $validated = $request->validate([
-            'study_tracer_id'    => 'nullable|exists:study_tracer,id',
-            'tahun_lulus'        => 'required|string|max:10',
+            'study_tracer_id'    => ['nullable', \Illuminate\Validation\Rule::exists('study_tracer', 'id')->where('siswa_id', $siswa->id)],
+            'tahun_lulus'        => 'required|digits:4',
             'status_pendidikan'  => 'nullable|string|max:50',
             'ipk_terkini'        => 'nullable|numeric|between:0,4.00',
             'tanggal_update'     => 'required|date',
             // Informasi UKT & Beasiswa (Domain 5 Fitur Unggulan B4)
-            'beasiswa_id'        => 'nullable|exists:basis_data_beasiswa,id',
+            'beasiswa_id'        => 'nullable|required_with:nominal_beasiswa,nominal_ukt,status_beasiswa,periode|exists:basis_data_beasiswa,id',
             'status_beasiswa'    => 'nullable|in:proses,diterima,ditolak',
-            'nominal_beasiswa'   => 'nullable|numeric',
-            'nominal_ukt'        => 'nullable|numeric',
+            'nominal_beasiswa'   => 'nullable|numeric|between:0,9999999999999',
+            'nominal_ukt'        => 'nullable|numeric|between:0,9999999999999',
             'periode'            => 'nullable|string|max:50',
         ]);
 
+        $progress = \Illuminate\Support\Facades\DB::transaction(function () use ($siswa, $validated) {
         $progress = AlumniProgress::create([
             'siswa_id'          => $siswa->id,
             'study_tracer_id'   => $validated['study_tracer_id'] ?? null,
@@ -92,13 +94,16 @@ class AlumniProgressController extends Controller
         if (!empty($validated['beasiswa_id']) || !empty($validated['nominal_ukt'])) {
             AlumniProgressBeasiswa::create([
                 'alumni_progress_id' => $progress->id,
-                'beasiswa_id'        => $validated['beasiswa_id'] ?? 1,
+                'beasiswa_id'        => $validated['beasiswa_id'],
                 'status_beasiswa'    => $validated['status_beasiswa'] ?? 'proses',
                 'nominal_beasiswa'   => $validated['nominal_beasiswa'] ?? null,
                 'nominal_ukt'        => $validated['nominal_ukt'] ?? null,
                 'periode'            => $validated['periode'] ?? null,
             ]);
         }
+
+        return $progress;
+        });
 
         return response()->json([
             'status'  => 'success',
