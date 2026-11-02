@@ -22,7 +22,19 @@ class BasisDataBeasiswaController extends Controller
     {
         $this->admin($request);
 
-        return response()->json(BasisDataBeasiswa::with('kriteriaKelayakanBeasiswa')->orderBy('id')->paginate(20));
+        $filters = $request->validate([
+            'search' => 'nullable|string|max:100',
+            'jenjang' => 'nullable|in:SMA,Kuliah,Keduanya',
+        ]);
+        $query = BasisDataBeasiswa::with('kriteriaKelayakanBeasiswa');
+        if ($request->filled('search')) {
+            $query->where('nama_beasiswa', 'like', '%'.$filters['search'].'%');
+        }
+        if ($request->filled('jenjang')) {
+            $query->whereIn('jenjang', array_unique([$filters['jenjang'], 'Keduanya']));
+        }
+
+        return response()->json($query->orderBy('id')->paginate(20)->appends($filters));
     }
 
     private function rules(Request $request): array

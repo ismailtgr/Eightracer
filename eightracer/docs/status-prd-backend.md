@@ -19,7 +19,7 @@ Tanggal: 2 November 2026. Perubahan sudah dipasang langsung di `C:\eightracer\ei
 
 ## Bukti pemeriksaan
 
-- Tes otomatis: **66 lolos, 1 dilewati**, dari 67 tes; 452 assertions. Database tes selalu SQLite dalam memori.
+- Tes otomatis setelah perbaikan use case: **79 lolos, 0 gagal, 1 dilewati**, dari 80 tes; 593 assertions. Database tes selalu SQLite dalam memori.
 - Satu tes import XLSX penuh dilewati karena native PHP `is_readable` tidak bekerja normal dalam lingkungan terkelola. Parser/guard impor tetap mempunyai tes lain; uji unggah penuh harus diulang pada runtime/server tujuan.
 - Pemeriksaan sintaks: 187 file PHP, tanpa kegagalan; file yang diedit terakhir diperiksa ulang.
 - Migrasi `2026_11_02_000003_complete_prd_backend` berhasil pada MySQL utama, batch 4. Perbedaan default TIMESTAMP MariaDB sudah diperbaiki dengan DATETIME eksplisit untuk OTP.
@@ -46,3 +46,10 @@ Tanggal: 2 November 2026. Perubahan sudah dipasang langsung di `C:\eightracer\ei
 - `Daftar_Endpoint.json`: route dari aplikasi yang sudah dipasang.
 - `Hasil_Tes.txt`, `Pemeriksaan_MySQL.json`, `Pemeriksaan_Gemini.json`: bukti validasi.
 - `changed-files.json` dan `backend-prd.patch`: perubahan source terhadap backup awal pekerjaan. Patch tidak menyertakan `.env`, database/dump, vendor, runtime portable atau backup privat.
+
+
+## Perbaikan empat kegagalan audit use case — 2 November 2026
+
+Pencarian/filter jenjang katalog sudah bekerja dan bertahan saat pagination. Beasiswa Keduanya ikut filter SMA/Kuliah. Referensi prestasi muncul di jejak alumni siswa dengan proyeksi publik yang tidak memuat lampiran privat. Tren analitik menyediakan status beasiswa per periode, memakai revisi current dan alumni unik; filter beasiswa konsisten.
+
+Empat kegagalan awal lolos; seluruh 13 kasus penerimaan dan regresi keseluruhan lulus selain satu skip impor XLSX yang sudah ada. Dokumentasi kontrak baru ada di `perbaikan-use-case.md`. Tidak ada perubahan schema/migrasi, .env, data sekolah atau UI pada perbaikan ini.

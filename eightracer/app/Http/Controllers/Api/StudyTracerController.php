@@ -18,7 +18,7 @@ class StudyTracerController extends Controller
         $r->validate(['search' => 'nullable|string|max:100', 'angkatan' => 'nullable|digits:4', 'jenis_pt' => 'nullable|in:Negeri,Swasta,Kedinasan,Luar Negeri', 'program_studi' => 'nullable|string|max:100', 'jalur_masuk' => 'nullable|string|max:50', 'perguruan_tinggi_id' => 'nullable|integer', 'penerima_kipk' => 'nullable|boolean', 'beasiswa_id' => 'nullable|integer|exists:basis_data_beasiswa,id', 'per_page' => 'sometimes|integer|between:1,100']);
         $q = StudyTracer::with(['siswa', 'perguruanTinggi']);
         if ($public) {
-            $q->where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima');
+            $q->with('prestasi')->where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima');
         }
         if ($r->filled('search')) {
             $term = $r->input('search');
@@ -133,7 +133,7 @@ class StudyTracerController extends Controller
 
     public function studentShow(int $id, AlumniService $service)
     {
-        $t = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi'])->findOrFail($id);
+        $t = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi', 'prestasi'])->findOrFail($id);
 
         return response()->json(['data' => ['masuk_pt' => $service->admission($t), 'progress' => $t->alumniProgress()->where('is_current', true)->where('is_published', true)->with('alumniProgressBeasiswa.beasiswa')->orderBy('tanggal_update')->get()->map(fn ($p) => $service->progress($p)), 'timeline' => $service->timeline($t)]]);
     }

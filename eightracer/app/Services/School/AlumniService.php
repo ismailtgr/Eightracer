@@ -55,7 +55,13 @@ class AlumniService
         $d = ['id' => $t->id, 'nama_lengkap' => $t->siswa?->nama_lengkap, 'tahun_lulus' => $t->siswa?->tahun_lulus,
             'strata_pendidikan' => $t->strata_pendidikan, 'program_studi' => $t->program_studi, 'perguruan_tinggi' => $t->perguruanTinggi?->only(['id', 'nama_pt', 'jenis_pt']),
             'jalur_masuk' => $t->jalur_masuk, 'sub_jalur_mandiri' => $t->sub_jalur_mandiri, 'status_penerimaan' => $t->status_penerimaan, 'pilihan_ke' => $t->pilihan_ke,
-            'tahun_masuk_pt' => $t->tahun_masuk_pt, 'tanggal_masuk_pt' => $t->tanggal_masuk_pt];
+            'tahun_masuk_pt' => $t->tahun_masuk_pt, 'tanggal_masuk_pt' => $t->tanggal_masuk_pt,
+            'prestasi' => $t->prestasi
+                ->filter(fn ($prestasi) => (int) $prestasi->siswa_id === (int) $t->siswa_id)
+                ->map(fn ($prestasi) => $prestasi->only([
+                    'id', 'jenis_prestasi', 'nama_kompetisi', 'bidang',
+                    'tingkat', 'peringkat', 'penyelenggara', 'tahun',
+                ]))->values()];
         if ($admin) {
             $d['kontak_wa_terbaru'] = $t->kontak_wa_terbaru;
             $d['nilai_rapor_pendaftaran'] = $t->nilai_rapor_pendaftaran;
