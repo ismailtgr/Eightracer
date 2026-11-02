@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AlumniFormController;
 use App\Http\Controllers\Api\PerguruanTinggiController;
+use App\Http\Controllers\Api\AlumniController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
@@ -30,4 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/alumni/import', [AlumniImportController::class, 'import']);
+    Route::prefix('alumni')->group(function () {
+        Route::get('/', [AlumniController::class, 'index']);
+        Route::get('/filter-options', [AlumniController::class, 'filterOptions']);
+        Route::get('/{id}', [AlumniController::class, 'show']);
+    });
 });
