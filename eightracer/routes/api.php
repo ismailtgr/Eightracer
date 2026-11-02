@@ -5,9 +5,12 @@ use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AlumniFormController;
+use App\Http\Controllers\Api\PerguruanTinggiController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
+
+Route::get('/perguruan-tinggi', [PerguruanTinggiController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('alumni-form')->group(function () {
