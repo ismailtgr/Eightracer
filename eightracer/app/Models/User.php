@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -12,19 +12,19 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
-    protected $fillable = [
+    protected $fillable = ['email', 'full_name',
         'username',
         'password',
         'role',
     ];
 
     protected $hidden = [
-        'password', 'remember_token', 'email', 'email_verified_at',
+        'password', 'remember_token', 'email', 'email_verified_at', 'google_id', 'photo_path',
     ];
 
     protected function casts(): array
     {
-        return [
+        return ['google_id' => 'string',
             'password' => 'hashed', 'email_verified_at' => 'datetime',
         ];
     }

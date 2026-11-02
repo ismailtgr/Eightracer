@@ -12,7 +12,7 @@ class RekomendasiBeasiswa extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['target_jenjang',
         'siswa_id',
         'tanggal_rekomendasi',
         'status_review',

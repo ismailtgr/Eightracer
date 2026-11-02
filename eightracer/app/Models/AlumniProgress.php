@@ -13,7 +13,7 @@ class AlumniProgress extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['kategori_ekonomi', 'referensi_ekonomi', 'periode', 'semester', 'penerima_kipk', 'nominal_ukt', 'nominal_ipi', 'is_published', 'publish_financials', 'consent_reference', 'consent_at', 'consent_by', 'is_current', 'revision', 'supersedes_id',
         'siswa_id',
         'study_tracer_id',
         'tahun_lulus',
@@ -24,7 +24,7 @@ class AlumniProgress extends Model
 
     protected function casts(): array
     {
-        return [
+        return ['penerima_kipk' => 'boolean', 'is_published' => 'boolean', 'publish_financials' => 'boolean', 'is_current' => 'boolean', 'nominal_ukt' => 'decimal:2', 'nominal_ipi' => 'decimal:2',
             'ipk_terkini' => 'decimal:2',
             'tanggal_update' => 'date:Y-m-d',
         ];

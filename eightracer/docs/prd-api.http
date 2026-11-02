@@ -1,0 +1,82 @@
+@base = http://127.0.0.1:8000/api
+@token = ISI_TOKEN_SECARA_LOKAL_JANGAN_COMMIT
+@siswa = 1
+@challenge = ISI_CHALLENGE_UUID_DARI_RESPONS
+
+### Login email (ganti hanya di salinan lokal)
+POST {{base}}/login
+Accept: application/json
+Content-Type: application/json
+
+{"email":"admin@example.test","password":"GANTI_DI_LOKAL"}
+
+### Pendaftaran siswa setelah master NISN+email tersedia
+POST {{base}}/register
+Content-Type: application/json
+Accept: application/json
+
+{"full_name":"Nama Akun","email":"siswa@example.test","nisn":"0000000001","password":"GANTI_DI_LOKAL","password_confirmation":"GANTI_DI_LOKAL"}
+
+### OTP pendaftaran
+POST {{base}}/register/verify
+Content-Type: application/json
+Accept: application/json
+
+{"challenge_id":"{{challenge}}","otp":"ISI_OTP_LOKAL"}
+
+### Pemulihan tahap 1
+POST {{base}}/forgot-password
+Content-Type: application/json
+Accept: application/json
+
+{"email":"siswa@example.test"}
+
+### Pemulihan tahap 2, respons berisi challenge grant baru
+POST {{base}}/forgot-password/verify
+Content-Type: application/json
+Accept: application/json
+
+{"challenge_id":"{{challenge}}","otp":"ISI_OTP_LOKAL"}
+
+### Google: gunakan client_id dan nonce hasil ini pada FE
+POST {{base}}/auth/google/challenge
+Accept: application/json
+
+### Profil sendiri
+GET {{base}}/profile
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Simpan rapor admin
+PUT {{base}}/siswa/{{siswa}}/nilai-rapor
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{"semester":1,"nilai":[{"mata_pelajaran_id":1,"nilai_akhir":85}]}
+
+### Program eligibilitas, nilai sekadar contoh bukan kebijakan sekolah
+POST {{base}}/program-eligibilitas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{"nama":"Program Contoh","kriteria":[{"nama_kriteria":"TKA","tipe_kriteria":"nilai_tka","operator":">=","nilai_kriteria":"80"}]}
+
+### Eligibilitas diri siswa
+GET {{base}}/eligibilitas/saya
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Generate draft persiapan beasiswa kuliah oleh admin
+POST {{base}}/siswa/{{siswa}}/rekomendasi-beasiswa/generate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{"target_jenjang":"Kuliah"}
+
+### Daftar jejak alumni yang berizin, untuk siswa
+GET {{base}}/jejak-alumni
+Authorization: Bearer {{token}}
+Accept: application/json

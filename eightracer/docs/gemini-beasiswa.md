@@ -1,3 +1,5 @@
+> Kontrak backend lengkap terbaru: [prd-backend.md](prd-backend.md). Login email, OTP, Google, profil dan modul sekolah mengikuti dokumen tersebut.
+
 # Backend rekomendasi beasiswa
 
 Bagian ini berisi layanan API Laravel untuk FE yang dikembangkan terpisah.

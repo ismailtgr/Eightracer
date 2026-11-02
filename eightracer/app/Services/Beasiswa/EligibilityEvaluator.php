@@ -4,7 +4,7 @@ namespace App\Services\Beasiswa;
 
 class EligibilityEvaluator
 {
-    public const FIELDS = ['nilai_tka', 'rata_rapor', 'penghasilan_orang_tua', 'persentase_kehadiran', 'jumlah_prestasi', 'status_eligible'];
+    public const FIELDS = ['nilai_tka', 'rata_rapor', 'penghasilan_orang_tua', 'persentase_kehadiran', 'jumlah_prestasi', 'skor_prestasi', 'bantuan_sosial_sesuai', 'jumlah_organisasi', 'poin_karakter', 'ipk', 'semester_kuliah', 'status_eligible'];
 
     public function evaluate(array $profile, array $criteria): array
     {

@@ -11,7 +11,7 @@ class RekomendasiProdi extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['batch_id', 'status_review', 'source_fingerprint', 'detail_penilaian', 'criteria_snapshot', 'catatan_admin', 'reviewed_by', 'reviewed_at',
         'siswa_id',
         'klaster_id',
         'study_tracer_id',
@@ -24,7 +24,7 @@ class RekomendasiProdi extends Model
 
     protected function casts(): array
     {
-        return [
+        return ['detail_penilaian' => 'array', 'criteria_snapshot' => 'array', 'reviewed_at' => 'datetime',
             'nilai_rata_siswa' => 'decimal:2',
             'persentase_kesesuaian' => 'decimal:2',
             'tanggal_rekomendasi' => 'datetime',

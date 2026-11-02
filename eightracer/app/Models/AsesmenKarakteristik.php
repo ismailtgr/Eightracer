@@ -11,7 +11,7 @@ class AsesmenKarakteristik extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['gaya_belajar', 'iq', 'is_current', 'supersedes_id', 'created_by',
         'siswa_id',
         'tipe_kepribadian',
         'kecerdasan_majemuk_dominan',
@@ -21,7 +21,7 @@ class AsesmenKarakteristik extends Model
 
     protected function casts(): array
     {
-        return [
+        return ['is_current' => 'boolean', 'iq' => 'decimal:2',
             'tanggal_asesmen' => 'datetime',
         ];
     }

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\BantuanSiswa;
-use App\Models\MediaSosial;
 use App\Models\OrangTua;
 use App\Models\Siswa;
 use App\Models\Wali;
@@ -22,9 +20,9 @@ class KeluargaSiswaController extends Controller
         $orangTua = $siswa->orangTua;
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data orang tua berhasil diambil',
-            'data'    => $orangTua,
+            'data' => $orangTua,
         ]);
     }
 
@@ -37,26 +35,27 @@ class KeluargaSiswaController extends Controller
 
         $validated = $request->validate([
             'jenis_orang_tua' => 'required|in:ayah,ibu',
-            'nama'            => 'required|string|max:150',
-            'kondisi'         => 'required|in:hidup,meninggal',
-            'pekerjaan'       => 'nullable|string|max:100',
-            'penghasilan'     => 'nullable|numeric|between:0,9999999999999',
-            'alamat'          => 'nullable|string|max:2000',
-            'kontak_wa'       => 'nullable|string|max:20',
+            'nama' => 'required|string|max:150',
+            'kondisi' => 'required|in:hidup,meninggal,bercerai',
+            'pekerjaan' => 'nullable|string|max:100',
+            'penghasilan' => 'nullable|numeric|between:0,9999999999999',
+            'alamat' => 'nullable|string|max:2000',
+            'kontak_wa' => 'nullable|string|max:20',
         ]);
 
+        abort_if($validated['kondisi'] !== 'hidup' && ! $siswa->wali()->exists(), 422, 'Lengkapi wali lebih dahulu untuk kondisi orang tua ini.');
         $orangTua = OrangTua::updateOrCreate(
             [
-                'siswa_id'        => $siswa->id,
+                'siswa_id' => $siswa->id,
                 'jenis_orang_tua' => $validated['jenis_orang_tua'],
             ],
             $validated
         );
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data orang tua berhasil disimpan',
-            'data'    => $orangTua,
+            'data' => $orangTua,
         ], 200);
     }
 
@@ -69,9 +68,9 @@ class KeluargaSiswaController extends Controller
         $wali = $siswa->wali;
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data wali berhasil diambil',
-            'data'    => $wali,
+            'data' => $wali,
         ]);
     }
 
@@ -83,12 +82,12 @@ class KeluargaSiswaController extends Controller
         $siswa = Siswa::findOrFail($siswaId);
 
         $validated = $request->validate([
-            'nama'        => 'required|string|max:150',
-            'hubungan'    => 'nullable|string|max:50',
-            'pekerjaan'   => 'nullable|string|max:100',
+            'nama' => 'required|string|max:150',
+            'hubungan' => 'nullable|string|max:50',
+            'pekerjaan' => 'nullable|string|max:100',
             'penghasilan' => 'nullable|numeric|between:0,9999999999999',
-            'alamat'      => 'nullable|string|max:2000',
-            'kontak_wa'   => 'nullable|string|max:20',
+            'alamat' => 'nullable|string|max:2000',
+            'kontak_wa' => 'nullable|string|max:20',
         ]);
 
         $wali = Wali::updateOrCreate(
@@ -97,9 +96,9 @@ class KeluargaSiswaController extends Controller
         );
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data wali berhasil disimpan',
-            'data'    => $wali,
+            'data' => $wali,
         ], 200);
     }
 
@@ -112,9 +111,9 @@ class KeluargaSiswaController extends Controller
         $medsos = $siswa->mediaSosial;
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data media sosial berhasil diambil',
-            'data'    => $medsos,
+            'data' => $medsos,
         ]);
     }
 
@@ -133,9 +132,9 @@ class KeluargaSiswaController extends Controller
         $medsos = $siswa->mediaSosial()->create($validated);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Media sosial berhasil ditambahkan',
-            'data'    => $medsos,
+            'data' => $medsos,
         ], 201);
     }
 
@@ -148,9 +147,9 @@ class KeluargaSiswaController extends Controller
         $bantuan = $siswa->bantuanSiswa()->with('jenisBantuan')->get();
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data bantuan siswa berhasil diambil',
-            'data'    => $bantuan,
+            'data' => $bantuan,
         ]);
     }
 
@@ -162,17 +161,16 @@ class KeluargaSiswaController extends Controller
         $siswa = Siswa::findOrFail($siswaId);
 
         $validated = $request->validate([
-            'jenis_bantuan_id' => 'required|exists:jenis_bantuan,id',
-            'tahun'            => 'required|digits:4',
-            'nominal'          => 'nullable|numeric|between:0,9999999999999',
+            'jenis_bantuan_id' => 'required|integer|exists:jenis_bantuan,id', 'nomor_penerima' => 'nullable|string|max:100',
+            'tanggal_mulai' => 'nullable|date', 'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai', 'aktif' => 'required|boolean',
         ]);
 
         $bantuan = $siswa->bantuanSiswa()->create($validated);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Data bantuan siswa berhasil ditambahkan',
-            'data'    => $bantuan,
+            'data' => $bantuan,
         ], 201);
     }
 }

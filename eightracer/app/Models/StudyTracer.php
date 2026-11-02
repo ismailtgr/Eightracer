@@ -13,7 +13,7 @@ class StudyTracer extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['tahun_masuk_pt', 'tanggal_masuk_pt',
         'siswa_id',
         'perguruan_tinggi_id',
         'buku_alumni_id',
@@ -33,7 +33,7 @@ class StudyTracer extends Model
 
     protected function casts(): array
     {
-        return [
+        return ['tanggal_masuk_pt' => 'date:Y-m-d',
             'nilai_rapor_pendaftaran' => 'float',
             'skor_utbk' => 'float',
             'is_pelamar_kipk' => 'boolean',

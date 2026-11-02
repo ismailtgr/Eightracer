@@ -3,52 +3,54 @@
 namespace App\Services\Beasiswa;
 
 use App\Models\BasisDataBeasiswa;
+use App\Models\ProgramEligibilitas;
 use App\Models\RekomendasiBeasiswa;
 use App\Models\Siswa;
+use App\Services\School\SchoolEligibility;
+use App\Services\School\StudentProfile;
 use Illuminate\Support\Facades\DB;
 
 class ScholarshipRecommendationService
 {
     public function __construct(private EligibilityEvaluator $evaluator, private GeminiScholarshipExplainer $gemini) {}
 
-    public function sources(Siswa $siswa): array
+    public function sources(Siswa $siswa, ?string $target = null): array
     {
-        $rapor = $siswa->nilaiRapor()->whereBetween('semester', [1, 5])->get();
-        $semesterCount = $rapor->pluck('semester')->unique()->count();
-        $parents = $siswa->orangTua()->get();
-        $class = $siswa->riwayatKelas()->whereNull('tanggal_selesai')->with('kelas')->latest('tanggal_mulai')->first();
-        // No inferred education level from age, name, or an arbitrary historical tracer row.
-        $jenjang = $class && $class->kelas && in_array((int) $class->kelas->tingkat, [10, 11, 12], true) ? 'SMA' : null;
-        $profile = [
-            'jenjang' => $jenjang,
-            'nilai_tka' => $siswa->nilai_tka,
-            'rata_rapor' => $semesterCount === 5 ? $rapor->avg('nilai_akhir') : null,
-            // Require both parent records and known income; missing is never zero.
-            'penghasilan_orang_tua' => $parents->pluck('jenis_orang_tua')->unique()->count() === 2
-                && $parents->every(fn ($p) => $p->penghasilan !== null) ? $parents->sum('penghasilan') : null,
-            'persentase_kehadiran' => $siswa->rekapPresensi()->orderByDesc('semester')->value('persentase_kehadiran'),
-            'jumlah_prestasi' => $siswa->prestasiMurid()->exists() ? $siswa->prestasiMurid()->count() : null,
-            'status_eligible' => $siswa->hasilEligibilitas()->latest('tanggal_kalkulasi')->value('status_eligible'),
-        ];
+        $profile = app(StudentProfile::class)->build($siswa);
+        $profile['target_jenjang'] = $target ?? $profile['jenjang'];
+        $profile['program_statuses'] = [];
+        $programs = ProgramEligibilitas::where('is_active', true)->orderBy('id')->get();
+        foreach ($programs as $p) {
+            $result = app(SchoolEligibility::class)->evaluate($siswa, $p);
+            $profile['program_statuses'][$p->id] = $result['status'] === 'Belum dinilai' ? null : $result['status'];
+        }
         $catalog = BasisDataBeasiswa::with('kriteriaKelayakanBeasiswa')->where('is_active', true)
-            ->where(fn ($q) => $q->whereNull('tanggal_tutup')->orWhereDate('tanggal_tutup', '>=', today()))
-            ->orderBy('id')->get();
+            ->where(fn ($q) => $q->whereNull('tanggal_tutup')->orWhereDate('tanggal_tutup', '>=', today()))->orderBy('id')->get();
 
-        return [$profile, $catalog, hash('sha256', json_encode([$profile, $catalog->toArray()], JSON_THROW_ON_ERROR))];
+        return [$profile, $catalog, hash('sha256', json_encode([$profile, $catalog->toArray(), $programs->toArray()], JSON_THROW_ON_ERROR))];
     }
 
-    public function generate(Siswa $siswa): RekomendasiBeasiswa
+    public function generate(Siswa $siswa, ?string $target = null): RekomendasiBeasiswa
     {
-        [$profile, $catalog, $fingerprint] = $this->sources($siswa);
-        abort_if($profile['jenjang'] === null, 422, 'Jenjang siswa belum diketahui. Lengkapi riwayat kelas aktif SMA.');
+        [$profile, $catalog, $fingerprint] = $this->sources($siswa, $target);
+        abort_if($profile['target_jenjang'] === null, 422, 'Jenjang siswa belum diketahui. Lengkapi riwayat kelas aktif SMA.');
         $candidates = [];
         foreach ($catalog as $beasiswa) {
-            if (! in_array($beasiswa->jenjang, [$profile['jenjang'], 'Keduanya'], true)) {
+            if (! in_array($beasiswa->jenjang, [$profile['target_jenjang'], 'Keduanya'], true)) {
                 continue;
             }
             $criteria = $beasiswa->kriteriaKelayakanBeasiswa->sortBy('id')->values()->toArray();
-            $evaluation = $this->evaluator->evaluate($profile, $criteria);
-            $snapshot = $beasiswa->only(['nama_beasiswa', 'jenjang', 'tanggal_buka', 'tanggal_tutup', 'link_pendaftaran', 'penyelenggara']);
+            $candidateProfile = $profile;
+            if ($beasiswa->program_eligibilitas_id) {
+                $candidateProfile['status_eligible'] = $profile['program_statuses'][$beasiswa->program_eligibilitas_id] ?? null;
+                $program = ProgramEligibilitas::where('is_active', true)->find($beasiswa->program_eligibilitas_id);
+                if ($program) {
+                    $candidateProfile = app(SchoolEligibility::class)->programProfile($siswa, $program, $candidateProfile);
+                }
+            }
+            $evaluation = $this->evaluator->evaluate($candidateProfile, $criteria);
+            $snapshot = $beasiswa->only(['nama_beasiswa', 'jenjang', 'tanggal_buka', 'tanggal_tutup', 'link_pendaftaran', 'penyelenggara', 'durasi', 'satuan_durasi', 'periode_apply']);
+            $snapshot['konteks'] = $profile['jenjang'] !== $profile['target_jenjang'] ? 'Persiapan jenjang berikutnya' : 'Jenjang saat ini';
             $candidates[] = ['beasiswa_id' => $beasiswa->id, 'beasiswa' => $snapshot, 'evaluasi' => $evaluation];
         }
         abort_if(count($candidates) === 0, 422, 'Belum ada beasiswa aktif yang sesuai jenjang.');
@@ -56,9 +58,9 @@ class ScholarshipRecommendationService
         $candidates = array_slice($candidates, 0, 20);
         $explanations = $this->gemini->explain($candidates);
 
-        return DB::transaction(function () use ($siswa, $fingerprint, $candidates, $explanations) {
+        return DB::transaction(function () use ($siswa, $profile, $fingerprint, $candidates, $explanations) {
             $recommendation = RekomendasiBeasiswa::create([
-                'siswa_id' => $siswa->id, 'tanggal_rekomendasi' => today(), 'status_review' => 'pending',
+                'target_jenjang' => $profile['target_jenjang'], 'siswa_id' => $siswa->id, 'tanggal_rekomendasi' => today(), 'status_review' => 'pending',
                 'ai_model' => config('gemini.model'), 'prompt_version' => 'beasiswa-v1', 'source_fingerprint' => $fingerprint,
             ]);
             foreach ($candidates as $candidate) {

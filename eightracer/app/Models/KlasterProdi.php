@@ -12,7 +12,7 @@ class KlasterProdi extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['is_active', 'bobot_komponen',
         'nama_klaster',
         'kode_riasec_relevan',
         'kecerdasan_relevan',
@@ -32,5 +32,10 @@ class KlasterProdi extends Model
     public function mataPelajaran(): BelongsToMany
     {
         return $this->belongsToMany(MataPelajaran::class, 'bobot_mapel_klaster', 'klaster_id', 'mata_pelajaran_id')->withPivot('bobot_persentase');
+    }
+
+    protected function casts(): array
+    {
+        return ['is_active' => 'boolean', 'bobot_komponen' => 'array'];
     }
 }

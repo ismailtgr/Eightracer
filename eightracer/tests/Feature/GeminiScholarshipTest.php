@@ -9,7 +9,6 @@ use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class GeminiScholarshipTest extends TestCase
@@ -31,9 +30,10 @@ class GeminiScholarshipTest extends TestCase
         $this->app['auth']->forgetGuards();
         $this->withToken($user->createToken('test', ['*'], now()->addHour())->plainTextToken);
     }
+
     private function user(string $role = 'siswa'): User
     {
-        return User::create(['username' => uniqid('test'), 'password' => 'password-test', 'role' => $role]);
+        return User::forceCreate(['username' => uniqid('test'), 'email' => uniqid('test').'@example.test', 'email_verified_at' => now(), 'password' => 'password-test', 'role' => $role]);
     }
 
     private function student(User $user): Siswa

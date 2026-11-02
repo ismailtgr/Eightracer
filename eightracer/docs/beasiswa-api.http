@@ -10,7 +10,7 @@ POST {{baseUrl}}/login
 Accept: application/json
 Content-Type: application/json
 
-{"username":"USERNAME_ADMIN","password":"PASSWORD_ADMIN"}
+{"email":"ADMIN_EMAIL_LOKAL","password":"PASSWORD_ADMIN"}
 
 ### Identitas pengguna
 GET {{baseUrl}}/me
@@ -38,7 +38,7 @@ Content-Type: application/json
 
 {"nama_beasiswa":"Beasiswa Contoh Uji","jenjang":"SMA","is_active":true,"kriteria":[{"nama_kriteria":"TKA minimum","tipe_kriteria":"nilai_tka","operator":">=","nilai_kriteria":"85","bobot":1}]}
 
-### Generate draft — memanggil Gemini dan memakai kuota
+### Generate draft â€” memanggil Gemini dan memakai kuota
 POST {{baseUrl}}/siswa/{{siswaId}}/rekomendasi-beasiswa/generate
 Accept: application/json
 Authorization: Bearer {{adminToken}}

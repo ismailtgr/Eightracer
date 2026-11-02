@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RekomendasiBeasiswa;
 use App\Models\Siswa;
 use App\Services\Beasiswa\ScholarshipRecommendationService;
+use App\Services\School\Analytics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,9 @@ class RekomendasiBeasiswaController extends Controller
     {
         $this->admin($request);
 
-        return response()->json(['data' => $service->generate($siswa)], 201);
+        $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah']);
+
+        return response()->json(['data' => $service->generate($siswa, $input['target_jenjang'] ?? null)], 201);
     }
 
     public function index(Request $request)
@@ -38,7 +41,7 @@ class RekomendasiBeasiswaController extends Controller
             $row = RekomendasiBeasiswa::lockForUpdate()->findOrFail($rekomendasi);
             abort_unless($row->status_review === 'pending', 409, 'Rekomendasi sudah ditinjau. Buat draft baru untuk revisi.');
             if ($input['status_review'] === 'disetujui') {
-                [, , $fingerprint] = $service->sources($row->siswa);
+                [, , $fingerprint] = $service->sources($row->siswa, $row->target_jenjang);
                 abort_unless($row->source_fingerprint && hash_equals($row->source_fingerprint, $fingerprint), 409, 'Data sumber berubah. Generate ulang sebelum publikasi.');
                 $details = $row->rekomendasiBeasiswaDetail;
                 abort_if($details->isEmpty() || $details->contains(fn ($d) => ! ($d->evaluasi_kriteria['lengkap'] ?? false)), 422, 'Data kriteria belum lengkap; rekomendasi tidak dapat dipublikasikan.');
@@ -61,9 +64,9 @@ class RekomendasiBeasiswaController extends Controller
             ->with('rekomendasiBeasiswaDetail')->latest('id')->paginate(15);
         // Explicit projection: never serialize student relations, source hashes, or private admin notes.
         $rows->through(fn ($row) => [
-            'id' => $row->id, 'tanggal_rekomendasi' => $row->tanggal_rekomendasi, 'status' => 'Terpublikasi',
+            'target_jenjang' => $row->target_jenjang, 'id' => $row->id, 'tanggal_rekomendasi' => $row->tanggal_rekomendasi, 'status' => 'Terpublikasi',
             'beasiswa' => $row->rekomendasiBeasiswaDetail->map(fn ($detail) => [
-                'beasiswa_id' => $detail->beasiswa_id, 'informasi' => $detail->beasiswa_snapshot,
+                'pola_alumni' => app(Analytics::class)->published()->where('beasiswa_id', $detail->beasiswa_id)->values(), 'beasiswa_id' => $detail->beasiswa_id, 'informasi' => $detail->beasiswa_snapshot,
                 'skor_kecocokan' => $detail->skor_kecocokan, 'memenuhi_syarat' => $detail->is_recommended,
                 'checklist' => $detail->evaluasi_kriteria['checklist'] ?? [],
                 'alasan' => $detail->alasan_rekomendasi, 'persiapan' => $detail->persiapan,

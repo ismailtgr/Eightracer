@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Http\Middleware;
+
 use App\Support\PlainText;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+
 class ValidateApiText
 {
     public function handle(Request $request, Closure $next)
@@ -17,7 +20,7 @@ class ValidateApiText
                     throw ValidationException::withMessages(['input' => 'Nama field tidak valid.']);
                 }
                 $field = $prefix === '' ? (string) $key : $prefix.'.'.$key;
-                if (in_array($key, ['password', 'password_confirmation', 'token'], true)) {
+                if (in_array($key, ['password', 'password_confirmation', 'current_password', 'token', 'id_token', 'reset_token', 'otp'], true)) {
                     continue;
                 }
                 if (is_array($value)) {
@@ -28,6 +31,7 @@ class ValidateApiText
             }
         };
         $check($request->input());
+
         return $next($request);
     }
 }

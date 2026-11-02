@@ -12,7 +12,7 @@ class Siswa extends Model
 {
     protected $table = 'siswa';
 
-    protected $fillable = [
+    protected $fillable = ['registration_email', 'tanggal_masuk_sekolah', 'tanggal_lulus', 'tahun_lulus',
         'user_id',
         'nisn',
         'nis',
@@ -37,7 +37,7 @@ class Siswa extends Model
 
     protected function casts(): array
     {
-        return [
+        return ['tanggal_masuk_sekolah' => 'date:Y-m-d', 'tanggal_lulus' => 'date:Y-m-d', 'bantuan_dikonfirmasi' => 'boolean', 'prestasi_dikonfirmasi' => 'boolean', 'organisasi_dikonfirmasi' => 'boolean', 'karakter_dikonfirmasi' => 'boolean', 'izinkan_analitik' => 'boolean',
             'tanggal_lahir' => 'date:Y-m-d',
             'nilai_tka' => 'decimal:2',
         ];

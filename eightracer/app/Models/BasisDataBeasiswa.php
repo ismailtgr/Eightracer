@@ -11,7 +11,7 @@ class BasisDataBeasiswa extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
+    protected $fillable = ['durasi', 'satuan_durasi', 'periode_apply', 'program_eligibilitas_id',
         'nama_beasiswa',
         'penyelenggara',
         'deskripsi',
@@ -24,7 +24,7 @@ class BasisDataBeasiswa extends Model
 
     protected function casts(): array
     {
-        return [
+        return ['durasi' => 'decimal:2',
             'tanggal_buka' => 'date:Y-m-d',
             'tanggal_tutup' => 'date:Y-m-d',
             'is_active' => 'boolean',

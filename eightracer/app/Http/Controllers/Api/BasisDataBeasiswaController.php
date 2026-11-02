@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BasisDataBeasiswa;
 use App\Services\Beasiswa\EligibilityEvaluator;
+use App\Services\School\Criteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class BasisDataBeasiswaController extends Controller
 {
@@ -31,6 +33,8 @@ class BasisDataBeasiswaController extends Controller
             'tanggal_buka' => 'nullable|date_format:Y-m-d',
             'tanggal_tutup' => ['nullable', 'date_format:Y-m-d', Rule::when($request->filled('tanggal_buka'), 'after_or_equal:tanggal_buka')],
             'link_pendaftaran' => 'nullable|url:http,https|max:500', 'is_active' => 'sometimes|boolean',
+            'durasi' => 'nullable|numeric|gt:0|max:100', 'satuan_durasi' => 'required_with:durasi|nullable|in:tahun,semester,bulan', 'periode_apply' => 'nullable|string|max:255',
+            'program_eligibilitas_id' => 'nullable|integer|exists:program_eligibilitas,id',
             'kriteria' => 'required|array|min:1|max:30',
             'kriteria.*.nama_kriteria' => 'required|string|max:255',
             'kriteria.*.tipe_kriteria' => ['required', Rule::in(EligibilityEvaluator::FIELDS)],
@@ -57,12 +61,16 @@ class BasisDataBeasiswaController extends Controller
     private function save(Request $request, BasisDataBeasiswa $beasiswa): BasisDataBeasiswa
     {
         $data = $request->validate($this->rules($request));
+        $data['kriteria'] = Criteria::validate($data['kriteria']);
+        if (collect($data['kriteria'])->contains(fn ($c) => in_array($c['tipe_kriteria'], ['status_eligible', 'skor_prestasi', 'bantuan_sosial_sesuai'], true))) {
+            abort_unless(! empty($data['program_eligibilitas_id']), 422, 'Pilih program eligibilitas untuk kriteria status.');
+        }
         foreach ($data['kriteria'] as $index => $criterion) {
             if ($criterion['tipe_kriteria'] !== 'status_eligible' && ! is_numeric($criterion['nilai_kriteria'])) {
-                throw \Illuminate\Validation\ValidationException::withMessages(["kriteria.$index.nilai_kriteria" => 'Nilai syarat harus berupa angka.']);
+                throw ValidationException::withMessages(["kriteria.$index.nilai_kriteria" => 'Nilai syarat harus berupa angka.']);
             }
             if ($criterion['tipe_kriteria'] === 'status_eligible' && ! in_array($criterion['operator'], ['=', '!='], true)) {
-                throw \Illuminate\Validation\ValidationException::withMessages(["kriteria.$index.operator" => 'Status hanya mendukung = dan !=.']);
+                throw ValidationException::withMessages(["kriteria.$index.operator" => 'Status hanya mendukung = dan !=.']);
             }
         }
 

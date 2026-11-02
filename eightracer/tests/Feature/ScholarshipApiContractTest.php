@@ -41,8 +41,8 @@ class ScholarshipApiContractTest extends TestCase
 
     public function test_bearer_token_login_me_and_logout_contract(): void
     {
-        $user = User::create(['username' => 'contract-admin', 'password' => 'contract-password', 'role' => 'administrator']);
-        $token = $this->postJson('/api/login', ['username' => $user->username, 'password' => 'contract-password'])
+        $user = User::forceCreate(['username' => 'contract-admin', 'email' => 'contract-admin@example.test', 'email_verified_at' => now(), 'password' => 'contract-password', 'role' => 'administrator']);
+        $token = $this->postJson('/api/login', ['email' => $user->email, 'password' => 'contract-password'])
             ->assertOk()->assertJsonPath('user.role', 'administrator')->json('token');
         $this->app['auth']->forgetGuards();
         $this->withToken($token)->getJson('/api/me')->assertOk()->assertJsonPath('id', $user->id);

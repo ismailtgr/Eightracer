@@ -22,18 +22,17 @@ Untuk perangkat/hosting lain, gunakan base URL server yang bisa dijangkau FE.
 
 Kirim `Accept: application/json` dan `Content-Type: application/json`.
 
-`POST /login` menerima `username` dan `password` sesuai akun yang sudah tersedia.
-Respons 200 berisi `message`, `user` (termasuk `id`, `username`, `role`), dan `token`.
+`POST /login` menerima `email` dan `password` sesuai akun yang sudah tersedia.
+Respons 200 berisi `message`, `user` (termasuk `id`, `email`, `full_name`, `role`), dan `token`.
 Tambahkan `Authorization: Bearer <token>` pada request berikutnya.
 `GET /me` untuk identitas saat ini; `POST /logout` mencabut token saat ini.
 Login admin mencabut token perangkat sebelumnya (maksimal 72 jam). Token siswa/guru berlaku maksimal 7 hari dan boleh beberapa perangkat. Token lama tanpa expiry ditolak.
-Pengaturan lengkap login Google, NISN, dan kebijakan sesi PRD adalah pekerjaan
-auth terpisah dan tidak boleh dianggap selesai oleh fitur beasiswa ini.
+Kontrak login Google, pendaftaran NISN+OTP, profil, serta modul sekolah terbaru ada di [prd-backend.md](prd-backend.md).
 
 Role aktual DB: `administrator` = Admin Sekolah, `siswa` = Siswa. Role `guru`
 tidak diberi akses mengelola beasiswa. Jangan memakai `admin_sekolah` sebagai
 nilai role API sebelum ada migrasi role yang disepakati tim.
-Pendaftaran publik ditutup (403) sampai verifikasi identitas sekolah tersedia; akun diprovisikan oleh sekolah.
+Pendaftaran siswa memakai master NISN+email sekolah dan verifikasi OTP. Pendaftaran admin tetap ditutup. SMTP harus tersedia untuk mengirim OTP.
 
 ## Daftar endpoint
 
@@ -78,7 +77,7 @@ Jenjang: `SMA`, `Kuliah`, `Keduanya`. Nilai tanggal `YYYY-MM-DD` atau null.
 Kriteria memakai tipe: `nilai_tka`, `rata_rapor`, `penghasilan_orang_tua`,
 `persentase_kehadiran`, `jumlah_prestasi`, `status_eligible`.
 Operator angka: `=`, `!=`, `>=`, `<=`, `>`, `<`; status hanya `=`/`!=`.
-`nilai_kriteria` dikirim sebagai string; bobot positif 0.01–999.99 atau null
+`nilai_kriteria` dikirim sebagai string; bobot positif 0.01â€“999.99 atau null
 (default penilaian 1). Nama hubungan pada respons katalog adalah
 `kriteria_kelayakan_beasiswa`.
 
@@ -105,7 +104,7 @@ Tampilkan teks AI sebagai teks biasa, bukan HTML. Validasi protokol tautan hanya
 http/https sebelum membuka tautan dari data historis.
 
 Checklist status: `terpenuhi`, `belum_terpenuhi`, `belum_diketahui`.
-Skor 0–100 adalah kecocokan syarat, bukan persentase peluang lolos. Semua kriteria
+Skor 0â€“100 adalah kecocokan syarat, bukan persentase peluang lolos. Semua kriteria
 adalah syarat wajib. Satu syarat gagal tidak dapat ditutup oleh skor tinggi.
 
 Review:
@@ -119,8 +118,8 @@ Publikasi mensyaratkan semua checklist diketahui dan minimal satu kandidat yang
 memenuhi seluruh syarat. Jika sumber berubah sejak generate, status 409 meminta
 generate ulang. Hasil lama tidak diedit diam-diam.
 
-Mapping label FE: `pending` → Draft, `disetujui` → Terpublikasi,
-`ditolak` → Ditolak. Jangan menampilkan draft kepada siswa atau membuat tombol
+Mapping label FE: `pending` â†’ Draft, `disetujui` â†’ Terpublikasi,
+`ditolak` â†’ Ditolak. Jangan menampilkan draft kepada siswa atau membuat tombol
 publish di halaman siswa; backend tetap memeriksa role.
 
 ## Bentuk respons siswa
@@ -176,7 +175,7 @@ atau sanctum/csrf-cookie. Key Gemini tidak pernah dikirim ke browser FE.
 
 ## Batas tahap implementasi
 
-Generate saat ini untuk siswa SMA dengan riwayat kelas aktif tingkat 10–12.
+Generate saat ini untuk siswa SMA dengan riwayat kelas aktif tingkat 10â€“12.
 Katalog Kuliah dapat dikelola, tetapi rekomendasi persiapan kuliah/alumni belum
 diaktifkan. Durasi/periode perkiraan katalog dan pola alumni berizin masih
 memerlukan schema/aturan tambahan. Endpoint ini tidak menjanjikan seluruh PRD
@@ -197,4 +196,4 @@ PHP portabel sudah dilengkapi bundle CA untuk verifikasi HTTPS. Tidak ada
 penonaktifan verifikasi sertifikat.
 
 
-Pengamanan backend, perubahan impor XLSX, dan kontrak reset password: [keamanan-deployment.md](keamanan-deployment.md). Pemulihan password tetap nonaktif sampai email terverifikasi, SMTP dan halaman reset FE tersedia.
+Pengamanan backend, perubahan impor XLSX, dan kontrak reset password: [keamanan-deployment.md](keamanan-deployment.md). Pemulihan memakai OTP enam digit sesuai [kontrak PRD terbaru](prd-backend.md); aktifkan SMTP dan EMAIL_OTP_ENABLED setelah pengiriman teruji.
