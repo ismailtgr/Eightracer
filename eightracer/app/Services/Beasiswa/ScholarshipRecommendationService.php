@@ -28,7 +28,7 @@ class ScholarshipRecommendationService
             $profile['program_statuses'][$p->id] = $result['status'] === 'Belum dinilai' ? null : $result['status'];
         }
         $catalog = BasisDataBeasiswa::with('kriteriaKelayakanBeasiswa')->where('is_active', true)
-            ->where(fn ($q) => $q->whereNull('tanggal_tutup')->orWhereDate('tanggal_tutup', '>=', today()))->orderBy('id')->get();
+            ->where(fn ($q) => $q->whereNull('tanggal_tutup')->orWhereDate('tanggal_tutup', '>=', ScholarshipSchedule::today()))->orderBy('id')->get();
 
         return [$profile, $catalog, hash('sha256', json_encode([$profile, $catalog->toArray(), $programs->toArray()], JSON_THROW_ON_ERROR))];
     }

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\BasisDataBeasiswa;
+use Illuminate\Support\Carbon;
 use Tests\Concerns\PrdFixtures;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -80,5 +81,44 @@ class ScholarshipApiContractTest extends TestCase
         $this->putJson('/api/beasiswa/'.$scholarship->id, [])->assertForbidden();
         $this->deleteJson('/api/beasiswa/'.$scholarship->id)->assertForbidden();
         $this->assertDatabaseHas('basis_data_beasiswa', ['id' => $scholarship->id, 'is_active' => true]);
+    }
+
+    public function test_program_and_registration_status_are_separate_read_only_fields(): void
+    {
+        Carbon::setTestNow('2026-11-04 03:00:00 UTC');
+        try {
+            $this->signIn($this->account('administrator'));
+            $payload = ['nama_beasiswa' => 'UJI September Oktober', 'jenjang' => 'SMA', 'periode_apply' => 'September–Oktober',
+                'tanggal_buka' => '2026-09-01', 'tanggal_tutup' => '2026-10-31',
+                'kriteria' => [['nama_kriteria' => 'Rapor', 'tipe_kriteria' => 'rata_rapor', 'operator' => '>=', 'nilai_kriteria' => '85']]];
+            $id = $this->postJson('/api/beasiswa', $payload)->assertCreated()->assertJsonPath('data.is_active', true)
+                ->assertJsonPath('data.status_program', 'aktif')->assertJsonPath('data.status_pendaftaran', 'ditutup')->json('data.id');
+            $this->getJson('/api/beasiswa')->assertOk()->assertJsonPath('data.0.status_pendaftaran', 'ditutup');
+            $this->putJson('/api/beasiswa/'.$id, $payload + ['status_pendaftaran' => 'dibuka'])->assertUnprocessable();
+            $this->deleteJson('/api/beasiswa/'.$id)->assertOk();
+            $this->getJson('/api/beasiswa/'.$id)->assertOk()->assertJsonPath('data.status_program', 'diarsipkan')
+                ->assertJsonPath('data.status_pendaftaran', 'tidak_tersedia');
+            $this->putJson('/api/beasiswa/'.$id, $payload + ['is_active' => true])->assertOk()
+                ->assertJsonPath('data.status_program', 'aktif')->assertJsonPath('data.status_pendaftaran', 'ditutup');
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
+    public function test_date_validation_checks_existing_dates_when_optional_update_fields_are_omitted(): void
+    {
+        $this->signIn($this->account('administrator'));
+        $payload = ['nama_beasiswa' => 'UJI Jadwal', 'jenjang' => 'SMA', 'tanggal_buka' => '2026-09-01', 'tanggal_tutup' => '2026-10-31',
+            'kriteria' => [['nama_kriteria' => 'Rapor', 'tipe_kriteria' => 'rata_rapor', 'operator' => '>=', 'nilai_kriteria' => '85']]];
+        $id = $this->postJson('/api/beasiswa', $payload)->assertCreated()->json('data.id');
+        $closeOnly = $payload;
+        unset($closeOnly['tanggal_buka']);
+        $closeOnly['tanggal_tutup'] = '2026-08-31';
+        $this->putJson('/api/beasiswa/'.$id, $closeOnly)->assertUnprocessable()->assertJsonValidationErrors('tanggal_tutup');
+        $openOnly = $payload;
+        unset($openOnly['tanggal_tutup']);
+        $openOnly['tanggal_buka'] = '2026-11-01';
+        $this->putJson('/api/beasiswa/'.$id, $openOnly)->assertUnprocessable()->assertJsonValidationErrors('tanggal_tutup');
+        $this->assertDatabaseHas('basis_data_beasiswa', ['id' => $id, 'tanggal_buka' => '2026-09-01', 'tanggal_tutup' => '2026-10-31']);
     }
 }

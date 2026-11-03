@@ -53,6 +53,7 @@ class BasisDataBeasiswaController extends Controller
             'tanggal_buka' => 'nullable|date_format:Y-m-d',
             'tanggal_tutup' => ['nullable', 'date_format:Y-m-d', Rule::when($request->filled('tanggal_buka'), 'after_or_equal:tanggal_buka')],
             'link_pendaftaran' => 'nullable|url:http,https|max:500', 'is_active' => 'sometimes|boolean',
+            'status_program' => 'prohibited', 'status_pendaftaran' => 'prohibited',
             'durasi' => 'nullable|numeric|gt:0|max:100', 'satuan_durasi' => 'required_with:durasi|nullable|in:tahun,semester,bulan', 'periode_apply' => 'nullable|string|max:255',
             'program_eligibilitas_id' => 'nullable|integer|exists:program_eligibilitas,id',
             'kriteria' => 'required|array|min:1|max:30',
@@ -81,6 +82,11 @@ class BasisDataBeasiswaController extends Controller
     private function save(Request $request, BasisDataBeasiswa $beasiswa): BasisDataBeasiswa
     {
         $data = $request->validate($this->rules($request));
+        $open = array_key_exists('tanggal_buka', $data) ? $data['tanggal_buka'] : $beasiswa->tanggal_buka?->format('Y-m-d');
+        $close = array_key_exists('tanggal_tutup', $data) ? $data['tanggal_tutup'] : $beasiswa->tanggal_tutup?->format('Y-m-d');
+        if ($open && $close && $close < $open) {
+            throw ValidationException::withMessages(['tanggal_tutup' => 'Tanggal tutup harus sama atau setelah tanggal buka.']);
+        }
         $data['kriteria'] = Criteria::validate($data['kriteria']);
         if (collect($data['kriteria'])->contains(fn ($c) => in_array($c['tipe_kriteria'], ['status_eligible', 'skor_prestasi', 'bantuan_sosial_sesuai'], true))) {
             abort_unless(! empty($data['program_eligibilitas_id']), 422, 'Pilih program eligibilitas untuk kriteria status.');

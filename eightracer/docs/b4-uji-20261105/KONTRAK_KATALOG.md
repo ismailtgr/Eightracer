@@ -2,6 +2,8 @@
 
 Revisi 4 November 2026. Path relatif terhadap base URL `/api`. Semua endpoint katalog memerlukan bearer token Admin atau Guru BK yang memiliki akses staf terverifikasi. Akun siswa mendapat 403. Tanpa token: 401. Header request: `Accept: application/json`; tambahkan `Content-Type: application/json` untuk body JSON.
 
+Respons katalog sekarang juga memuat `status_program` (`aktif|diarsipkan`) dan `status_pendaftaran` (`belum_dibuka|dibuka|ditutup|belum_ditentukan|tidak_tersedia`). Kedua field hanya dibaca dan ditolak bila dikirim pada POST/PUT. `is_active` tetap flag katalog, sedangkan jadwal dihitung BE dari tanggal penuh menurut WIB. Lihat `../STATUS_KATALOG_BEASISWA.md` untuk aturan dan contoh September–Oktober.
+
 ## Endpoint dan envelope
 
 | Method | Path | Input | Respons berhasil |
