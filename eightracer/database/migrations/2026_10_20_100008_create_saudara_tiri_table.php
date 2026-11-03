@@ -10,12 +10,8 @@ return new class extends Migration
     {
         Schema::create('saudara_tiri', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('siswa')->cascadeOnDelete();
-            $table->string('nama');
-            $table->string('jenis_kelamin')->nullable();
-            $table->string('hubungan')->nullable();
-            $table->integer('usia')->nullable();
-            $table->string('keterangan')->nullable();
+            $table->foreignId('siswa_id')->unique()->constrained('siswa')->cascadeOnDelete();
+            $table->string('status')->default('Tidak'); 
         });
     }
 

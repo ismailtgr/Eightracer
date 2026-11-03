@@ -13,14 +13,7 @@ return new class extends Migration
             $table->foreignId('siswa_id')->constrained('siswa')->cascadeOnDelete();
             $table->string('jenis_prestasi');
             $table->string('nama_kompetisi');
-            $table->string('bidang')->nullable();
             $table->string('tingkat')->nullable();
-            $table->string('peringkat')->nullable();
-            $table->decimal('bobot_persentase', 5, 2)->nullable();
-            $table->string('status_verifikasi')->default('pending');
-            $table->string('penyelenggara')->nullable();
-            $table->integer('tahun')->nullable();
-            $table->string('file_bukti_url', 500)->nullable();
         });
     }
 
