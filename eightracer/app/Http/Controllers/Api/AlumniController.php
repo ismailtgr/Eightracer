@@ -16,7 +16,7 @@ class AlumniController extends Controller
             'prodi'    => 'nullable|string|max:255',
             'jalur'    => 'nullable|string|max:100',
             'search'   => 'nullable|string|max:255',
-            'per_page' => 'nullable|integer|min:1|max:100',
+            'per_page' => 'nullable|integer|min:1|max:500',
         ]);
 
         $query = StudyTracer::query()
