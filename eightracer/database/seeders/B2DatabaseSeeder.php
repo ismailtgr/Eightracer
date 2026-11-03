@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Administrator;
 use App\Models\Siswa;
 use App\Models\MataPelajaran;
 use App\Models\NilaiRapor;
@@ -22,6 +23,23 @@ class B2DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // 0. Akun Pengguna & Profil Administrator
+        $adminUser = User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'password' => Hash::make('admin123'),
+                'role' => 'administrator',
+            ]
+        );
+
+        Administrator::updateOrCreate(
+            ['user_id' => $adminUser->id],
+            [
+                'nip' => '198001012005011001',
+                'nama_lengkap' => 'Administrator Sistem',
+            ]
+        );
+
         // 1. Akun Pengguna (Role Siswa)
         $user = User::updateOrCreate(
             ['username' => 'siswa_b2_test'],
