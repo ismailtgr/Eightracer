@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BulkImportController;
 use App\Http\Controllers\Api\FinancialDashboardController;
 use App\Http\Controllers\Api\ScholarshipChatController;
+use App\Http\Controllers\Api\ScholarshipSourceController;
 use App\Http\Controllers\Api\SchoolStaffController;
 use App\Http\Controllers\Api\StudentInitialProfileController;
 use App\Http\Middleware\RequireStudent;
@@ -15,6 +16,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
         Route::post('/chat-beasiswa', [ScholarshipChatController::class, 'mine'])->middleware('throttle:scholarship-chat');
     });
     Route::middleware('administrator')->group(function () {
+        Route::get('/riwayat-beasiswa-sumber', [ScholarshipSourceController::class, 'index']);
+        Route::get('/riwayat-beasiswa-sumber/ringkasan', [ScholarshipSourceController::class, 'summary']);
         Route::put('/school-staff/{user}/bk-access', [SchoolStaffController::class, 'save'])->whereNumber('user');
         Route::get('/imports/templates/{module}', [BulkImportController::class, 'template']);
         Route::post('/imports', [BulkImportController::class, 'preview'])->middleware('throttle:bulk-preview');

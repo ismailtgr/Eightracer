@@ -1,7 +1,9 @@
 # Hasil pemeriksaan — 4 November 2026
 
+Pembaruan audit data sekolah: skema utama dan uji sekarang 53 migrasi. Ada 574 catatan sumber KIP/beasiswa asli di **database utama**, terpisah dari fixture sintetis. Lihat `../AUDIT_DATA_BEASISWA_SEKOLAH_20261104.md` untuk API dan batas penafsirannya. Endpoint data asli memakai base URL utama tanpa `/b4-test`.
+
 - **Terpasang di proyek utama:** GET detail katalog `/api/beasiswa/{id}` beserta pengujian edit/arsip/aktifkan dan penolakan akses siswa.
-- **Database uji aktif:** `eightracer_b4_uji_20261105`, 52 migrasi, dua akun terverifikasi, tiga profil sintetis. Akun SQL runtime hanya memiliki SELECT/INSERT/UPDATE/DELETE pada database uji.
+- **Database uji aktif:** `eightracer_b4_uji_20261105`, 53 migrasi, dua akun terverifikasi, tiga profil sintetis. Akun SQL runtime hanya memiliki SELECT/INSERT/UPDATE/DELETE pada database uji.
 - **Base URL uji HTTPS:** `https://laptop-3qspir74.tail5f273f.ts.net/b4-test/api`.
 - Health check Tailscale: 200 dengan penanda `b4-test-20261105`. Dilakukan dari laptop BE; konektivitas laptop FE belum diverifikasi.
 - **29/29 pemeriksaan API langsung lokal** dan **29/29 melalui HTTPS Tailscale** berhasil: login Admin/Siswa terverifikasi, profil sendiri, penolakan data siswa lain dan katalog admin, detail, tambah/edit, validasi salah, arsip/aktifkan, dashboard UKT, preview, chat tanpa LLM, serta penolakan generate tanpa key (503). Token pemeriksaan sudah logout.

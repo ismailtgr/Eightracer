@@ -16,7 +16,7 @@ API lokal dan jalur HTTPS uji sudah berjalan. URL HTTPS utama merespons 401 tanp
 
 Health check: buka `https://laptop-3qspir74.tail5f273f.ts.net/b4-test/up`. Wajib HTTP 200 dan header `X-Eightracer-Environment: b4-test-20261105`. Header ini membantu membedakan lingkungan; bukan mekanisme autentikasi.
 
-52 migrasi sudah dijalankan pada database uji. Aplikasi uji memakai akun SQL khusus dengan SELECT/INSERT/UPDATE/DELETE hanya pada database uji. Tidak ada salinan data pribadi sekolah di database uji. Basis utama berisi 872 siswa dan 599 rekam penerimaan alumni saat diperiksa.
+53 migrasi sudah dijalankan pada database uji. Aplikasi uji memakai akun SQL khusus dengan SELECT/INSERT/UPDATE/DELETE hanya pada database uji. Tidak ada salinan data pribadi sekolah di database uji. Basis utama berisi 872 siswa dan 599 rekam penerimaan alumni saat diperiksa.
 
 ## Akun dan data yang boleh diuji
 
