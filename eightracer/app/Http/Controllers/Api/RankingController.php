@@ -14,8 +14,31 @@ class RankingController extends Controller
         $perPage = (int) $request->query('per_page', 10);
         $perPage = ($perPage > 0 && $perPage <= 100) ? $perPage : 10;
 
-        $ranking = HasilEligibilitas::with(['siswa.riwayatKelas.kelas'])
-            ->orderBy('peringkat', 'asc')
+        $query = HasilEligibilitas::with(['siswa.riwayatKelas.kelas']);
+
+        if ($request->filled('search')) {
+            $search = $request->query('search');
+            $query->whereHas('siswa', function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', '%' . $search . '%')
+                  ->orWhere('nisn', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('kelas')) {
+            $kelas = $request->query('kelas');
+            $query->whereHas('siswa.riwayatKelas.kelas', function ($q) use ($kelas) {
+                $q->where('nama_kelas', 'like', '%' . $kelas . '%');
+            });
+        }
+
+        if ($request->filled('jurusan_id')) {
+            $jurusanId = $request->query('jurusan_id');
+            $query->whereHas('siswa.riwayatKelas.kelas', function ($q) use ($jurusanId) {
+                $q->where('id', $jurusanId);
+            });
+        }
+
+        $ranking = $query->orderBy('peringkat', 'asc')
             ->orderByDesc('total_skor_akhir')
             ->paginate($perPage);
 
