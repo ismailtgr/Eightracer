@@ -62,6 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/v1/admin/engine/kalkulasi-eligibilitas', [EligibilitasEngineController::class, 'kalkulasiOtomatis']);
     Route::get('/v1/siswa/benchmark-alumni', [BenchmarkAlumniController::class, 'compareWithAlumni']);
     Route::get('/v1/ranking', [RankingController::class, 'getRankingList']);
+    Route::get('/v1/siswa/ranking/detail', [RankingController::class, 'getDetailSkorSiswa']);
+    Route::get('/v1/admin/ranking/{siswaId}/detail', [RankingController::class, 'getDetailSkorSiswa']);
 
     Route::prefix('alumni')->group(function () {
         Route::get('/', [AlumniController::class, 'index']);
