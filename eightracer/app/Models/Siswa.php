@@ -158,6 +158,21 @@ class Siswa extends Model
         return $this->hasMany(AlumniProgress::class, 'siswa_id');
     }
 
+    public function minatProdi(): HasMany
+    {
+        return $this->hasMany(MinatProdiSiswa::class, 'siswa_id')->orderBy('prioritas');
+    }
+
+    public function skRekomendasiMapel(): HasOne
+    {
+        return $this->hasOne(SkRekomendasiMapel::class, 'siswa_id');
+    }
+
+    public function catatanBimbingan(): HasMany
+    {
+        return $this->hasMany(CatatanBimbingan::class, 'siswa_id');
+    }
+
     public function rekomendasiBeasiswa(): HasMany
     {
         return $this->hasMany(RekomendasiBeasiswa::class, 'siswa_id');
