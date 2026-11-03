@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\AkademikController;
 use App\Http\Controllers\Api\BobotAdminController;
 use App\Http\Controllers\Api\EligibilitasEngineController;
 use App\Http\Controllers\Api\BenchmarkAlumniController;
+use App\Http\Controllers\Api\RankingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PerguruanTinggiController;
@@ -60,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/v1/admin/bobot', [BobotAdminController::class, 'updateBobot']);
     Route::post('/v1/admin/engine/kalkulasi-eligibilitas', [EligibilitasEngineController::class, 'kalkulasiOtomatis']);
     Route::get('/v1/siswa/benchmark-alumni', [BenchmarkAlumniController::class, 'compareWithAlumni']);
+    Route::get('/v1/ranking', [RankingController::class, 'getRankingList']);
 
     Route::prefix('alumni')->group(function () {
         Route::get('/', [AlumniController::class, 'index']);
