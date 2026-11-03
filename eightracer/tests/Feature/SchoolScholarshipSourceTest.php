@@ -95,4 +95,22 @@ class SchoolScholarshipSourceTest extends TestCase
         $this->getJson('/api/riwayat-beasiswa-sumber/ringkasan')->assertOk()->assertJsonPath('data.jumlah_catatan', 1);
         $this->getJson('/api/riwayat-beasiswa-sumber?jenis_keterangan=unknown')->assertUnprocessable();
     }
+
+    public function test_search_finds_source_and_related_fields_and_combines_with_year_filter(): void
+    {
+        $s = $this->student(null, ['tahun_lulus' => 2026, 'nama_lengkap' => 'Nama Sumber Unik']);
+        $t = $this->admission($s);
+        $first = $this->row(['siswa_id' => $s->id, 'study_tracer_id' => $t->id]);
+        app(ScholarshipSourceImporter::class)->import([$first, $this->row(['source_row' => 12, 'nilai_sumber' => 'BEBAS IPI', 'kampus_sumber' => 'Kampus Pembanding', 'prodi_sumber' => 'Ekonomi'])], [$first['source_file_id'] => $first['source_sha256']]);
+        $this->signIn($this->account('administrator'));
+        foreach (['Nama Sumber Unik', 'Universitas Uji', 'Informatika', 'TELADAN', 'Kampus Pembanding'] as $query) {
+            $this->getJson('/api/riwayat-beasiswa-sumber?search='.urlencode($query))->assertOk()->assertJsonPath('total', 1);
+        }
+        $this->getJson('/api/riwayat-beasiswa-sumber?search=TELADAN&tahun_lulus=2025')->assertOk()->assertJsonPath('total', 0);
+        $this->getJson('/api/riwayat-beasiswa-sumber?search=TELADAN&include_summary=1')->assertOk()
+            ->assertJsonPath('total', 1)->assertJsonPath('school_summary.jumlah_catatan', 2)
+            ->assertJsonPath('school_summary.terhubung_siswa', 1)->assertJsonPath('school_summary.terhubung_penerimaan_pt', 1);
+        $this->getJson('/api/riwayat-beasiswa-sumber?search='.urlencode("' OR 1=1 --"))->assertOk()->assertJsonPath('total', 0);
+        $this->getJson('/api/riwayat-beasiswa-sumber?search='.str_repeat('a', 101))->assertUnprocessable();
+    }
 }

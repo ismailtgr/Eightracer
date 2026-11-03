@@ -12,7 +12,7 @@ class ScholarshipSourceController extends Controller
 
     public function index(Request $r)
     {
-        $d = $r->validate(['tahun_lulus' => 'nullable|integer|between:2024,2026', 'siswa_id' => 'nullable|integer|exists:siswa,id',
+        $d = $r->validate(['include_summary' => 'sometimes|boolean', 'search' => 'nullable|string|max:100', 'tahun_lulus' => 'nullable|integer|between:2024,2026', 'siswa_id' => 'nullable|integer|exists:siswa,id',
             'study_tracer_id' => 'nullable|integer|exists:study_tracer,id', 'per_page' => 'sometimes|integer|between:1,100',
             'jenis_keterangan' => 'nullable|in:tanpa_keterangan,indikator_kip,kode_sumber,referensi_kip,pembebasan_biaya,referensi_beasiswa,keterangan_belum_jelas']);
         $q = SchoolScholarshipObservation::with(['siswa:id,nama_lengkap,tahun_lulus',
@@ -22,7 +22,15 @@ class ScholarshipSourceController extends Controller
                 $q->where($field, $d[$field]);
             }
         }
-        $page = $q->orderBy('id')->paginate($r->integer('per_page', 20));
+        if ($r->filled('search')) {
+            $pattern = '%'.$d['search'].'%';
+            $q->where(fn ($filter) => $filter->where('nilai_sumber', 'like', $pattern)
+                ->orWhere('kampus_sumber', 'like', $pattern)->orWhere('prodi_sumber', 'like', $pattern)
+                ->orWhereHas('siswa', fn ($student) => $student->where('nama_lengkap', 'like', $pattern))
+                ->orWhereHas('studyTracer', fn ($admission) => $admission->where('program_studi', 'like', $pattern)
+                    ->orWhereHas('perguruanTinggi', fn ($campus) => $campus->where('nama_pt', 'like', $pattern))));
+        }
+        $page = $q->orderBy('id')->paginate($r->integer('per_page', 20))->appends($d);
         $page->through(function ($row) {
             $value = $row->toArray();
             $value['sumber'] = ['url' => 'https://docs.google.com/spreadsheets/d/'.$row->source_file_id.'/edit',
@@ -33,15 +41,20 @@ class ScholarshipSourceController extends Controller
             return $value;
         });
 
-        return response()->json($page);
+        return response()->json($page->toArray() + ($r->boolean('include_summary') ? ['school_summary' => $this->counts()] : []));
+    }
+
+    private function counts(): array
+    {
+        return ['jumlah_catatan' => SchoolScholarshipObservation::count(),
+            'terhubung_siswa' => SchoolScholarshipObservation::whereNotNull('siswa_id')->count(),
+            'terhubung_penerimaan_pt' => SchoolScholarshipObservation::whereNotNull('study_tracer_id')->count()];
     }
 
     public function summary()
     {
         return response()->json(['data' => [
-            'jumlah_catatan' => SchoolScholarshipObservation::count(),
-            'terhubung_siswa' => SchoolScholarshipObservation::whereNotNull('siswa_id')->count(),
-            'terhubung_penerimaan_pt' => SchoolScholarshipObservation::whereNotNull('study_tracer_id')->count(),
+            ...$this->counts(),
             'per_angkatan_jenis' => SchoolScholarshipObservation::selectRaw('tahun_lulus, jenis_keterangan, COUNT(*) as jumlah')
                 ->groupBy('tahun_lulus', 'jenis_keterangan')->orderBy('tahun_lulus')->orderBy('jenis_keterangan')->get(),
             'referensi' => SchoolScholarshipObservation::selectRaw('tahun_lulus, jenis_keterangan, nilai_sumber, COUNT(*) as jumlah')
