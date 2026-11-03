@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+$php84 = __DIR__ . '/eightracer/.tools/php84/php.exe';
+$realArtisan = __DIR__ . '/eightracer/artisan';
+$php = file_exists($php84) ? $php84 : PHP_BINARY;
+$args = array_map('escapeshellarg', array_slice($argv, 1));
+passthru(escapeshellarg($php) . ' ' . escapeshellarg($realArtisan) . ' ' . implode(' ', $args), $exitCode);
+exit($exitCode);
+

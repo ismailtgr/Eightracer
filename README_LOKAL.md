@@ -1,5 +1,7 @@
 # Eightracer — proyek utama
 
+**Arahan terbaru: gunakan tampilan dan data dummy FE bawaan tim terlebih dahulu.** Data asli hanya ditampilkan pada bagian yang nanti diminta pengguna. Detail terbaru: `frontend/docs/PRATINJAU_DUMMY.md`.
+
 Semua pekerjaan kode yang aktif kini berada di folder ini:
 
 | Bagian | Lokasi |
@@ -11,7 +13,7 @@ Semua pekerjaan kode yang aktif kini berada di folder ini:
 
 Buka **Eightracer.code-workspace** di Antigravity untuk melihat backend dan frontend. Kedua repo tetap terpisah, masing-masing mempertahankan remote dan riwayatnya.
 
-Web lokal: **http://127.0.0.1:3000/admin**. Pratinjau dapat dibuka tanpa login; klik **Akses data asli** untuk akun sekolah. Kata sandi sementara berada di `.local/akun-uji/Akun_Sementara.txt`. Siswa uji tidak terhubung ke siswa asli.
+Web lokal: **http://127.0.0.1:3000/admin**. Pratinjau langsung memakai dummy asli FE tanpa login. Tambah/edit/hapus/impor bawaan prototype mengubah state browser dan kembali ke dataset awal saat dimuat ulang. Akun backend tetap tersedia di `.local/akun-uji/Akun_Sementara.txt` untuk pengujian API terpisah.
 
 Untuk menyalakan kembali dari PowerShell di folder ini, jalankan `./Start_Eightracer.ps1`. MySQL XAMPP port 3306 harus berjalan. FE memakai Node.js yang terpasang di laptop; backend memakai PHP 8.4 dalam proyek. Email pemulihan lokal ditangkap Mailpit dan tidak dikirim ke internet.
 
@@ -19,4 +21,6 @@ Pemasangan B4 sudah dilakukan: migration 000004 batch 5, 62 tabel; 872 profil, 5
 
 Rapor, katalog/kriteria beasiswa dan UKT/IPK masih menunggu data nyata. ML sudah terpasang tetapi belum boleh diklaim akurat atau menghasilkan peluang lolos; belum tersedia data untuk evaluasi. Google Login dan email produksi memerlukan kredensial resmi. Detail ada di `eightracer/docs/STATUS_PEMASANGAN_B4.md`.
 
-Commit FE terbaru adalah e820c63, melanjutkan e45fc9e. Perubahan BE yang dipasang saat ini terlihat di **Changes**, tetapi belum di-commit/push karena alat tidak mendapat izin menulis metadata `.git` backend. Tidak ada `.env`, token, password, database sekolah atau private key yang ditambahkan ke Git.
+Tampilan **dan dummy** tim dipulihkan dari acuan branch b4 (`b693384`) pada branch FE **codex/fe-dummy-awal**. Riwayat integrasi API sebelumnya dipertahankan pada commit `0840237` dan sebelumnya. Halaman prototype aktif menggunakan source asli tim; sumber data asli disambungkan per bagian setelah diminta.
+
+Repo utama berada di **C:/eightracer**; kode Laravel ada di subfolder `eightracer/`. Saat diperiksa ulang, backend B4 sudah tercatat dalam commit **237f8d5**. Repo FE terpisah di `frontend/` dan diabaikan oleh repo utama. Tidak ada `.env`, token, password, database sekolah atau private key yang ditambahkan ke Git. Status push diperiksa terpisah dari status pemasangan lokal.

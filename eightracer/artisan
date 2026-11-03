@@ -1,6 +1,15 @@
 #!/usr/bin/env php
 <?php
 
+if (PHP_VERSION_ID < 80401) {
+    $php84 = __DIR__ . '/.tools/php84/php.exe';
+    if (file_exists($php84)) {
+        $args = array_map('escapeshellarg', array_slice($argv, 1));
+        passthru(escapeshellarg($php84) . ' ' . escapeshellarg(__FILE__) . ' ' . implode(' ', $args), $exitCode);
+        exit($exitCode);
+    }
+}
+
 use Illuminate\Foundation\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 
