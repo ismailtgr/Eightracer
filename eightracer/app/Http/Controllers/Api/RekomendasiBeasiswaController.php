@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\RekomendasiBeasiswa;
 use App\Models\Siswa;
+use App\Services\Auth\SchoolAccess;
 use App\Services\Beasiswa\ScholarshipRecommendationService;
 use App\Services\School\Analytics;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class RekomendasiBeasiswaController extends Controller
 {
     private function admin(Request $request): void
     {
-        abort_unless($request->user()->role === 'administrator', 403);
+        abort_unless(SchoolAccess::isStaff($request->user()), 403);
     }
 
     public function generate(Request $request, Siswa $siswa, ScholarshipRecommendationService $service)
@@ -24,6 +25,16 @@ class RekomendasiBeasiswaController extends Controller
         $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah']);
 
         return response()->json(['data' => $service->generate($siswa, $input['target_jenjang'] ?? null)], 201);
+    }
+
+    public function preview(Request $request, Siswa $siswa, ScholarshipRecommendationService $service)
+    {
+        $this->admin($request);
+        $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah']);
+        $data = $service->preview($siswa, $input['target_jenjang'] ?? null);
+        unset($data['source_fingerprint']);
+
+        return response()->json(['data' => $data]);
     }
 
     public function index(Request $request)
@@ -68,6 +79,7 @@ class RekomendasiBeasiswaController extends Controller
             'beasiswa' => $row->rekomendasiBeasiswaDetail->map(fn ($detail) => [
                 'pola_alumni' => app(Analytics::class)->published()->where('beasiswa_id', $detail->beasiswa_id)->values(), 'beasiswa_id' => $detail->beasiswa_id, 'informasi' => $detail->beasiswa_snapshot,
                 'skor_kecocokan' => $detail->skor_kecocokan, 'memenuhi_syarat' => $detail->is_recommended,
+                'pemeringkatan_ml' => isset($detail->evaluasi_kriteria['pemeringkatan_ml']) ? array_intersect_key($detail->evaluasi_kriteria['pemeringkatan_ml'], array_flip(['metode', 'status', 'skor_kemiripan', 'peringkat'])) : null,
                 'checklist' => $detail->evaluasi_kriteria['checklist'] ?? [],
                 'alasan' => $detail->alasan_rekomendasi, 'persiapan' => $detail->persiapan,
             ]),

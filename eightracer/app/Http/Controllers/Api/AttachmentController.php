@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PrivateAttachment;
 use App\Models\Siswa;
+use App\Services\Auth\SchoolAccess;
 use App\Services\Security\ClamAvScanner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +31,7 @@ class AttachmentController extends Controller
     public function download(Request $r, int $id)
     {
         $row = PrivateAttachment::findOrFail($id);
-        abort_unless($r->user()->role === 'administrator' || ($r->user()->role === 'siswa' && $r->user()->siswa?->id === $row->siswa_id), 403);
+        abort_unless(SchoolAccess::isStaff($r->user()) || ($r->user()->role === 'siswa' && $r->user()->siswa?->id === $row->siswa_id), 403);
 
         return Storage::disk('local')->download($row->path, 'dokumen-'.$row->id.'.'.pathinfo($row->path, PATHINFO_EXTENSION), ['Content-Type' => $row->mime, 'X-Content-Type-Options' => 'nosniff', 'Cache-Control' => 'no-store, private']);
     }

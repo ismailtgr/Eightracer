@@ -1,0 +1,417 @@
+{
+  "version": "2026-11-02",
+  "source": "Current MySQL schema, Laravel code, PRD and verified import reports",
+  "summary": {
+    "checks": 77,
+    "passed": 77,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "check": "Enam diagram terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "58 tabel, 475 kolom, 66 FK sesuai snapshot",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ID use case unik dan lengkap",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Semua tabel pada skenario benar-benar tersedia",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Semua use case berada pada satu diagram",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "27 baris skenario terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ERD memiliki setiap tabel tepat sekali",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Semua kolom ERD tergambar",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Setiap FK ERD sesuai database",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Kardinalitas sesuai NULL dan keunikan FK",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Class memakai 48 model aktual",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Class memakai 14 layanan aktual",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Metode class berasal dari kode",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Case: ID node unik",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Case: semua konektor terhubung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Case: jalur bersiku",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Case: objek dalam kanvas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Case: kotak tidak saling menumpuk",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Use Case: konektor tidak menembus objek lain",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Use Scenario: ID node unik",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Scenario: semua konektor terhubung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Scenario: jalur bersiku",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Scenario: objek dalam kanvas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Use Scenario: kotak tidak saling menumpuk",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Use Scenario: konektor tidak menembus objek lain",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Activity: ID node unik",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: semua konektor terhubung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: jalur bersiku",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: objek dalam kanvas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: kotak tidak saling menumpuk",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Activity: konektor tidak menembus objek lain",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Sequence: ID node unik",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: semua konektor terhubung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: jalur bersiku",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: objek dalam kanvas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: kotak tidak saling menumpuk",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Sequence: konektor tidak menembus objek lain",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "ERD: ID node unik",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ERD: semua konektor terhubung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ERD: jalur bersiku",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ERD: objek dalam kanvas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ERD: kotak tidak saling menumpuk",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "ERD: konektor tidak menembus objek lain",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Class: ID node unik",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Class: semua konektor terhubung",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Class: jalur bersiku",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Class: objek dalam kanvas",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Class: kotak tidak saling menumpuk",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Class: konektor tidak menembus objek lain",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "Activity: semua langkah dapat dicapai",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: semua cabang dapat selesai",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: action tidak menjadi join AND tak sengaja",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Activity: seluruh keluaran keputusan berlabel",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: 91 pesan bernomor berurutan",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: autentikasi dan batch di luar loop request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Sequence: operasi terlindungi dalam operand token sah",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Teks tidak terpotong pada render SVG",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "draw.io: enam halaman valid",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: referensi sel 01 Use Case — Eightracer terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: B&W 01 Use Case — Eightracer terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: referensi sel 02 Use Scenario — seluruh skenario terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: B&W 02 Use Scenario — seluruh skenario terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: referensi sel 03 Activity — alur sistem terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: B&W 03 Activity — alur sistem terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: referensi sel 04 Sequence — interaksi backend terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: B&W 04 Sequence — interaksi backend terpadu",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: referensi sel 05 ERD — struktur fisik database terbaru",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: B&W 05 ERD — struktur fisik database terbaru",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: referensi sel 06 Class — model dan layanan Laravel terbaru",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "draw.io: B&W 06 Class — model dan layanan Laravel terbaru",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "EA: integritas SQLite",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "EA: isi native lengkap",
+      "passed": true,
+      "detail": {
+        "diagrams": 6,
+        "usecases": 27,
+        "scenarios": 54,
+        "attributes": 885,
+        "operations": 151,
+        "connectors": 345
+      }
+    },
+    {
+      "check": "EA: konektor tanpa objek yatim",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "EA: warna objek B&W",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "EA: 66 FK ERD",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Tidak memuat pola secret",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Tidak memakai label meragukan untuk data sekolah",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "native_ea_stats": {
+    "diagrams": 6,
+    "usecases": 27,
+    "scenarios": 54,
+    "attributes": 885,
+    "operations": 151,
+    "connectors": 345
+  },
+  "native_ea_opened": true,
+  "limits": [
+    "Diagram menjelaskan backend dan struktur saat diperiksa; bukan hasil UAT frontend/deployment.",
+    "Isi baris murid, sertifikat dan rahasia konfigurasi tidak diekspor.",
+    "Preview SVG diverifikasi; EA dapat mengikuti pengaturan tampilan aplikasi lokal."
+  ]
+}

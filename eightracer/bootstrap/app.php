@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
+            \App\Http\Middleware\TrustedProxies::class,
             \App\Http\Middleware\RequireApiJson::class,
             \App\Http\Middleware\ApiSecurity::class,
             \App\Http\Middleware\ValidateApiText::class,

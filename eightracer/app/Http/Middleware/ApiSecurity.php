@@ -6,7 +6,7 @@ class ApiSecurity
 {
     public function handle(Request $request, Closure $next)
     {
-        if (app()->isProduction()) {
+        if (app()->isProduction() || config('security.require_https')) {
             abort_unless($request->isSecure(), 403, 'Koneksi HTTPS diperlukan.');
         }
         $response = $next($request);

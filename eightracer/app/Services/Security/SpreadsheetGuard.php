@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Security;
 
 use App\Support\PlainText;
@@ -10,7 +11,7 @@ class SpreadsheetGuard
 {
     public function __construct(private ClamAvScanner $scanner) {}
 
-    public function inspect(UploadedFile $file): void
+    public function inspect(UploadedFile $file, int $sheetLimit = 10): void
     {
         // Current import contract uses named worksheets. CSV/XLS are intentionally closed.
         if (strtolower($file->getClientOriginalExtension()) !== 'xlsx' || $file->getSize() > config('security.upload_bytes')) {
@@ -48,7 +49,9 @@ class SpreadsheetGuard
                 $reader->XML($xml, null, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
                 $reader->setParserProperty(\XMLReader::SUBST_ENTITIES, false);
                 $worksheet = preg_match('#^xl/worksheets/[^/]+\.xml$#', $name);
-                if ($worksheet && ++$sheets > 10) { $this->reject(); }
+                if ($worksheet && ++$sheets > min(50, max(1, $sheetLimit))) {
+                    $this->reject();
+                }
                 $previousErrors = libxml_use_internal_errors(true);
                 try {
                     while ($reader->read()) {
@@ -61,11 +64,15 @@ class SpreadsheetGuard
                             }
                             if ($worksheet && $reader->localName === 'c') {
                                 $ref = $reader->getAttribute('r');
-                                if (++$cells > 50000 || ! is_string($ref) || ! $this->boundedReference($ref)) { $this->reject(); }
+                                if (++$cells > 50000 || ! is_string($ref) || ! $this->boundedReference($ref)) {
+                                    $this->reject();
+                                }
                             }
                             if ($worksheet && $reader->localName === 'dimension') {
                                 foreach (explode(':', (string) $reader->getAttribute('ref')) as $ref) {
-                                    if (! $this->boundedReference($ref)) { $this->reject(); }
+                                    if (! $this->boundedReference($ref)) {
+                                        $this->reject();
+                                    }
                                 }
                             }
                         }
@@ -73,7 +80,9 @@ class SpreadsheetGuard
                             $this->reject();
                         }
                     }
-                    if (libxml_get_errors()) { $this->reject(); }
+                    if (libxml_get_errors()) {
+                        $this->reject();
+                    }
                 } finally {
                     $reader->close();
                     libxml_clear_errors();
@@ -92,9 +101,14 @@ class SpreadsheetGuard
 
     private function boundedReference(string $ref): bool
     {
-        if (! preg_match('/^([A-Z]{1,2})([1-9][0-9]{0,3})$/D', $ref, $matches)) { return false; }
+        if (! preg_match('/^([A-Z]{1,2})([1-9][0-9]{0,3})$/D', $ref, $matches)) {
+            return false;
+        }
         $column = 0;
-        foreach (str_split($matches[1]) as $char) { $column = $column * 26 + ord($char) - 64; }
+        foreach (str_split($matches[1]) as $char) {
+            $column = $column * 26 + ord($char) - 64;
+        }
+
         return $column <= 52 && (int) $matches[2] <= config('security.import_max_rows') + 100;
     }
 }

@@ -1,0 +1,16 @@
+@baseUrl = https://BACKEND-PRIVAT/api
+@adminToken = ISI_DI_LOKAL_JANGAN_COMMIT_TOKEN_ASLI
+@siswaId = 1
+
+### Preview lokal: admin, tanpa Gemini dan tanpa menulis draft
+GET {{baseUrl}}/siswa/{{siswaId}}/rekomendasi-beasiswa/preview?target_jenjang=SMA
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### Generate: memakai ranking lokal, lalu penjelasan Gemini dan draft pending
+POST {{baseUrl}}/siswa/{{siswaId}}/rekomendasi-beasiswa/generate
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+Content-Type: application/json
+
+{"target_jenjang":"SMA"}

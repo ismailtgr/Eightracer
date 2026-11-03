@@ -1,0 +1,92 @@
+@baseUrl = http://127.0.0.1:8000/api
+@staffToken = REPLACE_LOCALLY_DO_NOT_COMMIT_TOKEN
+@studentToken = REPLACE_LOCALLY_DO_NOT_COMMIT_TOKEN
+@studentId = 1
+@scholarshipId = 1
+@batchId = REPLACE_WITH_BATCH_UUID
+@commitDigest = REPLACE_WITH_PREVIEW_DIGEST
+@submissionId = REPLACE_WITH_SUBMISSION_UUID
+
+### Login NISN (isi password hanya lokal, jangan commit)
+POST {{baseUrl}}/login
+Accept: application/json
+Content-Type: application/json
+
+{"nisn":"0012345678","password":"REPLACE_LOCALLY"}
+
+### Akun dan hak aktual dari server
+GET {{baseUrl}}/me
+Authorization: Bearer {{studentToken}}
+Accept: application/json
+
+### Profil milik pemilik token
+GET {{baseUrl}}/profil-siswa/saya
+Authorization: Bearer {{studentToken}}
+Accept: application/json
+
+### Usulan profil, belum langsung menjadi master
+POST {{baseUrl}}/profil-siswa/saya/submission
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+Accept: application/json
+
+{"nama_panggilan":"Contoh"}
+
+### Review profil
+PATCH {{baseUrl}}/profile-submissions/{{submissionId}}/review
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+Accept: application/json
+
+{"status":"approved"}
+
+### Template impor nilai (modul lain: students,assessments,alumni,financial,aid,economy)
+GET {{baseUrl}}/imports/templates/grades
+Authorization: Bearer {{staffToken}}
+
+### Preview impor: buat multipart di FE/Postman memakai file dan field dari b4-impor.md
+### Jangan isi file mentah atau data sekolah ke berkas HTTP ini.
+
+### Commit hanya setelah meninjau preview
+POST {{baseUrl}}/imports/{{batchId}}/commit
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+Accept: application/json
+
+{"commit_digest":"{{commitDigest}}"}
+
+### Status batch milik sendiri
+GET {{baseUrl}}/imports/{{batchId}}
+Authorization: Bearer {{staffToken}}
+Accept: application/json
+
+### UKT di bawah Rp2 juta
+GET {{baseUrl}}/dashboard/ukt-ipk?ukt_lt=2000000
+Authorization: Bearer {{staffToken}}
+Accept: application/json
+
+### Buku PDF agregat (download blob di FE)
+GET {{baseUrl}}/buku-alumni/pdf?tahun_lulus=2024
+Authorization: Bearer {{staffToken}}
+Accept: application/pdf
+
+### Pratinjau ranking ML, tidak memanggil Gemini dan tidak membuat draft
+GET {{baseUrl}}/siswa/{{studentId}}/rekomendasi-beasiswa/preview?target_jenjang=Kuliah
+Authorization: Bearer {{staffToken}}
+Accept: application/json
+
+### Chat milik siswa sendiri
+POST {{baseUrl}}/chat-beasiswa
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+Accept: application/json
+
+{"message":"Apakah saya memenuhi syarat program ini?","beasiswa_id":{{scholarshipId}},"target_jenjang":"Kuliah"}
+
+### Chat staff untuk profil yang dikelola
+POST {{baseUrl}}/siswa/{{studentId}}/chat-beasiswa
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+Accept: application/json
+
+{"message":"Apa data yang perlu dilengkapi untuk program ini?","beasiswa_id":{{scholarshipId}},"target_jenjang":"Kuliah"}

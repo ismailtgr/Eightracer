@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CatatanKarakter;
-use App\Models\NilaiRapor;
 use App\Models\PrestasiMurid;
 use App\Models\RekapPresensi;
 use App\Models\RiwayatOrganisasi;
 use App\Models\SaudaraTiri;
 use App\Models\Siswa;
+use App\Services\School\SchoolRecordWriter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,15 +23,7 @@ class StudentSupportController extends Controller
 
     public function grades(Request $r, Siswa $siswa)
     {
-        $d = $r->validate(['semester' => 'required|integer|between:1,5', 'nilai' => 'required|array|min:1|max:100', 'nilai.*' => 'required|array:mata_pelajaran_id,nilai_akhir',
-            'nilai.*.mata_pelajaran_id' => 'required|integer|distinct|exists:mata_pelajaran,id', 'nilai.*.nilai_akhir' => 'required|numeric|between:0,100']);
-        DB::transaction(function () use ($d, $siswa) {
-            foreach ($d['nilai'] as $row) {
-                NilaiRapor::updateOrCreate(['siswa_id' => $siswa->id, 'semester' => $d['semester'], 'mata_pelajaran_id' => $row['mata_pelajaran_id']], ['nilai_akhir' => $row['nilai_akhir']]);
-            }
-        });
-
-        return response()->json(['data' => $siswa->nilaiRapor()->where('semester', $d['semester'])->get()]);
+        return response()->json(['data' => app(SchoolRecordWriter::class)->saveGrades($r, $siswa)]);
     }
 
     public function attendance(Request $r, Siswa $siswa)

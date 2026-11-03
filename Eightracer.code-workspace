@@ -1,0 +1,11 @@
+{
+  "folders": [
+    { "name": "Backend utama", "path": "." },
+    { "name": "Frontend B4", "path": "frontend" }
+  ],
+  "settings": {
+    "files.exclude": { "**/node_modules": true, "**/vendor": true, "**/.next": true, "**/.local": true, "**/.tools": true },
+    "git.autoRepositoryDetection": "subFolders",
+    "window.title": "Eightracer — ${activeEditorShort}"
+  }
+}

@@ -26,6 +26,7 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::get('/rekomendasi-beasiswa/saya', [RekomendasiBeasiswaController::class, 'mine']);
     Route::get('/rekomendasi-beasiswa', [RekomendasiBeasiswaController::class, 'index']);
     Route::post('/siswa/{siswa}/rekomendasi-beasiswa/generate', [RekomendasiBeasiswaController::class, 'generate'])->middleware('throttle:5,1');
+    Route::get('/siswa/{siswa}/rekomendasi-beasiswa/preview', [RekomendasiBeasiswaController::class, 'preview'])->middleware(['administrator', 'throttle:10,1']);
     Route::patch('/rekomendasi-beasiswa/{rekomendasi}/review', [RekomendasiBeasiswaController::class, 'review']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
@@ -66,3 +67,5 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
 });
 
 require __DIR__.'/prd.php';
+
+require __DIR__.'/b4.php';

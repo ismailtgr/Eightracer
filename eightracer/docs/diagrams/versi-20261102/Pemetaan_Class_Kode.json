@@ -1,0 +1,1307 @@
+{
+  "models": [
+    {
+      "class": "App\\Models\\Administrator",
+      "name": "Administrator",
+      "table": "administrator",
+      "methods": [
+        {
+          "name": "user",
+          "signature": "user() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 20
+        }
+      ],
+      "path": "app/Models/Administrator.php"
+    },
+    {
+      "class": "App\\Models\\AlumniProgress",
+      "name": "AlumniProgress",
+      "table": "alumni_progress",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 33
+        },
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 38
+        },
+        {
+          "name": "alumniProgressBeasiswa",
+          "signature": "alumniProgressBeasiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 43
+        },
+        {
+          "name": "beasiswa",
+          "signature": "beasiswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 48
+        }
+      ],
+      "path": "app/Models/AlumniProgress.php"
+    },
+    {
+      "class": "App\\Models\\AlumniProgressBeasiswa",
+      "name": "AlumniProgressBeasiswa",
+      "table": "alumni_progress_beasiswa",
+      "methods": [
+        {
+          "name": "alumniProgress",
+          "signature": "alumniProgress()",
+          "line": 20
+        },
+        {
+          "name": "beasiswa",
+          "signature": "beasiswa()",
+          "line": 25
+        }
+      ],
+      "path": "app/Models/AlumniProgressBeasiswa.php"
+    },
+    {
+      "class": "App\\Models\\AsesmenKarakteristik",
+      "name": "AsesmenKarakteristik",
+      "table": "asesmen_karakteristik",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 29
+        }
+      ],
+      "path": "app/Models/AsesmenKarakteristik.php"
+    },
+    {
+      "class": "App\\Models\\AsesmenMultipleIntelligence",
+      "name": "AsesmenMultipleIntelligence",
+      "table": "asesmen_multiple_intelligence",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 29
+        }
+      ],
+      "path": "app/Models/AsesmenMultipleIntelligence.php"
+    },
+    {
+      "class": "App\\Models\\AsesmenRiasec",
+      "name": "AsesmenRiasec",
+      "table": "asesmen_riasec",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 39
+        }
+      ],
+      "path": "app/Models/AsesmenRiasec.php"
+    },
+    {
+      "class": "App\\Models\\AturanRekomendasiMapel",
+      "name": "AturanRekomendasiMapel",
+      "table": "aturan_rekomendasi_mapel",
+      "methods": [
+        {
+          "name": "mataPelajaran",
+          "signature": "mataPelajaran() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 32
+        }
+      ],
+      "path": "app/Models/AturanRekomendasiMapel.php"
+    },
+    {
+      "class": "App\\Models\\BantuanSiswa",
+      "name": "BantuanSiswa",
+      "table": "bantuan_siswa",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 32
+        },
+        {
+          "name": "jenisBantuan",
+          "signature": "jenisBantuan() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 37
+        }
+      ],
+      "path": "app/Models/BantuanSiswa.php"
+    },
+    {
+      "class": "App\\Models\\BasisDataBeasiswa",
+      "name": "BasisDataBeasiswa",
+      "table": "basis_data_beasiswa",
+      "methods": [
+        {
+          "name": "alumniProgressBeasiswa",
+          "signature": "alumniProgressBeasiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 34
+        },
+        {
+          "name": "kriteriaKelayakanBeasiswa",
+          "signature": "kriteriaKelayakanBeasiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 39
+        },
+        {
+          "name": "rekomendasiBeasiswaDetail",
+          "signature": "rekomendasiBeasiswaDetail() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 44
+        }
+      ],
+      "path": "app/Models/BasisDataBeasiswa.php"
+    },
+    {
+      "class": "App\\Models\\BobotMapelKlaster",
+      "name": "BobotMapelKlaster",
+      "table": "bobot_mapel_klaster",
+      "methods": [
+        {
+          "name": "klaster",
+          "signature": "klaster() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 27
+        },
+        {
+          "name": "mataPelajaran",
+          "signature": "mataPelajaran() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 32
+        }
+      ],
+      "path": "app/Models/BobotMapelKlaster.php"
+    },
+    {
+      "class": "App\\Models\\BukuAlumni",
+      "name": "BukuAlumni",
+      "table": "buku_alumni",
+      "methods": [
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 31
+        }
+      ],
+      "path": "app/Models/BukuAlumni.php"
+    },
+    {
+      "class": "App\\Models\\CatatanKarakter",
+      "name": "CatatanKarakter",
+      "table": "catatan_karakter",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 30
+        }
+      ],
+      "path": "app/Models/CatatanKarakter.php"
+    },
+    {
+      "class": "App\\Models\\CitaCita",
+      "name": "CitaCita",
+      "table": "cita_cita",
+      "methods": [
+        {
+          "name": "citaCitaSiswa",
+          "signature": "citaCitaSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 19
+        },
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 24
+        }
+      ],
+      "path": "app/Models/CitaCita.php"
+    },
+    {
+      "class": "App\\Models\\CitaCitaSiswa",
+      "name": "CitaCitaSiswa",
+      "table": "cita_cita_siswa",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 20
+        },
+        {
+          "name": "citaCita",
+          "signature": "citaCita() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 25
+        }
+      ],
+      "path": "app/Models/CitaCitaSiswa.php"
+    },
+    {
+      "class": "App\\Models\\DetailSkorEligibilitas",
+      "name": "DetailSkorEligibilitas",
+      "table": "detail_skor_eligibilitas",
+      "methods": [
+        {
+          "name": "hasil",
+          "signature": "hasil() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 48
+        }
+      ],
+      "path": "app/Models/DetailSkorEligibilitas.php"
+    },
+    {
+      "class": "App\\Models\\Guru",
+      "name": "Guru",
+      "table": "guru",
+      "methods": [
+        {
+          "name": "user",
+          "signature": "user() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 20
+        }
+      ],
+      "path": "app/Models/Guru.php"
+    },
+    {
+      "class": "App\\Models\\HasilEligibilitas",
+      "name": "HasilEligibilitas",
+      "table": "hasil_eligibilitas",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 32
+        },
+        {
+          "name": "periode",
+          "signature": "periode() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 37
+        },
+        {
+          "name": "detailSkorEligibilitas",
+          "signature": "detailSkorEligibilitas() : Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+          "line": 42
+        }
+      ],
+      "path": "app/Models/HasilEligibilitas.php"
+    },
+    {
+      "class": "App\\Models\\HasilProgramEligibilitas",
+      "name": "HasilProgramEligibilitas",
+      "table": "hasil_program_eligibilitas",
+      "methods": [],
+      "path": "app/Models/HasilProgramEligibilitas.php"
+    },
+    {
+      "class": "App\\Models\\Hobi",
+      "name": "Hobi",
+      "table": "hobi",
+      "methods": [
+        {
+          "name": "hobiSiswa",
+          "signature": "hobiSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 19
+        },
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 24
+        }
+      ],
+      "path": "app/Models/Hobi.php"
+    },
+    {
+      "class": "App\\Models\\HobiSiswa",
+      "name": "HobiSiswa",
+      "table": "hobi_siswa",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 19
+        },
+        {
+          "name": "hobi",
+          "signature": "hobi() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 24
+        }
+      ],
+      "path": "app/Models/HobiSiswa.php"
+    },
+    {
+      "class": "App\\Models\\JenisBantuan",
+      "name": "JenisBantuan",
+      "table": "jenis_bantuan",
+      "methods": [
+        {
+          "name": "bantuanSiswa",
+          "signature": "bantuanSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 19
+        }
+      ],
+      "path": "app/Models/JenisBantuan.php"
+    },
+    {
+      "class": "App\\Models\\Kelas",
+      "name": "Kelas",
+      "table": "kelas",
+      "methods": [
+        {
+          "name": "riwayatKelas",
+          "signature": "riwayatKelas() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 20
+        }
+      ],
+      "path": "app/Models/Kelas.php"
+    },
+    {
+      "class": "App\\Models\\KlasterProdi",
+      "name": "KlasterProdi",
+      "table": "klaster_prodi",
+      "methods": [
+        {
+          "name": "bobotMapelKlaster",
+          "signature": "bobotMapelKlaster() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 22
+        },
+        {
+          "name": "rekomendasiProdi",
+          "signature": "rekomendasiProdi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 27
+        },
+        {
+          "name": "mataPelajaran",
+          "signature": "mataPelajaran() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 32
+        }
+      ],
+      "path": "app/Models/KlasterProdi.php"
+    },
+    {
+      "class": "App\\Models\\KriteriaKelayakanBeasiswa",
+      "name": "KriteriaKelayakanBeasiswa",
+      "table": "kriteria_kelayakan_beasiswa",
+      "methods": [
+        {
+          "name": "beasiswa",
+          "signature": "beasiswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 30
+        }
+      ],
+      "path": "app/Models/KriteriaKelayakanBeasiswa.php"
+    },
+    {
+      "class": "App\\Models\\MataPelajaran",
+      "name": "MataPelajaran",
+      "table": "mata_pelajaran",
+      "methods": [
+        {
+          "name": "aturanRekomendasiMapel",
+          "signature": "aturanRekomendasiMapel() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 29
+        },
+        {
+          "name": "rekomendasiMapel",
+          "signature": "rekomendasiMapel() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 34
+        },
+        {
+          "name": "pilihanMapelSiswa",
+          "signature": "pilihanMapelSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 39
+        },
+        {
+          "name": "nilaiRapor",
+          "signature": "nilaiRapor() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 44
+        },
+        {
+          "name": "bobotMapelKlaster",
+          "signature": "bobotMapelKlaster() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 49
+        }
+      ],
+      "path": "app/Models/MataPelajaran.php"
+    },
+    {
+      "class": "App\\Models\\MediaSosial",
+      "name": "MediaSosial",
+      "table": "media_sosial",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 21
+        }
+      ],
+      "path": "app/Models/MediaSosial.php"
+    },
+    {
+      "class": "App\\Models\\NilaiRapor",
+      "name": "NilaiRapor",
+      "table": "nilai_rapor",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 28
+        },
+        {
+          "name": "mataPelajaran",
+          "signature": "mataPelajaran() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 33
+        }
+      ],
+      "path": "app/Models/NilaiRapor.php"
+    },
+    {
+      "class": "App\\Models\\OrangTua",
+      "name": "OrangTua",
+      "table": "orang_tua",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 32
+        }
+      ],
+      "path": "app/Models/OrangTua.php"
+    },
+    {
+      "class": "App\\Models\\PerguruanTinggi",
+      "name": "PerguruanTinggi",
+      "table": "perguruan_tinggi",
+      "methods": [
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 28
+        }
+      ],
+      "path": "app/Models/PerguruanTinggi.php"
+    },
+    {
+      "class": "App\\Models\\PeriodeEligibilitas",
+      "name": "PeriodeEligibilitas",
+      "table": "periode_eligibilitas",
+      "methods": [
+        {
+          "name": "hasilEligibilitas",
+          "signature": "hasilEligibilitas() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 27
+        }
+      ],
+      "path": "app/Models/PeriodeEligibilitas.php"
+    },
+    {
+      "class": "App\\Models\\PilihanMapelSiswa",
+      "name": "PilihanMapelSiswa",
+      "table": "pilihan_mapel_siswa",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 30
+        },
+        {
+          "name": "mataPelajaran",
+          "signature": "mataPelajaran() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 35
+        }
+      ],
+      "path": "app/Models/PilihanMapelSiswa.php"
+    },
+    {
+      "class": "App\\Models\\PrestasiMurid",
+      "name": "PrestasiMurid",
+      "table": "prestasi_murid",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 37
+        },
+        {
+          "name": "studyTracerPrestasi",
+          "signature": "studyTracerPrestasi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 42
+        },
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 47
+        }
+      ],
+      "path": "app/Models/PrestasiMurid.php"
+    },
+    {
+      "class": "App\\Models\\PrivateAttachment",
+      "name": "PrivateAttachment",
+      "table": "private_attachments",
+      "methods": [],
+      "path": "app/Models/PrivateAttachment.php"
+    },
+    {
+      "class": "App\\Models\\ProgramEligibilitas",
+      "name": "ProgramEligibilitas",
+      "table": "program_eligibilitas",
+      "methods": [],
+      "path": "app/Models/ProgramEligibilitas.php"
+    },
+    {
+      "class": "App\\Models\\PublishedCohortSummary",
+      "name": "PublishedCohortSummary",
+      "table": "published_cohort_summaries",
+      "methods": [],
+      "path": "app/Models/PublishedCohortSummary.php"
+    },
+    {
+      "class": "App\\Models\\RekapPresensi",
+      "name": "RekapPresensi",
+      "table": "rekap_presensi",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 31
+        }
+      ],
+      "path": "app/Models/RekapPresensi.php"
+    },
+    {
+      "class": "App\\Models\\RekomendasiBeasiswa",
+      "name": "RekomendasiBeasiswa",
+      "table": "rekomendasi_beasiswa",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 34
+        },
+        {
+          "name": "rekomendasiBeasiswaDetail",
+          "signature": "rekomendasiBeasiswaDetail() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 39
+        }
+      ],
+      "path": "app/Models/RekomendasiBeasiswa.php"
+    },
+    {
+      "class": "App\\Models\\RekomendasiBeasiswaDetail",
+      "name": "RekomendasiBeasiswaDetail",
+      "table": "rekomendasi_beasiswa_detail",
+      "methods": [
+        {
+          "name": "rekomendasiBeasiswa",
+          "signature": "rekomendasiBeasiswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 36
+        },
+        {
+          "name": "beasiswa",
+          "signature": "beasiswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 41
+        }
+      ],
+      "path": "app/Models/RekomendasiBeasiswaDetail.php"
+    },
+    {
+      "class": "App\\Models\\RekomendasiMapel",
+      "name": "RekomendasiMapel",
+      "table": "rekomendasi_mapel",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 32
+        },
+        {
+          "name": "mataPelajaran",
+          "signature": "mataPelajaran() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 37
+        }
+      ],
+      "path": "app/Models/RekomendasiMapel.php"
+    },
+    {
+      "class": "App\\Models\\RekomendasiProdi",
+      "name": "RekomendasiProdi",
+      "table": "rekomendasi_prodi",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 34
+        },
+        {
+          "name": "klaster",
+          "signature": "klaster() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 39
+        },
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 44
+        }
+      ],
+      "path": "app/Models/RekomendasiProdi.php"
+    },
+    {
+      "class": "App\\Models\\RiwayatKelas",
+      "name": "RiwayatKelas",
+      "table": "riwayat_kelas",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 30
+        },
+        {
+          "name": "kelas",
+          "signature": "kelas() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 35
+        }
+      ],
+      "path": "app/Models/RiwayatKelas.php"
+    },
+    {
+      "class": "App\\Models\\RiwayatOrganisasi",
+      "name": "RiwayatOrganisasi",
+      "table": "riwayat_organisasi",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 30
+        }
+      ],
+      "path": "app/Models/RiwayatOrganisasi.php"
+    },
+    {
+      "class": "App\\Models\\SaudaraTiri",
+      "name": "SaudaraTiri",
+      "table": "saudara_tiri",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 23
+        }
+      ],
+      "path": "app/Models/SaudaraTiri.php"
+    },
+    {
+      "class": "App\\Models\\Siswa",
+      "name": "Siswa",
+      "table": "siswa",
+      "methods": [
+        {
+          "name": "user",
+          "signature": "user() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 46
+        },
+        {
+          "name": "riwayatKelas",
+          "signature": "riwayatKelas() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 51
+        },
+        {
+          "name": "mediaSosial",
+          "signature": "mediaSosial() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 56
+        },
+        {
+          "name": "saudaraTiri",
+          "signature": "saudaraTiri() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 61
+        },
+        {
+          "name": "orangTua",
+          "signature": "orangTua() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 66
+        },
+        {
+          "name": "wali",
+          "signature": "wali() : Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+          "line": 71
+        },
+        {
+          "name": "bantuanSiswa",
+          "signature": "bantuanSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 76
+        },
+        {
+          "name": "hobiSiswa",
+          "signature": "hobiSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 81
+        },
+        {
+          "name": "citaCitaSiswa",
+          "signature": "citaCitaSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 86
+        },
+        {
+          "name": "rekomendasiMapel",
+          "signature": "rekomendasiMapel() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 91
+        },
+        {
+          "name": "pilihanMapelSiswa",
+          "signature": "pilihanMapelSiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 96
+        },
+        {
+          "name": "nilaiRapor",
+          "signature": "nilaiRapor() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 101
+        },
+        {
+          "name": "rekapPresensi",
+          "signature": "rekapPresensi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 106
+        },
+        {
+          "name": "catatanKarakter",
+          "signature": "catatanKarakter() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 111
+        },
+        {
+          "name": "riwayatOrganisasi",
+          "signature": "riwayatOrganisasi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 116
+        },
+        {
+          "name": "prestasiMurid",
+          "signature": "prestasiMurid() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 121
+        },
+        {
+          "name": "asesmenRiasec",
+          "signature": "asesmenRiasec() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 126
+        },
+        {
+          "name": "asesmenMultipleIntelligence",
+          "signature": "asesmenMultipleIntelligence() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 131
+        },
+        {
+          "name": "asesmenKarakteristik",
+          "signature": "asesmenKarakteristik() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 136
+        },
+        {
+          "name": "hasilEligibilitas",
+          "signature": "hasilEligibilitas() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 141
+        },
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 146
+        },
+        {
+          "name": "rekomendasiProdi",
+          "signature": "rekomendasiProdi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 151
+        },
+        {
+          "name": "alumniProgress",
+          "signature": "alumniProgress() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 156
+        },
+        {
+          "name": "rekomendasiBeasiswa",
+          "signature": "rekomendasiBeasiswa() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 161
+        },
+        {
+          "name": "hobi",
+          "signature": "hobi() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 166
+        },
+        {
+          "name": "citaCita",
+          "signature": "citaCita() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 171
+        }
+      ],
+      "path": "app/Models/Siswa.php"
+    },
+    {
+      "class": "App\\Models\\StudyTracer",
+      "name": "StudyTracer",
+      "table": "study_tracer",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 45
+        },
+        {
+          "name": "perguruanTinggi",
+          "signature": "perguruanTinggi() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 50
+        },
+        {
+          "name": "bukuAlumni",
+          "signature": "bukuAlumni() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 55
+        },
+        {
+          "name": "studyTracerPrestasi",
+          "signature": "studyTracerPrestasi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 60
+        },
+        {
+          "name": "rekomendasiProdi",
+          "signature": "rekomendasiProdi() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 65
+        },
+        {
+          "name": "alumniProgress",
+          "signature": "alumniProgress() : Illuminate\\Database\\Eloquent\\Relations\\HasMany",
+          "line": 70
+        },
+        {
+          "name": "prestasi",
+          "signature": "prestasi() : Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany",
+          "line": 75
+        }
+      ],
+      "path": "app/Models/StudyTracer.php"
+    },
+    {
+      "class": "App\\Models\\StudyTracerPrestasi",
+      "name": "StudyTracerPrestasi",
+      "table": "study_tracer_prestasi",
+      "methods": [
+        {
+          "name": "studyTracer",
+          "signature": "studyTracer() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 19
+        },
+        {
+          "name": "prestasiMurid",
+          "signature": "prestasiMurid() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 24
+        }
+      ],
+      "path": "app/Models/StudyTracerPrestasi.php"
+    },
+    {
+      "class": "App\\Models\\User",
+      "name": "User",
+      "table": "users",
+      "methods": [
+        {
+          "name": "administrator",
+          "signature": "administrator() : Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+          "line": 32
+        },
+        {
+          "name": "guru",
+          "signature": "guru() : Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+          "line": 37
+        },
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\HasOne",
+          "line": 42
+        },
+        {
+          "name": "tokens",
+          "signature": "tokens()",
+          "line": 25
+        },
+        {
+          "name": "tokenCan",
+          "signature": "tokenCan(string $ability)",
+          "line": 36
+        },
+        {
+          "name": "tokenCant",
+          "signature": "tokenCant(string $ability)",
+          "line": 47
+        },
+        {
+          "name": "createToken",
+          "signature": "createToken(string $name, array $abilities, ?DateTimeInterface $expiresAt)",
+          "line": 60
+        },
+        {
+          "name": "generateTokenString",
+          "signature": "generateTokenString()",
+          "line": 79
+        },
+        {
+          "name": "currentAccessToken",
+          "signature": "currentAccessToken()",
+          "line": 94
+        },
+        {
+          "name": "withAccessToken",
+          "signature": "withAccessToken($accessToken)",
+          "line": 105
+        },
+        {
+          "name": "notifications",
+          "signature": "notifications()",
+          "line": 12
+        },
+        {
+          "name": "readNotifications",
+          "signature": "readNotifications()",
+          "line": 22
+        },
+        {
+          "name": "unreadNotifications",
+          "signature": "unreadNotifications()",
+          "line": 32
+        },
+        {
+          "name": "notify",
+          "signature": "notify($instance)",
+          "line": 16
+        },
+        {
+          "name": "notifyNow",
+          "signature": "notifyNow($instance, ?array $channels)",
+          "line": 28
+        },
+        {
+          "name": "routeNotificationFor",
+          "signature": "routeNotificationFor($driver, $notification)",
+          "line": 40
+        }
+      ],
+      "path": "app/Models/User.php"
+    },
+    {
+      "class": "App\\Models\\Wali",
+      "name": "Wali",
+      "table": "wali",
+      "methods": [
+        {
+          "name": "siswa",
+          "signature": "siswa() : Illuminate\\Database\\Eloquent\\Relations\\BelongsTo",
+          "line": 31
+        }
+      ],
+      "path": "app/Models/Wali.php"
+    }
+  ],
+  "services": [
+    {
+      "class": "App\\Services\\Auth\\GoogleIdentityVerifier",
+      "name": "GoogleIdentityVerifier",
+      "methods": [
+        {
+          "name": "verify",
+          "signature": "verify(token, nonce)",
+          "line": 11
+        }
+      ],
+      "path": "app/Services/Auth/GoogleIdentityVerifier.php"
+    },
+    {
+      "class": "App\\Services\\Auth\\OtpService",
+      "name": "OtpService",
+      "methods": [
+        {
+          "name": "ready",
+          "signature": "ready()",
+          "line": 15
+        },
+        {
+          "name": "issue",
+          "signature": "issue(purpose, email, payload, userId, siswaId, deliver)",
+          "line": 21
+        },
+        {
+          "name": "consume",
+          "signature": "consume(id, purpose, code, callback, userId)",
+          "line": 44
+        },
+        {
+          "name": "hash",
+          "signature": "hash(value)",
+          "line": 69
+        }
+      ],
+      "path": "app/Services/Auth/OtpService.php"
+    },
+    {
+      "class": "App\\Services\\Auth\\SessionIssuer",
+      "name": "SessionIssuer",
+      "methods": [
+        {
+          "name": "issue",
+          "signature": "issue(user)",
+          "line": 10
+        },
+        {
+          "name": "profile",
+          "signature": "profile(user)",
+          "line": 25
+        },
+        {
+          "name": "revoke",
+          "signature": "revoke(user)",
+          "line": 32
+        }
+      ],
+      "path": "app/Services/Auth/SessionIssuer.php"
+    },
+    {
+      "class": "App\\Services\\Beasiswa\\EligibilityEvaluator",
+      "name": "EligibilityEvaluator",
+      "methods": [
+        {
+          "name": "evaluate",
+          "signature": "evaluate(profile, criteria)",
+          "line": 9
+        }
+      ],
+      "path": "app/Services/Beasiswa/EligibilityEvaluator.php"
+    },
+    {
+      "class": "App\\Services\\Beasiswa\\GeminiScholarshipExplainer",
+      "name": "GeminiScholarshipExplainer",
+      "methods": [
+        {
+          "name": "explain",
+          "signature": "explain(candidates)",
+          "line": 11
+        }
+      ],
+      "path": "app/Services/Beasiswa/GeminiScholarshipExplainer.php"
+    },
+    {
+      "class": "App\\Services\\Beasiswa\\ScholarshipRecommendationService",
+      "name": "ScholarshipRecommendationService",
+      "methods": [
+        {
+          "name": "sources",
+          "signature": "sources(siswa, target)",
+          "line": 17
+        },
+        {
+          "name": "generate",
+          "signature": "generate(siswa, target)",
+          "line": 33
+        }
+      ],
+      "path": "app/Services/Beasiswa/ScholarshipRecommendationService.php"
+    },
+    {
+      "class": "App\\Services\\School\\AlumniService",
+      "name": "AlumniService",
+      "methods": [
+        {
+          "name": "saveProgress",
+          "signature": "saveProgress(r, s, previous)",
+          "line": 16
+        },
+        {
+          "name": "admission",
+          "signature": "admission(t, admin)",
+          "line": 53
+        },
+        {
+          "name": "progress",
+          "signature": "progress(p, admin)",
+          "line": 74
+        },
+        {
+          "name": "timeline",
+          "signature": "timeline(t, admin)",
+          "line": 88
+        }
+      ],
+      "path": "app/Services/School/AlumniService.php"
+    },
+    {
+      "class": "App\\Services\\School\\Analytics",
+      "name": "Analytics",
+      "methods": [
+        {
+          "name": "query",
+          "signature": "query(r)",
+          "line": 13
+        },
+        {
+          "name": "admin",
+          "signature": "admin(r)",
+          "line": 36
+        },
+        {
+          "name": "createCohort",
+          "signature": "createCohort(scholarship, year, userId)",
+          "line": 105
+        },
+        {
+          "name": "published",
+          "signature": "published()",
+          "line": 128
+        }
+      ],
+      "path": "app/Services/School/Analytics.php"
+    },
+    {
+      "class": "App\\Services\\School\\Criteria",
+      "name": "Criteria",
+      "methods": [
+        {
+          "name": "validate",
+          "signature": "validate(criteria, allowStatus)",
+          "line": 12
+        }
+      ],
+      "path": "app/Services/School/Criteria.php"
+    },
+    {
+      "class": "App\\Services\\School\\MajorRecommendation",
+      "name": "MajorRecommendation",
+      "methods": [
+        {
+          "name": "sources",
+          "signature": "sources(s, semester)",
+          "line": 13
+        },
+        {
+          "name": "generate",
+          "signature": "generate(s, semester)",
+          "line": 37
+        }
+      ],
+      "path": "app/Services/School/MajorRecommendation.php"
+    },
+    {
+      "class": "App\\Services\\School\\SchoolEligibility",
+      "name": "SchoolEligibility",
+      "methods": [
+        {
+          "name": "evaluate",
+          "signature": "evaluate(s, p, profile)",
+          "line": 14
+        },
+        {
+          "name": "programProfile",
+          "signature": "programProfile(s, p, profile)",
+          "line": 24
+        },
+        {
+          "name": "calculate",
+          "signature": "calculate(s, p)",
+          "line": 46
+        },
+        {
+          "name": "studentResult",
+          "signature": "studentResult(s, p)",
+          "line": 54
+        }
+      ],
+      "path": "app/Services/School/SchoolEligibility.php"
+    },
+    {
+      "class": "App\\Services\\School\\StudentProfile",
+      "name": "StudentProfile",
+      "methods": [
+        {
+          "name": "build",
+          "signature": "build(s)",
+          "line": 11
+        }
+      ],
+      "path": "app/Services/School/StudentProfile.php"
+    },
+    {
+      "class": "App\\Services\\Security\\ClamAvScanner",
+      "name": "ClamAvScanner",
+      "methods": [
+        {
+          "name": "assertClean",
+          "signature": "assertClean(path)",
+          "line": 6
+        }
+      ],
+      "path": "app/Services/Security/ClamAvScanner.php"
+    },
+    {
+      "class": "App\\Services\\Security\\SpreadsheetGuard",
+      "name": "SpreadsheetGuard",
+      "methods": [
+        {
+          "name": "inspect",
+          "signature": "inspect(file)",
+          "line": 13
+        }
+      ],
+      "path": "app/Services/Security/SpreadsheetGuard.php"
+    }
+  ],
+  "source_hashes": {
+    "app/Models/Administrator.php": "9fdc9ab5af69704dd2adadf1fd28891424ec5de83d4d0af2e57e92c285127494",
+    "app/Models/AlumniProgress.php": "907cb960a8e177a6685ca55ec4964ead697e68ef9247da21c8ed27815410a6c1",
+    "app/Models/AlumniProgressBeasiswa.php": "db5def427adde8b86ec0e026a92660c993a1fe883eb06f0d0ee1c3eae67b6a65",
+    "app/Models/AsesmenKarakteristik.php": "559c48de0004018d4a90b4305bd7a2ace2c7611641a427c1d3acc728dcd25ea1",
+    "app/Models/AsesmenMultipleIntelligence.php": "8ea9044d06a03afa3ee4ead05e1a671e1a9a40f42cab226e76fa30e9c3a0cd5b",
+    "app/Models/AsesmenRiasec.php": "0ed8cf443565d3b68792dde0656483c58d69e4129eaa4395ec482bccc2acc968",
+    "app/Models/AturanRekomendasiMapel.php": "1a49d820eb2abfba6a9aa7a4b247e67daa97fa05025ce24110f6628c3904cac8",
+    "app/Models/BantuanSiswa.php": "661c3206389bd09b0cd8628fa624cf45b7c99028442352b1fb2199f791bbcc58",
+    "app/Models/BasisDataBeasiswa.php": "3427a65cbeaedfc8f4b488b50e11c5579822dbf93beeecf5e4be5b430508c43c",
+    "app/Models/BobotMapelKlaster.php": "9798aeaefd6df882b80374bcd8c1bd205455171ab34892f62d9a53dc7a569edc",
+    "app/Models/BukuAlumni.php": "8f2893ec73af5386a43caa17586981a41406fd9579466c79379fcb1e5b5fee08",
+    "app/Models/CatatanKarakter.php": "3be02ac87b4d719e38d3256878e1c7f2aad9959c0e0d9068896eb43f8e3658cb",
+    "app/Models/CitaCita.php": "c2da4b4a4d92d3ca365a397114f06137d0327ebb78473a2f665e34db41442e9d",
+    "app/Models/CitaCitaSiswa.php": "8ddd1de194931f9ae48a480e7d7d7309a6e387291b75775f64f68e67c4870658",
+    "app/Models/DetailSkorEligibilitas.php": "e420e8d4f4e76bd97541680171288af3f0695f6b1e2c8bfe16d53b5372d07ff0",
+    "app/Models/Guru.php": "2a3baf3824a7ffad7ffd9f2ac74d14a23fa384529093ac0f57356e64affe9bed",
+    "app/Models/HasilEligibilitas.php": "429330453228b0a90efd89c2efd9fb5dd7d2d2fe08fae5a462face38fed85b4e",
+    "app/Models/HasilProgramEligibilitas.php": "41c082a6fb59f7545a191353b38dcfb4f6178bd7fc1c5e6a8c05e55313a274a1",
+    "app/Models/Hobi.php": "8458b92e0803bc423e8a42260adb85e5b631a09d1ec4fb7e3cd9fa98e5606409",
+    "app/Models/HobiSiswa.php": "64d48802abbf1e418b03b3c99c93384246c18aff2e764eda469b5423fad010cb",
+    "app/Models/JenisBantuan.php": "34f1b9b7be96364e055cc6fc879156e02b8f1f0fe7282cd8f11d83596660a245",
+    "app/Models/Kelas.php": "d5f23d2b556482cc9814fc4b7817c2db54f9de0f2e5f5d10ca8874c419cc6f14",
+    "app/Models/KlasterProdi.php": "7bbdbab588b4c84942340f66cfd66bd571210bfded4b88b4b58c8661fe89bc4d",
+    "app/Models/KriteriaKelayakanBeasiswa.php": "c8c4f447c45b075348e336729ee9e3121eee993e123b489391e6c792e74dbefc",
+    "app/Models/MataPelajaran.php": "df9b23e9e4a4ab1cd6f927ef504ab467ba58281ecc05483c0f617b62a98206a9",
+    "app/Models/MediaSosial.php": "f5eba25cc801e4992105d0ec4384be69f0d79fdd82123a6654a3bd75680c6648",
+    "app/Models/NilaiRapor.php": "3aa42d27ca5bec93162190433358576651fbc4d84944f195b541e8ec72f2bfe1",
+    "app/Models/OrangTua.php": "3cad6cf4b943c4a944cfd807a7e94cce8a3e1a7b34ab39247890ce9743a0f16a",
+    "app/Models/PerguruanTinggi.php": "30e3fd3cd33a8f2644e0e00d55fa36772e0edfe57fd9d336f3a2b75b1f52949c",
+    "app/Models/PeriodeEligibilitas.php": "dc2391ee454cb455e364c21a2dd361e4c797fe87f37294e36e29c40307d98c58",
+    "app/Models/PilihanMapelSiswa.php": "f13a15a5a383d8c72ea6e050d45a2e2ebd82bbbbfe84fb2966045e310c54385e",
+    "app/Models/PrestasiMurid.php": "e2981e752d4ec92c67c365fec3f5ed51c660428b730b4daaae4e5498db91ea9e",
+    "app/Models/PrivateAttachment.php": "568fb8d4f196828bda8d596bca2b1013832d960d2daa9d1f495cff1a5854a5cf",
+    "app/Models/ProgramEligibilitas.php": "566ab86703472403d0fbb37563aa621a31d00f1b86e13f3919aada77697a7224",
+    "app/Models/PublishedCohortSummary.php": "cd7c409db32ad1aed5495814cfd608c298ca3c5e7cac1e9ce0f9d27c2178dc2e",
+    "app/Models/RekapPresensi.php": "a75c9930239c34c255fccd8d737d95b2d8d6f38e1d3cd782c7d0e22e560b69d9",
+    "app/Models/RekomendasiBeasiswa.php": "c7b62605c8c7da4bbd29732d8eea061e645fdf642e32f24167ff2ca4ee702ad4",
+    "app/Models/RekomendasiBeasiswaDetail.php": "5eef50a9bd3537890253765b44300b802f7c32447ce44c0c9d1a20cbc4d8d8ad",
+    "app/Models/RekomendasiMapel.php": "2d6f9754d51031aaadcdf27b56f32b2ffdade0f3f43c7264261ad77b0dbac264",
+    "app/Models/RekomendasiProdi.php": "987e033aa34affcf8d7be3976cfb112ba73570bc1edb871487dac5272a6a4099",
+    "app/Models/RiwayatKelas.php": "01b86b82a60e07d3c2658779261302aa8b7d046652e4d49450db0fd2856abd5e",
+    "app/Models/RiwayatOrganisasi.php": "7dcd5df7ed53bbbb5aecf80d6c3d405ff0a3738de6387a9a8a4a9404b47d2eac",
+    "app/Models/SaudaraTiri.php": "e43571aeec02634f2f97c73ceab71383ed7b16f743edaec4577298fec85bbc3e",
+    "app/Models/Siswa.php": "d27014d2d44f9d6da4281a7fa3206bf6fb9c99159e8a2e1967bf48b15599e707",
+    "app/Models/StudyTracer.php": "b58d09fd2ec59b2375c8cf6a245525298416e55e2f352796572a46b7846a79e6",
+    "app/Models/StudyTracerPrestasi.php": "f352d448175446956699ce1cda7f8f38d4452b499f3d736e94289206dee82a95",
+    "app/Models/User.php": "4a22e18444995d3db51e91717cf81389a7198a76c7c3cdb42b23cbf7b426a6d4",
+    "app/Models/Wali.php": "b8f1b9f734b2eeddb75f8df25094dc69050fc4afd8e2da8537d4e576c1042be1",
+    "app/Services/Auth/GoogleIdentityVerifier.php": "2613e5da875ff4eb95397a39bb7009c431218b4183df228546038fa8651e6172",
+    "app/Services/Auth/OtpService.php": "d2839751599b273bf6fa4a1a88fb3ed93db5a299ac4abb24c2db7d1406372108",
+    "app/Services/Auth/SessionIssuer.php": "648e5bf8a9b240115e3878bae8674bd4bdaf396b32dd2b22c75bb827adffec1a",
+    "app/Services/Beasiswa/EligibilityEvaluator.php": "cdec4c4a162a90ebabe9aafd43afc1e66be29c39d02691ef79a8ef63f4ba9f17",
+    "app/Services/Beasiswa/GeminiScholarshipExplainer.php": "f1c69592a126bd60a3a8faaa01b9b8fd312fc5c24e3bad99cbe0a8901532a9ae",
+    "app/Services/Beasiswa/ScholarshipRecommendationService.php": "1a6cb5da302016de1ea33b079e5554a653544f4b1521c237d251573448460813",
+    "app/Services/School/AlumniService.php": "b44c2ad84eef926050066d09da9f364f48ed2ffc3a46d984bc7740a67978b8fa",
+    "app/Services/School/Analytics.php": "443287b5997611014f5eedff64a21466f49d37fd91758b2b389d6a50d544eb1d",
+    "app/Services/School/Criteria.php": "87438d5a147210de3bc2625afc664658c862c35582464886714fce13f6201f77",
+    "app/Services/School/MajorRecommendation.php": "696b610bf81bca65480795d639f8a14e5f9b0e924f45fd492cff012a197140de",
+    "app/Services/School/SchoolEligibility.php": "27852c89a4d60b84f6e081610711c243128e1c56a6ffd87b4f9f6fe1c9c010ec",
+    "app/Services/School/StudentProfile.php": "23b44eeb7a8be6683e996efc742e010fbb22377c5ce1d6898cd1c446442f9e8a",
+    "app/Services/Security/ClamAvScanner.php": "cbbe06770e6095e2dce5da9acd1436591f9ffb1b07164197be58613c0137868b",
+    "app/Services/Security/SpreadsheetGuard.php": "b3314bfe86b0388760fad5030eaf5c42db0d56b8557703ab78bced47aedd3145",
+    "routes/api.php": "09dc61562721c82b4e33b2228547c3e00fbc8cb83b1de1ba676c73b334762e16",
+    "routes/console.php": "9adccc33e7dd400683e434774077c7fdb2f299c5712cedf16a43fdf56f2850fa",
+    "routes/prd.php": "47b981a24d1819b5c1d0007bb782bc5643e04009a622027ad8704fe1635cca22",
+    "routes/web.php": "248c7eeeb43bb61ee4fb6603e52b44843c64f72a841d671bcd41871aab23f970"
+  }
+}

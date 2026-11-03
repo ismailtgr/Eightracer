@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BasisDataBeasiswa;
+use App\Services\Auth\SchoolAccess;
 use App\Services\Beasiswa\EligibilityEvaluator;
 use App\Services\School\Criteria;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class BasisDataBeasiswaController extends Controller
 {
     private function admin(Request $request): void
     {
-        abort_unless($request->user()->role === 'administrator', 403);
+        abort_unless(SchoolAccess::isStaff($request->user()), 403);
     }
 
     public function index(Request $request)

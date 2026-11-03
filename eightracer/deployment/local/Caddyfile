@@ -1,0 +1,40 @@
+{
+	admin off
+	persist_config off
+	auto_https disable_redirects
+	skip_install_trust
+	storage file_system {$EIGHTRACER_ROOT}/.tools/security-state/caddy
+}
+
+https://localhost:8443, https://127.0.0.1:8443 {
+	bind 127.0.0.1
+	tls internal
+	request_body {
+		max_size 6MB
+	}
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		X-Frame-Options DENY
+	}
+	@backend path /api/* /up
+	handle @backend {
+		reverse_proxy 127.0.0.1:8000
+	}
+	handle {
+		respond "Endpoint tidak ditemukan." 404
+	}
+}
+
+http://localhost:8080, http://127.0.0.1:8080 {
+	bind 127.0.0.1
+	redir https://localhost:8443{uri} 308
+}
+
+https://localhost:8445, https://127.0.0.1:8445 {
+	bind 127.0.0.1
+	tls internal
+	header Referrer-Policy no-referrer
+	reverse_proxy 127.0.0.1:8025
+}

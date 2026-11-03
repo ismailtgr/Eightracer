@@ -7,6 +7,7 @@ use App\Models\AlumniProgress;
 use App\Models\ProgramEligibilitas;
 use App\Models\Siswa;
 use App\Models\StudyTracer;
+use App\Services\Auth\SchoolAccess;
 use App\Services\School\SchoolEligibility;
 use App\Services\School\StudentProfile;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class DashboardController extends Controller
 {
     public function index(Request $r, SchoolEligibility $eligibility)
     {
-        if ($r->user()->role === 'administrator') {
+        if (SchoolAccess::isStaff($r->user())) {
             $last = AlumniProgress::where('is_current', true)->orderByDesc('tanggal_update')->orderByDesc('id')->get()->unique('siswa_id');
             $last->load('alumniProgressBeasiswa');
             $programs = ProgramEligibilitas::where('is_active', true)->get();

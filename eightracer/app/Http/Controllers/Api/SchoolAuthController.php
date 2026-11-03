@@ -63,9 +63,15 @@ class SchoolAuthController extends Controller
 
     public function login(Request $r, SessionIssuer $sessions)
     {
-        $d = $r->validate(['email' => 'required|email:rfc|max:255', 'password' => 'required|string|max:1024', 'role' => 'prohibited']);
+        $d = $r->validate(['email' => 'required_without:nisn|prohibits:nisn|nullable|email:rfc|max:255', 'nisn' => 'required_without:email|prohibits:email|nullable|digits:10', 'password' => 'required|string|max:1024', 'role' => 'prohibited']);
         $result = DB::transaction(function () use ($d, $sessions) {
-            $u = User::where('email', mb_strtolower(trim($d['email'])))->lockForUpdate()->first();
+            $q = User::query();
+            if (! empty($d['nisn'])) {
+                $q->where('role', 'siswa')->whereHas('siswa', fn ($s) => $s->where('nisn', $d['nisn']));
+            } else {
+                $q->where('email', mb_strtolower(trim($d['email'])));
+            }
+            $u = $q->lockForUpdate()->first();
             $hash = $u?->password ?? Hash::make(bin2hex(random_bytes(32)));
             if (! Hash::check($d['password'], $hash) || ! $u || ! $u->password) {
                 throw ValidationException::withMessages(['email' => 'Email atau kata sandi salah.']);
@@ -121,7 +127,7 @@ class SchoolAuthController extends Controller
             abort_unless($u->email === $row->email && $u->email_verified_at, 422);
             $u->forceFill(['password' => Hash::make($d['password']), 'remember_token' => Str::random(60)])->save();
             $sessions->revoke($u);
-            DB::table('auth_challenges')->where('email', $u->email)->whereIn('purpose',['reset_grant', 'password_reset'])->update(['consumed_at' => now()]);
+            DB::table('auth_challenges')->where('email', $u->email)->whereIn('purpose', ['reset_grant', 'password_reset'])->update(['consumed_at' => now()]);
         });
 
         return response()->json(['message' => 'Kata sandi diperbarui. Silakan login kembali.']);

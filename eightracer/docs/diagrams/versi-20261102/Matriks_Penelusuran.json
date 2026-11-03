@@ -1,0 +1,746 @@
+[
+  {
+    "id": "UC01",
+    "use_case": "Lihat halaman publik dan FAQ",
+    "actors": [
+      "Pengunjung"
+    ],
+    "prd": [
+      "[FEATURE] FAQ"
+    ],
+    "api": "GET /faq",
+    "implementation": "PRD FAQ; DashboardController::faq",
+    "tables": [],
+    "activity_nodes": [
+      "public",
+      "needlogin"
+    ],
+    "sequence_fragments": [
+      "sq_public"
+    ]
+  },
+  {
+    "id": "UC02",
+    "use_case": "Daftar siswa: email/OTP atau Google",
+    "actors": [
+      "Pengunjung"
+    ],
+    "prd": [
+      "[FEATURE] Register (Update — tambah Google Sign-Up)"
+    ],
+    "api": "POST /register; /register/verify; /auth/google/challenge; /auth/google",
+    "implementation": "SchoolAuthController; GoogleAuthController; OtpService; siswa.user_id UNIQUE",
+    "tables": [
+      "users",
+      "siswa",
+      "auth_challenges",
+      "personal_access_tokens"
+    ],
+    "activity_nodes": [
+      "auth",
+      "authmerge"
+    ],
+    "sequence_fragments": [
+      "sq_auth",
+      "sq_auth_alt"
+    ]
+  },
+  {
+    "id": "UC03",
+    "use_case": "Login dan kelola sesi sesuai peran",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Login (Update — tambah Google Login & Manajemen Sesi Admin)"
+    ],
+    "api": "POST /login; /auth/google; GET /me",
+    "implementation": "SessionIssuer::issue/revoke; token.lifetime; GoogleIdentityVerifier::verify",
+    "tables": [
+      "users",
+      "personal_access_tokens",
+      "sessions",
+      "auth_challenges"
+    ],
+    "activity_nodes": [
+      "auth",
+      "authorized"
+    ],
+    "sequence_fragments": [
+      "sq_auth",
+      "sq_auth_alt"
+    ]
+  },
+  {
+    "id": "UC04",
+    "use_case": "Pulihkan password melalui OTP",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Lupa Kata Sandi"
+    ],
+    "api": "POST /forgot-password; /forgot-password/verify; /reset-password",
+    "implementation": "SchoolAuthController; OtpService; SessionIssuer",
+    "tables": [
+      "users",
+      "auth_challenges",
+      "personal_access_tokens",
+      "sessions"
+    ],
+    "activity_nodes": [
+      "auth"
+    ],
+    "sequence_fragments": [
+      "sq_auth"
+    ]
+  },
+  {
+    "id": "UC05",
+    "use_case": "Kelola profil akun sendiri",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Kelola Profil"
+    ],
+    "api": "GET/PATCH /profile; /profile/email/*; /profile/password*; /profile/photo; POST /profile/google",
+    "implementation": "ProfileController; AttachmentController; ClamAvScanner; GoogleAuthController::link",
+    "tables": [
+      "users",
+      "auth_challenges",
+      "private_attachments",
+      "personal_access_tokens",
+      "sessions"
+    ],
+    "activity_nodes": [
+      "read",
+      "readscope"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC06",
+    "use_case": "Lihat beranda sesuai peran",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Beranda (Admin Sekolah)",
+      "[FEATURE] Beranda (Siswa)"
+    ],
+    "api": "GET /beranda",
+    "implementation": "DashboardController::index",
+    "tables": [
+      "siswa",
+      "hasil_program_eligibilitas",
+      "asesmen_karakteristik",
+      "study_tracer",
+      "alumni_progress"
+    ],
+    "activity_nodes": [
+      "read"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC07",
+    "use_case": "Kelola biodata, keluarga dan ekonomi",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Data Murid – Biodata (Input & Kelola)",
+      "[FEATURE] Data Murid – Latar Belakang Ekonomi (Input & Kelola)"
+    ],
+    "api": "/siswa; PUT /siswa/{id}/ekonomi; POST /siswa/{id}/kelas; PUT /siswa/{id}/minat",
+    "implementation": "SiswaController; StudentEconomyController; StudentSupportController",
+    "tables": [
+      "siswa",
+      "orang_tua",
+      "wali",
+      "bantuan_siswa",
+      "media_sosial",
+      "saudara_tiri",
+      "hobi_siswa",
+      "cita_cita_siswa",
+      "riwayat_kelas"
+    ],
+    "activity_nodes": [
+      "data",
+      "dataok",
+      "datasave"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC08",
+    "use_case": "Cari dan lihat detail master siswa",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Data Murid – List & Detail"
+    ],
+    "api": "GET /siswa; GET /siswa/{id}",
+    "implementation": "SiswaController::index/show",
+    "tables": [
+      "siswa",
+      "orang_tua",
+      "wali",
+      "riwayat_kelas"
+    ],
+    "activity_nodes": [
+      "data",
+      "readscope"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC09",
+    "use_case": "Catat dan koreksi asesmen bertanggal",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Asesmen Karakteristik – Input"
+    ],
+    "api": "POST /siswa/{id}/asesmen",
+    "implementation": "AssessmentController::store; tanggal_asesmen NOT NULL",
+    "tables": [
+      "siswa",
+      "asesmen_karakteristik",
+      "asesmen_riasec",
+      "asesmen_multiple_intelligence"
+    ],
+    "activity_nodes": [
+      "data",
+      "datapending",
+      "datasave"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC10",
+    "use_case": "Lihat riwayat asesmen sendiri/terpilih",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Asesmen Karakteristik – Riwayat"
+    ],
+    "api": "GET /siswa/{id}/asesmen; GET /asesmen/saya",
+    "implementation": "AssessmentController::history/mine",
+    "tables": [
+      "siswa",
+      "asesmen_karakteristik",
+      "asesmen_riasec",
+      "asesmen_multiple_intelligence"
+    ],
+    "activity_nodes": [
+      "read"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC11",
+    "use_case": "Kelola dan verifikasi data pendukung",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Eligibilitas – Input Data Pendukung"
+    ],
+    "api": "GET /siswa/{id}/data-pendukung; /siswa/{id}/pendukung/{type}; /nilai-rapor; /presensi; /kelengkapan",
+    "implementation": "StudentSupportController; ClamAvScanner; StudentProfile",
+    "tables": [
+      "siswa",
+      "nilai_rapor",
+      "rekap_presensi",
+      "catatan_karakter",
+      "riwayat_organisasi",
+      "prestasi_murid",
+      "saudara_tiri",
+      "private_attachments"
+    ],
+    "activity_nodes": [
+      "data",
+      "datasave"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC12",
+    "use_case": "Atur dan hitung program eligibilitas",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Eligibilitas – Kriteria & Setting"
+    ],
+    "api": "/program-eligibilitas; POST /program-eligibilitas/{id}/hitung; GET /program-eligibilitas/{id}/hasil",
+    "implementation": "SchoolEligibility; Criteria; EligibilityEvaluator",
+    "tables": [
+      "program_eligibilitas",
+      "hasil_program_eligibilitas",
+      "siswa",
+      "nilai_rapor",
+      "orang_tua",
+      "bantuan_siswa",
+      "prestasi_murid"
+    ],
+    "activity_nodes": [
+      "compute"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC13",
+    "use_case": "Lihat status eligibilitas",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Eligibilitas – Cek Status"
+    ],
+    "api": "GET /program-eligibilitas/{id}/hasil; GET /eligibilitas/saya",
+    "implementation": "SchoolEligibility::studentResult; SchoolEligibilityController",
+    "tables": [
+      "program_eligibilitas",
+      "hasil_program_eligibilitas",
+      "siswa"
+    ],
+    "activity_nodes": [
+      "read"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC14",
+    "use_case": "Kelola penerimaan PT dan izin publikasi",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Study Tracer (Alumni ke PT) – Input & Kelola"
+    ],
+    "api": "/study-tracer; PATCH /study-tracer/{id}/publikasi",
+    "implementation": "StudyTracerController::save/publish; study_tracer_prestasi",
+    "tables": [
+      "siswa",
+      "perguruan_tinggi",
+      "study_tracer",
+      "study_tracer_prestasi",
+      "prestasi_murid",
+      "buku_alumni"
+    ],
+    "activity_nodes": [
+      "alumni",
+      "history",
+      "consent"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_alumni"
+    ]
+  },
+  {
+    "id": "UC15",
+    "use_case": "Catat, revisi dan publikasikan progres kuliah",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Alumni di PT – Input & Kelola Progress"
+    ],
+    "api": "POST /alumni/{id}/progress; PATCH /alumni-progress/{id}; PATCH /alumni-progress/{id}/publikasi",
+    "implementation": "AlumniService::saveProgress; StudyTracerController::progress/publishProgress",
+    "tables": [
+      "alumni_progress",
+      "alumni_progress_beasiswa",
+      "study_tracer",
+      "siswa",
+      "basis_data_beasiswa"
+    ],
+    "activity_nodes": [
+      "alumni",
+      "history",
+      "consent"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_alumni"
+    ]
+  },
+  {
+    "id": "UC16",
+    "use_case": "Lihat penerimaan dan progres alumni",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Study Tracer & Progress Alumni – Lihat Data (gabungan dari \"Study Tracer – Lihat Data\" & \"Alumni di PT – Lihat Track\")"
+    ],
+    "api": "GET /study-tracer; /study-tracer/{id}; GET /jejak-alumni; /jejak-alumni/{id}",
+    "implementation": "StudyTracerController::query/studentIndex/studentShow; AlumniService::admission/progress",
+    "tables": [
+      "study_tracer",
+      "study_tracer_prestasi",
+      "prestasi_murid",
+      "alumni_progress",
+      "alumni_progress_beasiswa",
+      "perguruan_tinggi",
+      "siswa"
+    ],
+    "activity_nodes": [
+      "read",
+      "readscope",
+      "publish"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_alumni"
+    ]
+  },
+  {
+    "id": "UC17",
+    "use_case": "Lihat timeline pendidikan alumni",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Alumni & Beasiswa – Timeline Individu ⭐ (Flagship)"
+    ],
+    "api": "GET /alumni/{id}/timeline; detail /jejak-alumni/{id}",
+    "implementation": "AlumniService::timeline",
+    "tables": [
+      "siswa",
+      "riwayat_kelas",
+      "study_tracer",
+      "alumni_progress",
+      "alumni_progress_beasiswa"
+    ],
+    "activity_nodes": [
+      "read",
+      "readscope"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_alumni"
+    ]
+  },
+  {
+    "id": "UC18",
+    "use_case": "Analitik beasiswa dan publikasi pola agregat",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Alumni & Beasiswa – Analitik Beasiswa ⭐ (Flagship)",
+      "[FEATURE] Ringkasan Pola per Angkatan ⭐ BARU (opsional/SHOULD HAVE)"
+    ],
+    "api": "/analitik-beasiswa; /analitik-beasiswa/export; /analitik-beasiswa/pola; PATCH /siswa/{id}/izin-analitik",
+    "implementation": "Analytics; AnalyticsController; published_cohort_summaries",
+    "tables": [
+      "alumni_progress",
+      "alumni_progress_beasiswa",
+      "study_tracer",
+      "siswa",
+      "basis_data_beasiswa",
+      "published_cohort_summaries"
+    ],
+    "activity_nodes": [
+      "alumni",
+      "aggregate",
+      "consent"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_analytics"
+    ]
+  },
+  {
+    "id": "UC19",
+    "use_case": "Kelola dan cari katalog beasiswa",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Basis Data Beasiswa ⭐ BARU"
+    ],
+    "api": "GET/POST /beasiswa; PUT/DELETE /beasiswa/{id}",
+    "implementation": "BasisDataBeasiswaController; KriteriaKelayakanBeasiswa",
+    "tables": [
+      "basis_data_beasiswa",
+      "kriteria_kelayakan_beasiswa",
+      "program_eligibilitas"
+    ],
+    "activity_nodes": [
+      "data",
+      "datasave"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_catalog"
+    ]
+  },
+  {
+    "id": "UC20",
+    "use_case": "Buat dan tinjau rekomendasi beasiswa AI",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "[FEATURE] Rekomendasi Beasiswa (AI) – Lihat (Siswa) ⭐ BARU"
+    ],
+    "api": "POST /siswa/{id}/rekomendasi-beasiswa/generate; PATCH /rekomendasi-beasiswa/{id}/review",
+    "implementation": "ScholarshipRecommendationService; EligibilityEvaluator; GeminiScholarshipExplainer; RekomendasiBeasiswaController",
+    "tables": [
+      "siswa",
+      "program_eligibilitas",
+      "basis_data_beasiswa",
+      "kriteria_kelayakan_beasiswa",
+      "rekomendasi_beasiswa",
+      "rekomendasi_beasiswa_detail"
+    ],
+    "activity_nodes": [
+      "ai",
+      "candidates",
+      "evaluate",
+      "gemini",
+      "responseok",
+      "draft",
+      "review",
+      "approve"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_ai",
+      "sq_ai_alt",
+      "sq_review"
+    ]
+  },
+  {
+    "id": "UC21",
+    "use_case": "Lihat rekomendasi beasiswa sendiri",
+    "actors": [
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Rekomendasi Beasiswa (AI) – Lihat (Siswa) ⭐ BARU"
+    ],
+    "api": "GET /rekomendasi-beasiswa/saya",
+    "implementation": "RekomendasiBeasiswaController::mine",
+    "tables": [
+      "users",
+      "siswa",
+      "rekomendasi_beasiswa",
+      "rekomendasi_beasiswa_detail",
+      "published_cohort_summaries"
+    ],
+    "activity_nodes": [
+      "read",
+      "readscope"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_read_ai"
+    ]
+  },
+  {
+    "id": "UC22",
+    "use_case": "Kelola dan tinjau rekomendasi jurusan",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "Sidebar/kontrak backend"
+    ],
+    "api": "/klaster-jurusan; POST /siswa/{id}/rekomendasi-jurusan/generate; PATCH /rekomendasi-jurusan/{batch}/review",
+    "implementation": "MajorRecommendation::sources/generate; MajorRecommendationController",
+    "tables": [
+      "klaster_prodi",
+      "bobot_mapel_klaster",
+      "rekomendasi_prodi",
+      "siswa",
+      "nilai_rapor",
+      "asesmen_karakteristik",
+      "asesmen_multiple_intelligence"
+    ],
+    "activity_nodes": [
+      "data",
+      "compute"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC23",
+    "use_case": "Lihat rekomendasi jurusan sendiri",
+    "actors": [
+      "Siswa"
+    ],
+    "prd": [
+      "Sidebar/kontrak backend"
+    ],
+    "api": "GET /rekomendasi-jurusan/saya",
+    "implementation": "MajorRecommendationController::mine",
+    "tables": [
+      "users",
+      "siswa",
+      "rekomendasi_prodi",
+      "klaster_prodi"
+    ],
+    "activity_nodes": [
+      "read",
+      "readscope"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  },
+  {
+    "id": "UC24",
+    "use_case": "Logout dan cabut token perangkat",
+    "actors": [
+      "Admin sekolah",
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Login (Update — tambah Google Login & Manajemen Sesi Admin)"
+    ],
+    "api": "POST /logout",
+    "implementation": "AuthController::logout; SessionIssuer::revoke",
+    "tables": [
+      "personal_access_tokens"
+    ],
+    "activity_nodes": [
+      "logout"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_logout"
+    ]
+  },
+  {
+    "id": "UC25",
+    "use_case": "Lihat pola alumni terpublikasi",
+    "actors": [
+      "Siswa"
+    ],
+    "prd": [
+      "[FEATURE] Ringkasan Pola per Angkatan ⭐ BARU (opsional/SHOULD HAVE)"
+    ],
+    "api": "GET /pola-alumni",
+    "implementation": "Analytics::published; AnalyticsController::published",
+    "tables": [
+      "published_cohort_summaries",
+      "siswa",
+      "basis_data_beasiswa"
+    ],
+    "activity_nodes": [
+      "read",
+      "readscope"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_analytics"
+    ]
+  },
+  {
+    "id": "UC26",
+    "use_case": "Impor dan rekonsiliasi data sekolah",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "Kebutuhan operasional rekonsiliasi sekolah"
+    ],
+    "api": "Batch backend terkurasi; POST /alumni/import memiliki cakupan template tersendiri",
+    "implementation": "Batch impor sekolah dan peminatan 2 Nov 2026; siswa.catatan; laporan impor terverifikasi",
+    "tables": [
+      "siswa",
+      "perguruan_tinggi",
+      "buku_alumni",
+      "study_tracer",
+      "prestasi_murid"
+    ],
+    "activity_nodes": [
+      "import",
+      "importok",
+      "source",
+      "importsave",
+      "importcheck"
+    ],
+    "sequence_fragments": [
+      "sq_import",
+      "sq_import_alt"
+    ]
+  },
+  {
+    "id": "UC27",
+    "use_case": "Kelola referensi sekolah dan kampus",
+    "actors": [
+      "Admin sekolah"
+    ],
+    "prd": [
+      "Sidebar/kontrak backend"
+    ],
+    "api": "GET/POST /referensi/{type}; PUT/DELETE /referensi/{type}/{id}",
+    "implementation": "ReferenceController",
+    "tables": [
+      "kelas",
+      "mata_pelajaran",
+      "jenis_bantuan",
+      "hobi",
+      "cita_cita",
+      "perguruan_tinggi"
+    ],
+    "activity_nodes": [
+      "data",
+      "datasave"
+    ],
+    "sequence_fragments": [
+      "sq_guard",
+      "sq_data"
+    ]
+  }
+]

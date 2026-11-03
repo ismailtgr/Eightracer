@@ -12,10 +12,10 @@ class SessionIssuer
         return DB::transaction(function () use ($user) {
             $user = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
             abort_unless($user->email_verified_at, 403, 'Verifikasi email diperlukan.');
-            if ($user->role === 'administrator') {
+            if (SchoolAccess::isStaff($user)) {
                 $this->revoke($user);
             }
-            $expires = now()->addHours($user->role === 'administrator' ? 72 : 168);
+            $expires = now()->addHours(SchoolAccess::isStaff($user) ? 72 : 168);
             $token = $user->createToken('auth-token', ['*'], $expires)->plainTextToken;
 
             return ['message' => 'Login berhasil', 'user' => $this->profile($user), 'token' => $token, 'expires_at' => $expires->toIso8601String()];
@@ -25,6 +25,7 @@ class SessionIssuer
     public function profile(User $user): array
     {
         return ['id' => $user->id, 'full_name' => $user->full_name, 'email' => $user->email, 'role' => $user->role,
+            'school_staff' => SchoolAccess::isStaff($user), 'school_role' => SchoolAccess::isStaff($user) && $user->role === 'guru' ? 'guru_bk' : $user->role,
             'email_verified' => (bool) $user->email_verified_at, 'has_password' => $user->password !== null,
             'google_connected' => $user->google_id !== null, 'photo_url' => $user->photo_path ? url('/api/profile/photo') : null];
     }

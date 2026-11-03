@@ -1,0 +1,1612 @@
+[
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/register",
+        "action": "App\\Http\\Controllers\\Api\\SchoolAuthController@register",
+        "middleware": [
+            "api",
+            "throttle:otp-request"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/login",
+        "action": "App\\Http\\Controllers\\Api\\SchoolAuthController@login",
+        "middleware": [
+            "api",
+            "throttle:login"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/forgot-password",
+        "action": "App\\Http\\Controllers\\Api\\SchoolAuthController@forgot",
+        "middleware": [
+            "api",
+            "throttle:otp-request"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/reset-password",
+        "action": "App\\Http\\Controllers\\Api\\SchoolAuthController@reset",
+        "middleware": [
+            "api",
+            "throttle:otp-verify"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/beasiswa",
+        "action": "App\\Http\\Controllers\\Api\\BasisDataBeasiswaController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/beasiswa",
+        "action": "App\\Http\\Controllers\\Api\\BasisDataBeasiswaController@store",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/beasiswa\/{beasiswa}",
+        "action": "App\\Http\\Controllers\\Api\\BasisDataBeasiswaController@update",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/beasiswa\/{beasiswa}",
+        "action": "App\\Http\\Controllers\\Api\\BasisDataBeasiswaController@archive",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/rekomendasi-beasiswa\/saya",
+        "action": "App\\Http\\Controllers\\Api\\RekomendasiBeasiswaController@mine",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/rekomendasi-beasiswa",
+        "action": "App\\Http\\Controllers\\Api\\RekomendasiBeasiswaController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/rekomendasi-beasiswa\/generate",
+        "action": "App\\Http\\Controllers\\Api\\RekomendasiBeasiswaController@generate",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:5,1"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/rekomendasi-beasiswa\/preview",
+        "action": "App\\Http\\Controllers\\Api\\RekomendasiBeasiswaController@preview",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:10,1"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/rekomendasi-beasiswa\/{rekomendasi}\/review",
+        "action": "App\\Http\\Controllers\\Api\\RekomendasiBeasiswaController@review",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/logout",
+        "action": "App\\Http\\Controllers\\Api\\AuthController@logout",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/me",
+        "action": "Closure",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/alumni\/import",
+        "action": "App\\Http\\Controllers\\Api\\AlumniImportController@import",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:2,1"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa",
+        "action": "App\\Http\\Controllers\\Api\\SiswaController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa",
+        "action": "App\\Http\\Controllers\\Api\\SiswaController@store",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}",
+        "action": "App\\Http\\Controllers\\Api\\SiswaController@show",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT",
+            "PATCH"
+        ],
+        "uri": "\/api\/siswa\/{siswa}",
+        "action": "App\\Http\\Controllers\\Api\\SiswaController@update",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/siswa\/{siswa}",
+        "action": "App\\Http\\Controllers\\Api\\SiswaController@destroy",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/orang-tua",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@getOrangTua",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/orang-tua",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@saveOrangTua",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/wali",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@getWali",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/wali",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@saveWali",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/media-sosial",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@getMediaSosial",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/media-sosial",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@addMediaSosial",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/bantuan",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@getBantuan",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/bantuan",
+        "action": "App\\Http\\Controllers\\Api\\KeluargaSiswaController@addBantuan",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/alumni\/progress",
+        "action": "App\\Http\\Controllers\\Api\\AlumniProgressController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/alumni\/{siswa}\/progress",
+        "action": "App\\Http\\Controllers\\Api\\AlumniProgressController@showBySiswa",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/alumni\/{siswa}\/progress",
+        "action": "App\\Http\\Controllers\\Api\\AlumniProgressController@store",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/alumni\/{siswa}\/timeline",
+        "action": "App\\Http\\Controllers\\Api\\AlumniProgressController@timeline",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/faq",
+        "action": "App\\Http\\Controllers\\Api\\DashboardController@faq",
+        "middleware": [
+            "api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/register\/verify",
+        "action": "App\\Http\\Controllers\\Api\\SchoolAuthController@verifyRegistration",
+        "middleware": [
+            "api",
+            "throttle:otp-verify"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/forgot-password\/verify",
+        "action": "App\\Http\\Controllers\\Api\\SchoolAuthController@verifyReset",
+        "middleware": [
+            "api",
+            "throttle:otp-verify"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/auth\/google\/challenge",
+        "action": "App\\Http\\Controllers\\Api\\GoogleAuthController@challenge",
+        "middleware": [
+            "api",
+            "throttle:10,1"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/auth\/google",
+        "action": "App\\Http\\Controllers\\Api\\GoogleAuthController@login",
+        "middleware": [
+            "api",
+            "throttle:login"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/beranda",
+        "action": "App\\Http\\Controllers\\Api\\DashboardController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/profile",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@show",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/profile",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@update",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/profile\/password\/otp",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@passwordOtp",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:otp-request"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/profile\/password",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@password",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:otp-verify"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/profile\/email\/otp",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@emailOtp",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:otp-request"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/profile\/email\/verify",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@emailVerify",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:otp-verify"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/profile\/photo",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@photo",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:5,1"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/profile\/photo",
+        "action": "App\\Http\\Controllers\\Api\\ProfileController@photoRead",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/profile\/google",
+        "action": "App\\Http\\Controllers\\Api\\GoogleAuthController@link",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "throttle:otp-verify"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/lampiran\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\AttachmentController@download",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/asesmen\/saya",
+        "action": "App\\Http\\Controllers\\Api\\AssessmentController@mine",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/eligibilitas\/saya",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@mine",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/rekomendasi-jurusan\/saya",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@mine",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/jejak-alumni",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@studentIndex",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/jejak-alumni\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@studentShow",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/pola-alumni",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@published",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/referensi\/{type}",
+        "action": "App\\Http\\Controllers\\Api\\ReferenceController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/referensi\/{type}",
+        "action": "App\\Http\\Controllers\\Api\\ReferenceController@store",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/referensi\/{type}\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\ReferenceController@update",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/referensi\/{type}\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\ReferenceController@destroy",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/ekonomi",
+        "action": "App\\Http\\Controllers\\Api\\StudentEconomyController@save",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT",
+            "DELETE"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/keluarga\/{type}\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudentEconomyController@updateRelated",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/data-pendukung",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@show",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/nilai-rapor",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@grades",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/presensi",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@attendance",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/kelengkapan",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@completeness",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/kelas",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@classroom",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/minat",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@interests",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/pendukung\/{type}",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@record",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/pendukung\/{type}\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@record",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/pendukung\/{type}\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudentSupportController@destroy",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/asesmen",
+        "action": "App\\Http\\Controllers\\Api\\AssessmentController@history",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/asesmen",
+        "action": "App\\Http\\Controllers\\Api\\AssessmentController@store",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/lampiran",
+        "action": "App\\Http\\Controllers\\Api\\AttachmentController@store",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:5,1"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/program-eligibilitas",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/program-eligibilitas",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@save",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/program-eligibilitas\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@save",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/program-eligibilitas\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@archive",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/program-eligibilitas\/{id}\/hitung",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@calculate",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/program-eligibilitas\/{id}\/hasil",
+        "action": "App\\Http\\Controllers\\Api\\SchoolEligibilityController@results",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/klaster-jurusan",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@clusters",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/klaster-jurusan",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@saveCluster",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/klaster-jurusan\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@saveCluster",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/klaster-jurusan\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@archive",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/rekomendasi-jurusan",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/rekomendasi-jurusan\/generate",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@generate",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:5,1"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/rekomendasi-jurusan\/{batch}\/review",
+        "action": "App\\Http\\Controllers\\Api\\MajorRecommendationController@review",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/study-tracer",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/study-tracer",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@save",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/study-tracer\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@show",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/study-tracer\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@save",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "DELETE"
+        ],
+        "uri": "\/api\/study-tracer\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@destroy",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/study-tracer\/{id}\/publikasi",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@publish",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/alumni-progress\/{id}",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@progress",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/alumni-progress\/{id}\/publikasi",
+        "action": "App\\Http\\Controllers\\Api\\StudyTracerController@publishProgress",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/analitik-beasiswa",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/analitik-beasiswa\/export",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@export",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/izin-analitik",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@consent",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/analitik-beasiswa\/pola",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@cohorts",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/analitik-beasiswa\/pola",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@create",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/analitik-beasiswa\/pola\/{id}\/publikasi",
+        "action": "App\\Http\\Controllers\\Api\\AnalyticsController@publish",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/profil-siswa\/saya",
+        "action": "App\\Http\\Controllers\\Api\\StudentInitialProfileController@show",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/profil-siswa\/saya\/submission",
+        "action": "App\\Http\\Controllers\\Api\\StudentInitialProfileController@submit",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent",
+            "throttle:scholarship-chat"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/chat-beasiswa",
+        "action": "App\\Http\\Controllers\\Api\\ScholarshipChatController@mine",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "App\\Http\\Middleware\\RequireStudent",
+            "throttle:scholarship-chat"
+        ]
+    },
+    {
+        "methods": [
+            "PUT"
+        ],
+        "uri": "\/api\/school-staff\/{user}\/bk-access",
+        "action": "App\\Http\\Controllers\\Api\\SchoolStaffController@save",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/imports\/templates\/{module}",
+        "action": "App\\Http\\Controllers\\Api\\BulkImportController@template",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/imports",
+        "action": "App\\Http\\Controllers\\Api\\BulkImportController@preview",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:bulk-preview"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/imports\/{batch}",
+        "action": "App\\Http\\Controllers\\Api\\BulkImportController@show",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/imports\/{batch}\/commit",
+        "action": "App\\Http\\Controllers\\Api\\BulkImportController@commit",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:bulk-commit"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/dashboard\/ukt-ipk",
+        "action": "App\\Http\\Controllers\\Api\\FinancialDashboardController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/buku-alumni\/pdf",
+        "action": "App\\Http\\Controllers\\Api\\FinancialDashboardController@book",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:book-pdf"
+        ]
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "\/api\/siswa\/{siswa}\/chat-beasiswa",
+        "action": "App\\Http\\Controllers\\Api\\ScholarshipChatController@staff",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator",
+            "throttle:scholarship-chat"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/profile-submissions",
+        "action": "App\\Http\\Controllers\\Api\\StudentInitialProfileController@index",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "GET",
+            "HEAD"
+        ],
+        "uri": "\/api\/profile-submissions\/{submission}",
+        "action": "App\\Http\\Controllers\\Api\\StudentInitialProfileController@detail",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    },
+    {
+        "methods": [
+            "PATCH"
+        ],
+        "uri": "\/api\/profile-submissions\/{submission}\/review",
+        "action": "App\\Http\\Controllers\\Api\\StudentInitialProfileController@review",
+        "middleware": [
+            "api",
+            "auth:sanctum",
+            "token.lifetime",
+            "throttle:api",
+            "administrator"
+        ]
+    }
+]

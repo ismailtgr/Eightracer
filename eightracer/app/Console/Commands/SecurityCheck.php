@@ -19,13 +19,14 @@ class SecurityCheck extends Command
             'Debug disabled' => config('app.debug') === false,
             'Application key present' => filled(config('app.key')),
             'HTTPS application URL' => str_starts_with((string) config('app.url'), 'https://'),
+            'HTTPS enforced by API' => app()->isProduction() || config('security.require_https'),
             'Database runtime user restricted (not root)' => ! in_array($db['username'] ?? '', ['', 'root', 'postgres', 'sa'], true),
             'Database password present' => filled($db['password'] ?? null),
             'Encrypted secure HttpOnly sessions' => config('session.encrypt') && config('session.secure') && config('session.http_only'),
             'Google client ID present' => filled(config('prd.google_client_id')),
             'Gemini key present' => filled(config('gemini.api_key')),
             'Explicit HTTPS frontend origins' => count(config('cors.allowed_origins', [])) > 0 && collect(config('cors.allowed_origins', []))->every(fn ($url) => filter_var($url, FILTER_VALIDATE_URL) && str_starts_with($url, 'https://') && ! str_contains($url, '*')),
-            'Recovery email delivery enabled' => config('prd.email_otp_enabled') && ! in_array(config('mail.default'), ['log', 'array', null], true),
+            'Recovery email delivery enabled (not local capture)' => config('prd.email_otp_enabled') && ! config('security.mail_capture_only') && ! in_array(config('mail.default'), ['log', 'array', null], true),
         ];
         try {
             $probe = tmpfile();
