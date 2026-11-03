@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\EligibilitasEngineController;
 use App\Http\Controllers\Api\BenchmarkAlumniController;
 use App\Http\Controllers\Api\RankingController;
 use App\Http\Controllers\Api\LaporanEligibilitasController;
+use App\Http\Controllers\Api\ImportExcelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PerguruanTinggiController;
@@ -67,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/v1/admin/ranking/{siswaId}/detail', [RankingController::class, 'getDetailSkorSiswa']);
     Route::get('/v1/admin/ranking/export/pdf', [LaporanEligibilitasController::class, 'exportPdf']);
     Route::get('/v1/admin/ranking/export/excel', [LaporanEligibilitasController::class, 'exportExcel']);
+    Route::post('/v1/admin/import/excel', [ImportExcelController::class, 'importExcel']);
 
     Route::prefix('alumni')->group(function () {
         Route::get('/', [AlumniController::class, 'index']);
