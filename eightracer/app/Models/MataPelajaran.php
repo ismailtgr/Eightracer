@@ -17,12 +17,14 @@ class MataPelajaran extends Model
         'kelompok',
         'tersedia_sebagai_pilihan',
         'deskripsi',
+        'topik_utama',
     ];
 
     protected function casts(): array
     {
         return [
             'tersedia_sebagai_pilihan' => 'boolean',
+            'topik_utama'              => 'array',
         ];
     }
 

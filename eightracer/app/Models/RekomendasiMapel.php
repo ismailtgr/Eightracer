@@ -19,14 +19,28 @@ class RekomendasiMapel extends Model
         'alasan_rekomendasi',
         'tanggal_rekomendasi',
         'tahun_ajaran',
+        'status',
+        'dikunci_oleh',
+        'dikunci_pada',
+        'probabilitas_penguasaan',
+        'strategi_belajar',
+        'fokus_penguatan_materi',
+        'catatan_evaluasi_akademik',
     ];
 
     protected function casts(): array
     {
         return [
-            'skor_rekomendasi' => 'decimal:2',
-            'tanggal_rekomendasi' => 'date:Y-m-d',
+            'skor_rekomendasi'        => 'decimal:2',
+            'tanggal_rekomendasi'     => 'date:Y-m-d',
+            'probabilitas_penguasaan' => 'decimal:2',
+            'dikunci_pada'            => 'datetime',
         ];
+    }
+
+    public function dikunciOleh(): BelongsTo
+    {
+        return $this->belongsTo(Guru::class, 'dikunci_oleh');
     }
 
     public function siswa(): BelongsTo
