@@ -1,0 +1,986 @@
+{
+  "info": {
+    "_postman_id": "5336dfd8-c886-4f34-b24c-84c0ddf57d61",
+    "name": "Eightracer B4 - Uji Sintetis 5 Nov 2026",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Hanya database eightracer_b4_uji_20261105. Password/token tidak disertakan. Jalankan folder Admin dan Siswa terpisah. Login Admin mencabut sesi admin sebelumnya."
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const base = pm.environment.get('base_url');",
+          "const allowed = [\"http://127.0.0.1:8001/api\", \"https://laptop-3qspir74.tail5f273f.ts.net/b4-test/api\"];",
+          "if (!allowed.includes(base)) { pm.execution.skipRequest(); throw new Error('Gunakan base URL database uji yang sudah disetujui.'); }",
+          "pm.sendRequest({url: base.replace(/\\/api$/, '/up'), method: 'GET'}, (err, response) => {",
+          "  if (err || response.code !== 200 || response.headers.get('X-Eightracer-Environment') !== 'b4-test-20261105') {",
+          "    pm.execution.skipRequest(); throw new Error('Penanda database uji tidak cocok. Request dibatalkan.');",
+          "  }",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Admin - CRUD dan dashboard",
+      "item": [
+        {
+          "name": "01 Login admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/login",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) { const j=pm.response.json(); pm.environment.set('admin_token', j.token); pm.test('Email terverifikasi', () => pm.expect(j.user.email_verified).to.eql(true)); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 Identitas admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/me",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 Katalog halaman pertama",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa?page=1&jenjang=SMA",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 Detail fixture",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/900001",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "05 Tambah beasiswa UJI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_beasiswa\": \"UJI FE B4 Beasiswa\",\n  \"penyelenggara\": \"UJI Penyelenggara\",\n  \"deskripsi\": \"Data sintetis untuk integrasi FE, bukan beasiswa nyata.\",\n  \"jenjang\": \"SMA\",\n  \"tanggal_buka\": \"2026-11-01\",\n  \"tanggal_tutup\": \"2026-12-31\",\n  \"link_pendaftaran\": null,\n  \"is_active\": true,\n  \"durasi\": 2,\n  \"satuan_durasi\": \"semester\",\n  \"periode_apply\": \"UJI 2026\",\n  \"program_eligibilitas_id\": null,\n  \"kriteria\": [\n    {\n      \"nama_kriteria\": \"Rapor minimum\",\n      \"tipe_kriteria\": \"rata_rapor\",\n      \"operator\": \">=\",\n      \"nilai_kriteria\": \"85\",\n      \"bobot\": 2\n    },\n    {\n      \"nama_kriteria\": \"Penghasilan orang tua\",\n      \"tipe_kriteria\": \"penghasilan_orang_tua\",\n      \"operator\": \"<=\",\n      \"nilai_kriteria\": \"3000000\",\n      \"bobot\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.environment.set('created_beasiswa_id', String(pm.response.json().data.id));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "06 Detail untuk edit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/{{created_beasiswa_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "07 Edit lengkap",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/{{created_beasiswa_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_beasiswa\": \"UJI FE B4 Beasiswa Diedit\",\n  \"penyelenggara\": \"UJI Penyelenggara\",\n  \"deskripsi\": \"Data sintetis untuk integrasi FE, bukan beasiswa nyata.\",\n  \"jenjang\": \"SMA\",\n  \"tanggal_buka\": \"2026-11-01\",\n  \"tanggal_tutup\": \"2026-12-31\",\n  \"link_pendaftaran\": null,\n  \"is_active\": true,\n  \"durasi\": 2,\n  \"satuan_durasi\": \"semester\",\n  \"periode_apply\": \"UJI 2026\",\n  \"program_eligibilitas_id\": null,\n  \"kriteria\": [\n    {\n      \"nama_kriteria\": \"Rapor minimum\",\n      \"tipe_kriteria\": \"rata_rapor\",\n      \"operator\": \">=\",\n      \"nilai_kriteria\": \"85\",\n      \"bobot\": 2\n    },\n    {\n      \"nama_kriteria\": \"Penghasilan orang tua\",\n      \"tipe_kriteria\": \"penghasilan_orang_tua\",\n      \"operator\": \"<=\",\n      \"nilai_kriteria\": \"3000000\",\n      \"bobot\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "08 Arsip tanpa body",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/{{created_beasiswa_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "09 Aktifkan ulang dengan PUT lengkap",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/{{created_beasiswa_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_beasiswa\": \"UJI FE B4 Beasiswa\",\n  \"penyelenggara\": \"UJI Penyelenggara\",\n  \"deskripsi\": \"Data sintetis untuk integrasi FE, bukan beasiswa nyata.\",\n  \"jenjang\": \"SMA\",\n  \"tanggal_buka\": \"2026-11-01\",\n  \"tanggal_tutup\": \"2026-12-31\",\n  \"link_pendaftaran\": null,\n  \"is_active\": true,\n  \"durasi\": 2,\n  \"satuan_durasi\": \"semester\",\n  \"periode_apply\": \"UJI 2026\",\n  \"program_eligibilitas_id\": null,\n  \"kriteria\": [\n    {\n      \"nama_kriteria\": \"Rapor minimum\",\n      \"tipe_kriteria\": \"rata_rapor\",\n      \"operator\": \">=\",\n      \"nilai_kriteria\": \"85\",\n      \"bobot\": 2\n    },\n    {\n      \"nama_kriteria\": \"Penghasilan orang tua\",\n      \"tipe_kriteria\": \"penghasilan_orang_tua\",\n      \"operator\": \"<=\",\n      \"nilai_kriteria\": \"3000000\",\n      \"bobot\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "10 Tolak operator tidak valid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/{{created_beasiswa_id}}",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama_beasiswa\": \"UJI FE B4 Beasiswa\",\n  \"penyelenggara\": \"UJI Penyelenggara\",\n  \"deskripsi\": \"Data sintetis untuk integrasi FE, bukan beasiswa nyata.\",\n  \"jenjang\": \"SMA\",\n  \"tanggal_buka\": \"2026-11-01\",\n  \"tanggal_tutup\": \"2026-12-31\",\n  \"link_pendaftaran\": null,\n  \"is_active\": true,\n  \"durasi\": 2,\n  \"satuan_durasi\": \"semester\",\n  \"periode_apply\": \"UJI 2026\",\n  \"program_eligibilitas_id\": null,\n  \"kriteria\": [\n    {\n      \"nama_kriteria\": \"Rapor minimum\",\n      \"tipe_kriteria\": \"rata_rapor\",\n      \"operator\": \"contains\",\n      \"nilai_kriteria\": \"85\",\n      \"bobot\": 2\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "11 Daftar program eligibilitas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/program-eligibilitas",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "12 Profil siswa sintetis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/siswa/900001",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "13 Preview kriteria tanpa Gemini",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/siswa/900001/rekomendasi-beasiswa/preview?target_jenjang=SMA",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "14 Progres alumni sintetis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/alumni/900002/progress",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "15 Dashboard UKT di bawah 2 juta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/dashboard/ukt-ipk?ukt_lt=2000000",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "16 Logout admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/logout",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.environment.unset('admin_token');"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Siswa - akses pribadi dan pembatasan",
+      "item": [
+        {
+          "name": "01 Login siswa memakai NISN",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/login",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nisn\": \"{{student_nisn}}\",\n  \"password\": \"{{student_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {const j=pm.response.json(); pm.environment.set('student_token', j.token); pm.test('Email terverifikasi', () => pm.expect(j.user.email_verified).to.eql(true));}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "02 Identitas siswa",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/me",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "03 Profil milik sendiri",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/profil-siswa/saya",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "04 Rekomendasi terpublikasi (awal kosong)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rekomendasi-beasiswa/saya",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "05 Chat berbasis kriteria tersimpan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/chat-beasiswa",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Apakah saya memenuhi syarat?\",\n  \"beasiswa_id\": 900001,\n  \"target_jenjang\": \"SMA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "06 Katalog admin harus 403",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/beasiswa/900001",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "07 Data siswa lain harus 403",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/siswa/900003",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "08 Logout siswa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/logout",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{student_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.environment.unset('student_token');"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}

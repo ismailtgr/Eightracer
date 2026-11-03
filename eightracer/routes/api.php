@@ -20,6 +20,7 @@ Route::post('/reset-password', [SchoolAuthController::class, 'reset'])->middlewa
 
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::get('/beasiswa', [BasisDataBeasiswaController::class, 'index']);
+    Route::get('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'show']);
     Route::post('/beasiswa', [BasisDataBeasiswaController::class, 'store']);
     Route::put('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'update']);
     Route::delete('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'archive']);

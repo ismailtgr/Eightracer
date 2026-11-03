@@ -38,6 +38,13 @@ class BasisDataBeasiswaController extends Controller
         return response()->json($query->orderBy('id')->paginate(20)->appends($filters));
     }
 
+    public function show(Request $request, BasisDataBeasiswa $beasiswa)
+    {
+        $this->admin($request);
+
+        return response()->json(['data' => $beasiswa->load('kriteriaKelayakanBeasiswa')]);
+    }
+
     private function rules(Request $request): array
     {
         return [

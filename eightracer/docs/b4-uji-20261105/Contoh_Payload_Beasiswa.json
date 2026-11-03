@@ -1,0 +1,30 @@
+{
+  "nama_beasiswa": "UJI FE B4 Beasiswa",
+  "penyelenggara": "UJI Penyelenggara",
+  "deskripsi": "Data sintetis untuk integrasi FE, bukan beasiswa nyata.",
+  "jenjang": "SMA",
+  "tanggal_buka": "2026-11-01",
+  "tanggal_tutup": "2026-12-31",
+  "link_pendaftaran": null,
+  "is_active": true,
+  "durasi": 2,
+  "satuan_durasi": "semester",
+  "periode_apply": "UJI 2026",
+  "program_eligibilitas_id": null,
+  "kriteria": [
+    {
+      "nama_kriteria": "Rapor minimum",
+      "tipe_kriteria": "rata_rapor",
+      "operator": ">=",
+      "nilai_kriteria": "85",
+      "bobot": 2
+    },
+    {
+      "nama_kriteria": "Penghasilan orang tua",
+      "tipe_kriteria": "penghasilan_orang_tua",
+      "operator": "<=",
+      "nilai_kriteria": "3000000",
+      "bobot": 1
+    }
+  ]
+}

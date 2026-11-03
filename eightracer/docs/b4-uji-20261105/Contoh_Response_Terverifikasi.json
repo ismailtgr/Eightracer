@@ -1,0 +1,601 @@
+{
+  "admin_me": {
+    "method": "GET",
+    "path": "/me",
+    "status": 200,
+    "body": {
+      "id": 900001,
+      "full_name": "UJI B4 Admin",
+      "email": "admin.b4.uji@eightracer.test",
+      "role": "administrator",
+      "school_staff": true,
+      "school_role": "administrator",
+      "email_verified": true,
+      "has_password": true,
+      "google_connected": false,
+      "photo_url": null
+    }
+  },
+  "student_me": {
+    "method": "GET",
+    "path": "/me",
+    "status": 200,
+    "body": {
+      "id": 900002,
+      "full_name": "UJI B4 Siswa",
+      "email": "siswa.b4.uji@eightracer.test",
+      "role": "siswa",
+      "school_staff": false,
+      "school_role": "siswa",
+      "email_verified": true,
+      "has_password": true,
+      "google_connected": false,
+      "photo_url": null
+    }
+  },
+  "catalog": {
+    "method": "GET",
+    "path": "/beasiswa",
+    "status": 200,
+    "body": {
+      "current_page": 1,
+      "data": [
+        {
+          "id": 900001,
+          "nama_beasiswa": "UJI B4 Beasiswa Sintetis",
+          "penyelenggara": "UJI Penyelenggara",
+          "deskripsi": "Contoh untuk pengujian; bukan penawaran beasiswa nyata.",
+          "jenjang": "Keduanya",
+          "tanggal_buka": null,
+          "tanggal_tutup": null,
+          "link_pendaftaran": null,
+          "is_active": true,
+          "durasi": null,
+          "satuan_durasi": null,
+          "periode_apply": null,
+          "program_eligibilitas_id": null,
+          "kriteria_kelayakan_beasiswa": [
+            {
+              "id": 1,
+              "beasiswa_id": 900001,
+              "nama_kriteria": "Rapor minimum",
+              "tipe_kriteria": "rata_rapor",
+              "operator": ">=",
+              "nilai_kriteria": "85",
+              "bobot": "2.00"
+            },
+            {
+              "id": 2,
+              "beasiswa_id": 900001,
+              "nama_kriteria": "Penghasilan orang tua",
+              "tipe_kriteria": "penghasilan_orang_tua",
+              "operator": "<=",
+              "nilai_kriteria": "3000000",
+              "bobot": "1.00"
+            }
+          ]
+        },
+        {
+          "id": 900002,
+          "nama_beasiswa": "UJI B4 Kontrak CRUD",
+          "penyelenggara": null,
+          "deskripsi": null,
+          "jenjang": "SMA",
+          "tanggal_buka": null,
+          "tanggal_tutup": null,
+          "link_pendaftaran": null,
+          "is_active": false,
+          "durasi": null,
+          "satuan_durasi": null,
+          "periode_apply": null,
+          "program_eligibilitas_id": null,
+          "kriteria_kelayakan_beasiswa": [
+            {
+              "id": 4,
+              "beasiswa_id": 900002,
+              "nama_kriteria": "Rapor",
+              "tipe_kriteria": "rata_rapor",
+              "operator": ">=",
+              "nilai_kriteria": "85",
+              "bobot": "2.00"
+            }
+          ]
+        },
+        {
+          "id": 900003,
+          "nama_beasiswa": "UJI B4 Kontrak CRUD",
+          "penyelenggara": null,
+          "deskripsi": null,
+          "jenjang": "SMA",
+          "tanggal_buka": null,
+          "tanggal_tutup": null,
+          "link_pendaftaran": null,
+          "is_active": false,
+          "durasi": null,
+          "satuan_durasi": null,
+          "periode_apply": null,
+          "program_eligibilitas_id": null,
+          "kriteria_kelayakan_beasiswa": [
+            {
+              "id": 6,
+              "beasiswa_id": 900003,
+              "nama_kriteria": "Rapor",
+              "tipe_kriteria": "rata_rapor",
+              "operator": ">=",
+              "nilai_kriteria": "85",
+              "bobot": "2.00"
+            }
+          ]
+        }
+      ],
+      "first_page_url": "https://laptop-3qspir74.tail5f273f.ts.net/api/beasiswa?page=1",
+      "from": 1,
+      "last_page": 1,
+      "last_page_url": "https://laptop-3qspir74.tail5f273f.ts.net/api/beasiswa?page=1",
+      "links": [
+        {
+          "url": null,
+          "label": "&laquo; Previous",
+          "page": null,
+          "active": false
+        },
+        {
+          "url": "https://laptop-3qspir74.tail5f273f.ts.net/api/beasiswa?page=1",
+          "label": "1",
+          "page": 1,
+          "active": true
+        },
+        {
+          "url": null,
+          "label": "Next &raquo;",
+          "page": null,
+          "active": false
+        }
+      ],
+      "next_page_url": null,
+      "path": "https://laptop-3qspir74.tail5f273f.ts.net/api/beasiswa",
+      "per_page": 20,
+      "prev_page_url": null,
+      "to": 3,
+      "total": 3
+    }
+  },
+  "detail": {
+    "method": "GET",
+    "path": "/beasiswa/900001",
+    "status": 200,
+    "body": {
+      "data": {
+        "id": 900001,
+        "nama_beasiswa": "UJI B4 Beasiswa Sintetis",
+        "penyelenggara": "UJI Penyelenggara",
+        "deskripsi": "Contoh untuk pengujian; bukan penawaran beasiswa nyata.",
+        "jenjang": "Keduanya",
+        "tanggal_buka": null,
+        "tanggal_tutup": null,
+        "link_pendaftaran": null,
+        "is_active": true,
+        "durasi": null,
+        "satuan_durasi": null,
+        "periode_apply": null,
+        "program_eligibilitas_id": null,
+        "kriteria_kelayakan_beasiswa": [
+          {
+            "id": 1,
+            "beasiswa_id": 900001,
+            "nama_kriteria": "Rapor minimum",
+            "tipe_kriteria": "rata_rapor",
+            "operator": ">=",
+            "nilai_kriteria": "85",
+            "bobot": "2.00"
+          },
+          {
+            "id": 2,
+            "beasiswa_id": 900001,
+            "nama_kriteria": "Penghasilan orang tua",
+            "tipe_kriteria": "penghasilan_orang_tua",
+            "operator": "<=",
+            "nilai_kriteria": "3000000",
+            "bobot": "1.00"
+          }
+        ]
+      }
+    }
+  },
+  "student_own_profile": {
+    "method": "GET",
+    "path": "/profil-siswa/saya",
+    "status": 200,
+    "body": {
+      "data": {
+        "id": 900001,
+        "nisn": "9999900001",
+        "nama_lengkap": "UJI B4 Siswa Sintetis",
+        "jenis_kelamin": "P",
+        "nama_panggilan": null,
+        "alamat_rumah": null,
+        "bahasa_keseharian": null,
+        "hobi": [],
+        "cita_cita": [],
+        "submissions": []
+      }
+    }
+  },
+  "recommendations_initially_empty": {
+    "method": "GET",
+    "path": "/rekomendasi-beasiswa/saya",
+    "status": 200,
+    "body": {
+      "current_page": 1,
+      "data": [],
+      "first_page_url": "https://laptop-3qspir74.tail5f273f.ts.net/api/rekomendasi-beasiswa/saya?page=1",
+      "from": null,
+      "last_page": 1,
+      "last_page_url": "https://laptop-3qspir74.tail5f273f.ts.net/api/rekomendasi-beasiswa/saya?page=1",
+      "links": [
+        {
+          "url": null,
+          "label": "&laquo; Previous",
+          "page": null,
+          "active": false
+        },
+        {
+          "url": "https://laptop-3qspir74.tail5f273f.ts.net/api/rekomendasi-beasiswa/saya?page=1",
+          "label": "1",
+          "page": 1,
+          "active": true
+        },
+        {
+          "url": null,
+          "label": "Next &raquo;",
+          "page": null,
+          "active": false
+        }
+      ],
+      "next_page_url": null,
+      "path": "https://laptop-3qspir74.tail5f273f.ts.net/api/rekomendasi-beasiswa/saya",
+      "per_page": 15,
+      "prev_page_url": null,
+      "to": null,
+      "total": 0
+    }
+  },
+  "dashboard_under_2m": {
+    "method": "GET",
+    "path": "/dashboard/ukt-ipk?ukt_lt=2000000",
+    "status": 200,
+    "body": {
+      "data": {
+        "as_of": "2026-11-03T22:08:58+00:00",
+        "filters": {
+          "ukt_lt": "2000000"
+        },
+        "jumlah_alumni": 1,
+        "ukt": {
+          "jumlah_diketahui": 1,
+          "jumlah_belum_tercatat": 0,
+          "minimum": 1500000,
+          "maksimum": 1500000,
+          "rata_rata": 1500000
+        },
+        "ipk": {
+          "jumlah_diketahui": 1,
+          "jumlah_belum_tercatat": 0,
+          "minimum": 3.65,
+          "maksimum": 3.65,
+          "rata_rata": 3.65
+        },
+        "per_kampus_prodi": [
+          {
+            "perguruan_tinggi_id": 900001,
+            "universitas": "UJI Universitas Sintetis",
+            "program_studi": "UJI Informatika",
+            "jumlah_alumni": 1,
+            "ukt": {
+              "jumlah_diketahui": 1,
+              "jumlah_belum_tercatat": 0,
+              "minimum": 1500000,
+              "maksimum": 1500000,
+              "rata_rata": 1500000
+            },
+            "ipk": {
+              "jumlah_diketahui": 1,
+              "jumlah_belum_tercatat": 0,
+              "minimum": 3.65,
+              "maksimum": 3.65,
+              "rata_rata": 3.65
+            },
+            "jumlah_penerima_kipk": 0
+          }
+        ],
+        "tren_ipk": [
+          {
+            "perguruan_tinggi_id": 900001,
+            "universitas": "UJI Universitas Sintetis",
+            "program_studi": "UJI Informatika",
+            "semester": 3,
+            "jumlah_alumni": 1,
+            "ipk": {
+              "jumlah_diketahui": 1,
+              "jumlah_belum_tercatat": 0,
+              "minimum": 3.65,
+              "maksimum": 3.65,
+              "rata_rata": 3.65
+            }
+          }
+        ],
+        "catatan": "Snapshot memakai progres terbaru per alumni dalam periode yang dipilih. Tren mengikuti riwayat semester kampus alumni pada snapshot; nilai kosong tidak dianggap nol. Tidak menyatakan biaya atau IPK seluruh populasi kampus."
+      }
+    }
+  },
+  "programs": {
+    "method": "GET",
+    "path": "/program-eligibilitas",
+    "status": 200,
+    "body": {
+      "current_page": 1,
+      "data": [
+        {
+          "id": 900001,
+          "nama": "UJI B4 Program Rapor",
+          "deskripsi": null,
+          "bobot_prestasi": null,
+          "metode_prestasi": null,
+          "bantuan_ids": null,
+          "mode_bantuan": null,
+          "kriteria": [
+            {
+              "nama_kriteria": "Rapor",
+              "tipe_kriteria": "rata_rapor",
+              "operator": ">=",
+              "nilai_kriteria": "85",
+              "bobot": 1
+            }
+          ],
+          "version": 1,
+          "is_active": true,
+          "created_at": "2026-11-03T21:56:36.000000Z",
+          "updated_at": "2026-11-03T21:56:36.000000Z"
+        }
+      ],
+      "first_page_url": "https://laptop-3qspir74.tail5f273f.ts.net/api/program-eligibilitas?page=1",
+      "from": 1,
+      "last_page": 1,
+      "last_page_url": "https://laptop-3qspir74.tail5f273f.ts.net/api/program-eligibilitas?page=1",
+      "links": [
+        {
+          "url": null,
+          "label": "&laquo; Previous",
+          "page": null,
+          "active": false
+        },
+        {
+          "url": "https://laptop-3qspir74.tail5f273f.ts.net/api/program-eligibilitas?page=1",
+          "label": "1",
+          "page": 1,
+          "active": true
+        },
+        {
+          "url": null,
+          "label": "Next &raquo;",
+          "page": null,
+          "active": false
+        }
+      ],
+      "next_page_url": null,
+      "path": "https://laptop-3qspir74.tail5f273f.ts.net/api/program-eligibilitas",
+      "per_page": 20,
+      "prev_page_url": null,
+      "to": 1,
+      "total": 1
+    }
+  },
+  "preview": {
+    "method": "GET",
+    "path": "/siswa/900001/rekomendasi-beasiswa/preview?target_jenjang=SMA",
+    "status": 200,
+    "body": {
+      "data": {
+        "target_jenjang": "SMA",
+        "pemeringkatan_ml": {
+          "metode": "tfidf-cosine-v1",
+          "status": "fallback",
+          "alasan_status": "catalog_insufficient",
+          "jumlah_dokumen": 1,
+          "jumlah_fitur": 0,
+          "model_hash": "0662af3ca816f875eddd3600b6715a9e065c620964f8bb9bca43108e2c21015b",
+          "catatan": "Skor kemiripan 0–1 adalah relevansi isi; bukan peluang menerima beasiswa."
+        },
+        "kandidat": [
+          {
+            "beasiswa_id": 900001,
+            "beasiswa": {
+              "nama_beasiswa": "UJI B4 Beasiswa Sintetis",
+              "jenjang": "Keduanya",
+              "tanggal_buka": null,
+              "tanggal_tutup": null,
+              "link_pendaftaran": null,
+              "penyelenggara": "UJI Penyelenggara",
+              "durasi": null,
+              "satuan_durasi": null,
+              "periode_apply": null,
+              "konteks": "Jenjang saat ini"
+            },
+            "evaluasi": {
+              "skor": 100,
+              "lengkap": true,
+              "memenuhi": true,
+              "checklist": [
+                {
+                  "kriteria": "rata_rapor",
+                  "operator": ">=",
+                  "syarat": "85",
+                  "status": "terpenuhi"
+                },
+                {
+                  "kriteria": "penghasilan_orang_tua",
+                  "operator": "<=",
+                  "syarat": "3000000",
+                  "status": "terpenuhi"
+                }
+              ],
+              "pemeringkatan_ml": {
+                "metode": "tfidf-cosine-v1",
+                "status": "fallback",
+                "alasan_status": "catalog_insufficient",
+                "skor_kemiripan": null,
+                "model_hash": "0662af3ca816f875eddd3600b6715a9e065c620964f8bb9bca43108e2c21015b",
+                "jumlah_dokumen": 1,
+                "peringkat": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "chat_deterministic": {
+    "method": "POST",
+    "path": "/chat-beasiswa",
+    "status": 200,
+    "body": {
+      "data": {
+        "answer": "Hasil pemeriksaan UJI B4 Beasiswa Sintetis: memenuhi kriteria tersimpan. Hasil ini merupakan pemeriksaan kriteria katalog, bukan keputusan penyelenggara.\n\nRata-rata rapor semester 1-5 yang tercatat: 88.\n\nData hasil beasiswa alumni yang tercatat dan berizin belum cukup untuk menampilkan proporsi penerimaan.\n\nLangkah berikutnya:\n- Periksa jadwal dan ketentuan terbaru pada sumber resmi penyelenggara.\n- Diskusikan hasil dan data yang belum lengkap dengan Guru BK.",
+        "status": "memenuhi_kriteria_tersimpan",
+        "llm_used": false,
+        "beasiswa_id": 900001,
+        "eligibility": {
+          "skor": 100,
+          "lengkap": true,
+          "memenuhi": true,
+          "checklist": [
+            {
+              "kriteria": "rata_rapor",
+              "operator": ">=",
+              "syarat": "85",
+              "status": "terpenuhi"
+            },
+            {
+              "kriteria": "penghasilan_orang_tua",
+              "operator": "<=",
+              "syarat": "3000000",
+              "status": "terpenuhi"
+            }
+          ]
+        },
+        "historical_evidence": {
+          "status": "insufficient_data",
+          "jumlah_diterima": null,
+          "jumlah_ditolak": null,
+          "jumlah_hasil_terminal": null,
+          "proporsi_diterima_tercatat": null,
+          "rentang_rapor_penerima": null,
+          "jalur_penerima": null,
+          "catatan": "Hanya catatan terbaru alumni yang memberi izin agregasi dan publikasi. Proporsi kasus tercatat bukan probabilitas siswa atau tingkat keberhasilan seluruh pelamar; data belum tentu mencakup semua aplikasi."
+        },
+        "sources": [
+          {
+            "id": "catalog:900001",
+            "label": "Katalog beasiswa sekolah",
+            "url": null
+          },
+          {
+            "id": "student:self",
+            "label": "Profil dan rapor milik siswa saat ini"
+          },
+          {
+            "id": "history:900001",
+            "label": "Agregat catatan alumni berizin"
+          }
+        ],
+        "context": "Jenjang saat ini"
+      }
+    }
+  },
+  "gemini_not_configured": {
+    "method": "POST",
+    "path": "/siswa/900001/rekomendasi-beasiswa/generate",
+    "status": 503,
+    "body": {
+      "message": "Layanan sementara belum tersedia."
+    }
+  },
+  "create": {
+    "method": "POST",
+    "path": "/beasiswa",
+    "status": 201,
+    "body": {
+      "data": {
+        "nama_beasiswa": "UJI B4 Kontrak CRUD",
+        "jenjang": "SMA",
+        "is_active": true,
+        "id": 900004,
+        "kriteria_kelayakan_beasiswa": [
+          {
+            "id": 7,
+            "beasiswa_id": 900004,
+            "nama_kriteria": "Rapor",
+            "tipe_kriteria": "rata_rapor",
+            "operator": ">=",
+            "nilai_kriteria": "85",
+            "bobot": "2.00"
+          }
+        ]
+      }
+    }
+  },
+  "invalid_operator": {
+    "method": "PUT",
+    "path": "/beasiswa/900004",
+    "status": 422,
+    "body": {
+      "message": "Input tidak valid.",
+      "errors": {
+        "kriteria.0.operator": [
+          "The selected kriteria.0.operator is invalid."
+        ]
+      }
+    }
+  },
+  "archive": {
+    "method": "DELETE",
+    "path": "/beasiswa/900004",
+    "status": 200,
+    "body": {
+      "message": "Beasiswa diarsipkan; riwayat rekomendasi tetap tersedia."
+    }
+  },
+  "reactivate": {
+    "method": "PUT",
+    "path": "/beasiswa/900004",
+    "status": 200,
+    "body": {
+      "data": {
+        "id": 900004,
+        "nama_beasiswa": "UJI B4 Kontrak CRUD",
+        "penyelenggara": null,
+        "deskripsi": null,
+        "jenjang": "SMA",
+        "tanggal_buka": null,
+        "tanggal_tutup": null,
+        "link_pendaftaran": null,
+        "is_active": true,
+        "durasi": null,
+        "satuan_durasi": null,
+        "periode_apply": null,
+        "program_eligibilitas_id": null,
+        "kriteria_kelayakan_beasiswa": [
+          {
+            "id": 8,
+            "beasiswa_id": 900004,
+            "nama_kriteria": "Rapor",
+            "tipe_kriteria": "rata_rapor",
+            "operator": ">=",
+            "nilai_kriteria": "85",
+            "bobot": "2.00"
+          }
+        ]
+      }
+    }
+  }
+}
