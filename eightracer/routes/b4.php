@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AlumniDirectoryController;
 use App\Http\Controllers\Api\BulkImportController;
 use App\Http\Controllers\Api\FinancialDashboardController;
 use App\Http\Controllers\Api\ScholarshipChatController;
@@ -16,6 +17,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
         Route::post('/chat-beasiswa', [ScholarshipChatController::class, 'mine'])->middleware('throttle:scholarship-chat');
     });
     Route::middleware('administrator')->group(function () {
+        Route::get('/alumni', [AlumniDirectoryController::class, 'index']);
+        Route::get('/alumni/{id}', [AlumniDirectoryController::class, 'show'])->whereNumber('id');
         Route::get('/riwayat-beasiswa-sumber', [ScholarshipSourceController::class, 'index']);
         Route::get('/riwayat-beasiswa-sumber/ringkasan', [ScholarshipSourceController::class, 'summary']);
         Route::put('/school-staff/{user}/bk-access', [SchoolStaffController::class, 'save'])->whereNumber('user');
