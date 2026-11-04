@@ -31,6 +31,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::post('/siswa/{siswa}/rekomendasi-beasiswa/generate', [RekomendasiBeasiswaController::class, 'generate'])->middleware('throttle:5,1');
     Route::get('/siswa/{siswa}/rekomendasi-beasiswa/preview', [RekomendasiBeasiswaController::class, 'preview'])->middleware(['administrator', 'throttle:10,1']);
     Route::patch('/rekomendasi-beasiswa/{rekomendasi}/review', [RekomendasiBeasiswaController::class, 'review']);
+    Route::patch('/rekomendasi-beasiswa/{rekomendasi}/detail/{detail}', [RekomendasiBeasiswaController::class, 'updateDetail'])->whereNumber(['rekomendasi', 'detail']);
+    Route::delete('/rekomendasi-beasiswa/{rekomendasi}/detail/{detail}', [RekomendasiBeasiswaController::class, 'deleteDetail'])->whereNumber(['rekomendasi', 'detail']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', function (Request $request) {
         return app(SessionIssuer::class)->profile($request->user());

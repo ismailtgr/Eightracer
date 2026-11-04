@@ -79,6 +79,7 @@ class ScholarshipRecommendationService
         $explanations = $this->gemini->explain($providerCandidates);
 
         return DB::transaction(function () use ($siswa, $preview, $candidates, $explanations) {
+            Siswa::whereKey($siswa->id)->lockForUpdate()->firstOrFail();
             $recommendation = RekomendasiBeasiswa::create([
                 'target_jenjang' => $preview['target_jenjang'], 'siswa_id' => $siswa->id, 'tanggal_rekomendasi' => today(), 'status_review' => 'pending',
                 'ai_model' => config('gemini.model'), 'prompt_version' => 'beasiswa-v1', 'source_fingerprint' => $preview['source_fingerprint'],

@@ -10,6 +10,8 @@ class RekomendasiBeasiswa extends Model
 {
     protected $table = 'rekomendasi_beasiswa';
 
+    protected $attributes = ['revision' => 1];
+
     public $timestamps = false;
 
     protected $fillable = ['target_jenjang',
@@ -27,7 +29,7 @@ class RekomendasiBeasiswa extends Model
     protected function casts(): array
     {
         return [
-            'tanggal_rekomendasi' => 'date:Y-m-d',
+            'tanggal_rekomendasi' => 'date:Y-m-d', 'revision' => 'integer',
         ];
     }
 

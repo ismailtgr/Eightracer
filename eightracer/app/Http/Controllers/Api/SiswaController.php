@@ -40,7 +40,8 @@ class SiswaController extends Controller
             $query->where('tahun_lulus', $request->input('angkatan'));
         }
         if ($request->has('rekomendasi_published')) {
-            $published = RekomendasiBeasiswa::select('siswa_id')->where('status_review', 'disetujui');
+            $latest = RekomendasiBeasiswa::selectRaw('MAX(id)')->groupBy('siswa_id', 'target_jenjang');
+            $published = RekomendasiBeasiswa::select('siswa_id')->whereIn('id', $latest)->where('status_review', 'disetujui');
             $request->boolean('rekomendasi_published') ? $query->whereIn('id', $published) : $query->whereNotIn('id', $published);
         }
         $siswa = $query->paginate($request->input('per_page', 15));
