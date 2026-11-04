@@ -21,7 +21,7 @@ class ImportExcelController extends Controller
     public function importExcel(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:5120'],
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv,txt', 'max:5120'],
         ]);
 
         $file = $request->file('file');
@@ -99,15 +99,26 @@ class ImportExcelController extends Controller
                     );
 
                     if (!empty($kelasNama)) {
-                        $kelas = Kelas::firstOrCreate(['nama_kelas' => $kelasNama]);
+                        $tingkat = 12;
+                    if (preg_match('/(10|11|12|X|XI|XII)/i', $kelasNama, $m)) {
+                        $u = strtoupper($m[1]);
+                        $tingkat = ($u === '10' || $u === 'X') ? 10 : (($u === '11' || $u === 'XI') ? 11 : 12);
+                    }
+                    $kelas = Kelas::firstOrCreate(
+                        ['nama_kelas' => $kelasNama],
+                        ['tingkat' => $tingkat, 'tahun_ajaran' => date('Y') . '/' . (date('Y') + 1)]
+                    );
                         RiwayatKelas::updateOrCreate(
                             ['siswa_id' => $siswa->id, 'kelas_id' => $kelas->id],
-                            ['tahun_ajaran' => date('Y') . '/' . (date('Y') + 1)]
+                            ['tanggal_mulai' => now()->toDateString(), 'keterangan' => 'Impor massal ' . date('Y')]
                         );
                     }
 
                     if (isset($headerMap['nilai_rapor']) && is_numeric($row[$headerMap['nilai_rapor']])) {
-                        $mapelUmum = MataPelajaran::firstOrCreate(['nama_pelajaran' => 'Rata-rata Rapor']);
+                        $mapelUmum = MataPelajaran::firstOrCreate(
+                            ['nama_mapel' => 'Rata-rata Rapor'],
+                            ['jenis_mapel' => 'U', 'kelompok' => 'Umum', 'tersedia_sebagai_pilihan' => false]
+                        );
                         NilaiRapor::updateOrCreate(
                             [
                                 'siswa_id' => $siswa->id,
@@ -129,6 +140,9 @@ class ImportExcelController extends Controller
                             [
                                 'persentase_kehadiran' => $persen,
                                 'jumlah_hadir' => (int) round(($persen / 100) * 100),
+                                'jumlah_sakit' => 0,
+                                'jumlah_izin' => 0,
+                                'jumlah_alpa' => 0,
                             ]
                         );
                     }
