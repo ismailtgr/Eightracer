@@ -18,21 +18,12 @@ class AsesmenController extends Controller
     {
         $user = $request->user();
 
-        $siswaId = $request->query('siswa_id');
-
-        if ($siswaId) {
-            $siswa = Siswa::with([
-                'asesmenRiasec',
-                'asesmenMultipleIntelligence',
-                'asesmenKarakteristik',
-            ])->find($siswaId);
-        } else {
-            $siswa = Siswa::with([
-                'asesmenRiasec',
-                'asesmenMultipleIntelligence',
-                'asesmenKarakteristik',
-            ])->where('user_id', $user->id)->first();
-        }
+        // Data ownership: selalu dari akun yang login, abaikan siswa_id dari client.
+        $siswa = Siswa::with([
+            'asesmenRiasec',
+            'asesmenMultipleIntelligence',
+            'asesmenKarakteristik',
+        ])->where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([
@@ -60,7 +51,6 @@ class AsesmenController extends Controller
     public function storeOrUpdateAsesmen(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'siswa_id' => ['nullable', 'exists:siswa,id'],
             'tipe_kepribadian' => ['nullable', 'string', 'max:255'],
             'kecerdasan_majemuk_dominan' => ['nullable', 'string', 'max:255'],
             'kode_riasec' => ['nullable', 'string', 'max:10'],
@@ -78,11 +68,7 @@ class AsesmenController extends Controller
 
         $user = $request->user();
 
-        if (! empty($validated['siswa_id'])) {
-            $siswa = Siswa::find($validated['siswa_id']);
-        } else {
-            $siswa = Siswa::where('user_id', $user->id)->first();
-        }
+        $siswa = Siswa::where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([

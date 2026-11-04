@@ -16,13 +16,8 @@ class BenchmarkAlumniController extends Controller
     {
         $user = $request->user();
 
-        $siswaId = $request->query('siswa_id');
-
-        if ($siswaId) {
-            $siswa = Siswa::with(['nilaiRapor.mataPelajaran'])->find($siswaId);
-        } else {
-            $siswa = Siswa::with(['nilaiRapor.mataPelajaran'])->where('user_id', $user->id)->first();
-        }
+        // Data ownership: selalu dari akun yang login, abaikan siswa_id dari client.
+        $siswa = Siswa::with(['nilaiRapor.mataPelajaran'])->where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([

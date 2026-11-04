@@ -54,11 +54,59 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
+        $userPayload = $this->buildUserPayload($user);
+
         return response()->json([
+            'success' => true,
             'message' => 'Login berhasil',
-            'user'    => $user,
+            'data'    => [
+                'token' => $token,
+                'user'  => $userPayload,
+            ],
+            // Key lama dipertahankan agar frontend yang sudah ada tidak rusak
+            'user'    => $userPayload,
             'token'   => $token,
         ]);
+    }
+
+    public function me(Request $request)
+    {
+        $userPayload = $this->buildUserPayload($request->user());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data user berhasil diambil.',
+            'data'    => [
+                'user' => $userPayload,
+            ],
+            // Kompatibilitas: endpoint /me sebelumnya mengembalikan atribut user di root
+            ...$userPayload,
+        ]);
+    }
+
+    /**
+     * Susun data user beserta role dan profil terkait (siswa / guru / administrator).
+     */
+    private function buildUserPayload(User $user): array
+    {
+        $payload = $user->only(['id', 'username', 'role', 'created_at', 'updated_at']);
+
+        if ($user->role === 'siswa') {
+            $siswa = $user->siswa()->with('riwayatKelas.kelas')->first();
+
+            $payload['siswa'] = $siswa ? [
+                'id'           => $siswa->id,
+                'nisn'         => $siswa->nisn,
+                'nama_lengkap' => $siswa->nama_lengkap,
+                'kelas'        => optional(optional($siswa->riwayatKelas->first())->kelas)->nama_kelas,
+            ] : null;
+        } elseif ($user->role === 'administrator') {
+            $payload['administrator'] = $user->administrator;
+        } elseif ($user->role === 'guru') {
+            $payload['guru'] = $user->guru;
+        }
+
+        return $payload;
     }
 
     public function logout(Request $request)

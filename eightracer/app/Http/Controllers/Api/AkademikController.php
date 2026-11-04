@@ -21,25 +21,14 @@ class AkademikController extends Controller
     {
         $user = $request->user();
 
-        $siswaId = $request->query('siswa_id');
-
-        if ($siswaId) {
-            $siswa = Siswa::with([
-                'nilaiRapor.mataPelajaran',
-                'prestasiMurid',
-                'rekapPresensi',
-                'catatanKarakter',
-                'riwayatOrganisasi',
-            ])->find($siswaId);
-        } else {
-            $siswa = Siswa::with([
-                'nilaiRapor.mataPelajaran',
-                'prestasiMurid',
-                'rekapPresensi',
-                'catatanKarakter',
-                'riwayatOrganisasi',
-            ])->where('user_id', $user->id)->first();
-        }
+        // Data ownership: selalu dari akun yang login, abaikan siswa_id dari client.
+        $siswa = Siswa::with([
+            'nilaiRapor.mataPelajaran',
+            'prestasiMurid',
+            'rekapPresensi',
+            'catatanKarakter',
+            'riwayatOrganisasi',
+        ])->where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([
@@ -70,7 +59,6 @@ class AkademikController extends Controller
     public function storeOrUpdateNilaiRapor(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'siswa_id' => ['nullable', 'exists:siswa,id'],
             'nilai_tka' => ['nullable', 'numeric', 'between:0,100'],
             'nilai_rapor' => ['required', 'array'],
             'nilai_rapor.*.mata_pelajaran_id' => ['required', 'exists:mata_pelajaran,id'],
@@ -80,11 +68,7 @@ class AkademikController extends Controller
 
         $user = $request->user();
 
-        if (! empty($validated['siswa_id'])) {
-            $siswa = Siswa::find($validated['siswa_id']);
-        } else {
-            $siswa = Siswa::where('user_id', $user->id)->first();
-        }
+        $siswa = Siswa::where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([
@@ -128,7 +112,6 @@ class AkademikController extends Controller
     public function storePrestasi(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'siswa_id' => ['nullable', 'exists:siswa,id'],
             'jenis_prestasi' => ['required', 'string', 'max:100'],
             'nama_kompetisi' => ['required', 'string', 'max:255'],
             'bidang' => ['nullable', 'string', 'max:100'],
@@ -143,11 +126,7 @@ class AkademikController extends Controller
 
         $user = $request->user();
 
-        if (! empty($validated['siswa_id'])) {
-            $siswa = Siswa::find($validated['siswa_id']);
-        } else {
-            $siswa = Siswa::where('user_id', $user->id)->first();
-        }
+        $siswa = Siswa::where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([
@@ -171,7 +150,6 @@ class AkademikController extends Controller
     public function storePresensiDanKarakter(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'siswa_id' => ['nullable', 'exists:siswa,id'],
             'presensi' => ['nullable', 'array'],
             'presensi.*.semester' => ['required_with:presensi', 'integer', 'between:1,6'],
             'presensi.*.jumlah_hadir' => ['required_with:presensi', 'integer', 'min:0'],
@@ -195,11 +173,7 @@ class AkademikController extends Controller
 
         $user = $request->user();
 
-        if (! empty($validated['siswa_id'])) {
-            $siswa = Siswa::find($validated['siswa_id']);
-        } else {
-            $siswa = Siswa::where('user_id', $user->id)->first();
-        }
+        $siswa = Siswa::where('user_id', $user->id)->first();
 
         if (! $siswa) {
             return response()->json([
