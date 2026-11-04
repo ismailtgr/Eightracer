@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class StudyTracer extends Model
 {
@@ -70,6 +71,12 @@ class StudyTracer extends Model
     public function alumniProgress(): HasMany
     {
         return $this->hasMany(AlumniProgress::class, 'study_tracer_id');
+    }
+
+    public function latestCurrentProgress(): HasOne
+    {
+        return $this->hasOne(AlumniProgress::class, 'study_tracer_id')
+            ->ofMany(['tanggal_update' => 'max', 'id' => 'max'], fn ($q) => $q->where('is_current', true));
     }
 
     public function prestasi(): BelongsToMany

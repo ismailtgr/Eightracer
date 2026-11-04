@@ -7,6 +7,7 @@ use App\Models\PerguruanTinggi;
 use App\Models\BasisDataBeasiswa;
 use App\Models\StudyTracer;
 use App\Services\School\AlumniAdmissionPath;
+use App\Services\School\AlumniTimeline;
 use Illuminate\Http\Request;
 
 class AlumniDirectoryController extends Controller
@@ -48,14 +49,18 @@ class AlumniDirectoryController extends Controller
             'page' => 'sometimes|integer|min:1',
             'per_page' => 'sometimes|integer|between:1,100',
             'include_filters' => 'sometimes|boolean',
+            'timeline_complete' => 'sometimes|boolean',
         ]);
-        $query = $this->base()->with($this->relations());
+        $base = $this->base();
+        $timelineOnly = $request->boolean('timeline_complete');
+        if ($timelineOnly) $base->whereIn('id', app(AlumniTimeline::class)->completeIds());
+        $query = (clone $base)->with($this->relations());
         if ($request->filled('search')) {
             $query->whereHas('siswa', fn ($q) => $q->where('nama_lengkap', 'like', '%'.$data['search'].'%'));
         }
         $sourcePaths = collect();
         if ($request->filled('jalur_masuk') || $request->boolean('include_filters')) {
-            $sourcePaths = $this->base()->where('jalur_masuk', 'Lainnya')->with(['siswa'])->get()
+            $sourcePaths = (clone $base)->where('jalur_masuk', 'Lainnya')->with(['siswa'])->get()
                 ->mapWithKeys(fn ($record) => [$record->id => app(AlumniAdmissionPath::class)->label($record)]);
         }
         if ($request->filled('jalur_masuk')) {
@@ -73,13 +78,14 @@ class AlumniDirectoryController extends Controller
         $page = $query->orderByDesc('id')->paginate($request->integer('per_page', 8))
             ->through(fn ($record) => $this->row($record));
         $result = $page->toArray();
+        if ($timelineOnly) $result['timeline_complete_only'] = true;
         if ($request->boolean('include_filters')) {
             $result['filters'] = [
-                'universities' => PerguruanTinggi::whereIn('id', $this->base()->select('perguruan_tinggi_id'))
+                'universities' => PerguruanTinggi::whereIn('id', (clone $base)->select('perguruan_tinggi_id'))
                     ->orderBy('nama_pt')->get(['id', 'nama_pt']),
-                'study_programs' => $this->base()->whereNotNull('program_studi')->where('program_studi', '<>', '')
+                'study_programs' => (clone $base)->whereNotNull('program_studi')->where('program_studi', '<>', '')
                     ->distinct()->orderBy('program_studi')->pluck('program_studi'),
-                'admission_paths' => $this->base()->whereNotNull('jalur_masuk')->whereNotIn('jalur_masuk', ['', 'Lainnya'])
+                'admission_paths' => (clone $base)->whereNotNull('jalur_masuk')->whereNotIn('jalur_masuk', ['', 'Lainnya'])
                     ->distinct()->pluck('jalur_masuk')->merge($sourcePaths->filter()->values())->unique()->sort()->values(),
             ];
         }
@@ -96,10 +102,15 @@ class AlumniDirectoryController extends Controller
         return $classes ? implode(' / ', $classes) : null;
     }
 
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
+        $request->validate(['timeline_complete' => 'sometimes|boolean']);
         $record = $this->base()->with([...$this->relations(), 'siswa.riwayatKelas.kelas', 'alumniProgress.alumniProgressBeasiswa.beasiswa'])->findOrFail($id);
+        $timeline = app(AlumniTimeline::class);
+        $complete = $timeline->isComplete($record);
+        abort_if($request->boolean('timeline_complete') && !$complete, 404);
         $result = [...$this->row($record),
+            'timeline_complete' => $complete, 'education_events' => $timeline->educationEvents($record),
             'has_nisn' => filled($record->siswa?->nisn),
             'kelas_terakhir' => $record->siswa?->riwayatKelas->sortByDesc('tanggal_mulai')->first()?->kelas?->nama_kelas
                 ?? $this->sourceClassroom($record),
