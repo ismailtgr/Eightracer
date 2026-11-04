@@ -43,7 +43,8 @@ class ProfileController extends Controller
             $user = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
             if ($user->password) {
                 abort_unless(Hash::check($d['current_password'] ?? '', $user->password), 422);
-            }$user->forceFill(['password' => Hash::make($d['password'])])->save();
+            }
+            $user->forceFill(['password' => Hash::make($d['password']), 'school_password_changed_at' => now()])->save();
             $sessions->revoke($user);
         };
         if ($user->password) {

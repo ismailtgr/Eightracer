@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BasisDataBeasiswaController;
 use App\Http\Controllers\Api\KeluargaSiswaController;
 use App\Http\Controllers\Api\RekomendasiBeasiswaController;
 use App\Http\Controllers\Api\SchoolAuthController;
+use App\Http\Controllers\Api\SchoolAccountController;
 use App\Http\Controllers\Api\SiswaController;
 use App\Services\Auth\SessionIssuer;
 use Illuminate\Http\Request;
@@ -35,6 +36,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     });
 
     Route::middleware('administrator')->group(function () {
+        Route::post('/akun-siswa/provision', [SchoolAccountController::class, 'provision'])->middleware('throttle:2,1');
+
         // --- Kelompok B3 ---
         Route::post('/alumni/import', [AlumniImportController::class, 'import'])->middleware('throttle:2,1');
 

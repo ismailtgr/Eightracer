@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Schema;
 
 class SchoolAccess
 {
+    public static function canAuthenticate(?User $user): bool
+    {
+        return $user !== null && ($user->email_verified_at !== null
+            || ($user->role === 'siswa' && $user->school_provisioned_at !== null && $user->siswa()->exists()));
+    }
+
     public static function isStaff(?User $user): bool
     {
         if ($user?->role === 'administrator') {

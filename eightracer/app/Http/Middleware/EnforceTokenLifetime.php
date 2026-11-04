@@ -11,7 +11,7 @@ class EnforceTokenLifetime
 {
     public function handle(Request $request, Closure $next)
     {
-        abort_unless($request->user()?->email_verified_at, 403, 'Verifikasi email diperlukan.');
+        abort_unless(SchoolAccess::canAuthenticate($request->user()), 403, 'Akun belum aktif. Hubungi admin sekolah.');
         $token = $request->user()?->currentAccessToken();
         abort_unless($token instanceof PersonalAccessToken, 401, 'Silakan login kembali.');
         $hours = SchoolAccess::isStaff($request->user()) ? 72 : 168;

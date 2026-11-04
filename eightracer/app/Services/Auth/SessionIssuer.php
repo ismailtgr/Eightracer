@@ -11,7 +11,7 @@ class SessionIssuer
     {
         return DB::transaction(function () use ($user) {
             $user = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
-            abort_unless($user->email_verified_at, 403, 'Verifikasi email diperlukan.');
+            abort_unless(SchoolAccess::canAuthenticate($user), 403, 'Akun belum aktif. Hubungi admin sekolah.');
             if (SchoolAccess::isStaff($user)) {
                 $this->revoke($user);
             }
@@ -26,7 +26,11 @@ class SessionIssuer
     {
         return ['id' => $user->id, 'full_name' => $user->full_name, 'email' => $user->email, 'role' => $user->role,
             'school_staff' => SchoolAccess::isStaff($user), 'school_role' => SchoolAccess::isStaff($user) && $user->role === 'guru' ? 'guru_bk' : $user->role,
-            'email_verified' => (bool) $user->email_verified_at, 'has_password' => $user->password !== null,
+            'email_verified' => (bool) $user->email_verified_at,
+            'account_active' => SchoolAccess::canAuthenticate($user),
+            'school_provisioned' => $user->school_provisioned_at !== null,
+            'password_change_recommended' => $user->school_provisioned_at !== null && $user->school_password_changed_at === null,
+            'has_password' => $user->password !== null,
             'google_connected' => $user->google_id !== null, 'photo_url' => $user->photo_path ? url('/api/profile/photo') : null];
     }
 

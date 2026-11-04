@@ -28,37 +28,14 @@ class SchoolAuthController extends Controller
             }];
     }
 
-    public function register(Request $r, OtpService $otp)
+    public function register(Request $r)
     {
-        abort_if($r->input('role', 'siswa') !== 'siswa', 403);
-        $d = $r->validate(['full_name' => 'required|string|max:255', 'email' => 'required|email:rfc|max:255',
-            'nisn' => 'required|digits:10', 'password' => self::passwordRules(), 'role' => 'prohibited', 'user_id' => 'prohibited']);
-        $email = mb_strtolower(trim($d['email']));
-        $s = Siswa::where('nisn', $d['nisn'])->whereNull('user_id')->where('registration_email', $email)->first();
-        if (! $s || User::where('email', $email)->exists()) {
-            throw ValidationException::withMessages(['pendaftaran' => 'Data belum dapat didaftarkan. Hubungi admin sekolah untuk memeriksa NISN dan email pendaftaran.']);
-        }
-        $id = $otp->issue('register', $email, ['full_name' => $d['full_name'], 'password_hash' => Hash::make($d['password'])], null, $s->id);
-
-        return response()->json(['message' => 'Verifikasi email untuk mengaktifkan akun.', 'challenge_id' => $id, 'expires_in' => config('prd.otp_seconds')], 202);
+        return response()->json(['message' => 'Registrasi mandiri ditutup. Akun siswa disiapkan oleh admin sekolah.'], 410);
     }
 
-    public function verifyRegistration(Request $r, OtpService $otp, SessionIssuer $sessions)
+    public function verifyRegistration(Request $r)
     {
-        $d = $r->validate(['challenge_id' => 'required|uuid', 'otp' => 'required|string|regex:/^[0-9]{6}$/']);
-        $user = $otp->consume($d['challenge_id'], 'register', $d['otp'], function ($row, $payload) {
-            $s = Siswa::whereKey($row->siswa_id)->lockForUpdate()->first();
-            abort_unless($s && ! $s->user_id && $s->registration_email === $row->email && ! User::where('email', $row->email)->exists(), 409);
-            $u = new User;
-            $u->forceFill(['username' => $row->email, 'email' => $row->email, 'full_name' => $payload['full_name'],
-                'password' => $payload['password_hash'], 'role' => 'siswa', 'email_verified_at' => now()])->save();
-            $s->user_id = $u->id;
-            $s->save();
-
-            return $u;
-        });
-
-        return response()->json($sessions->issue($user), 201);
+        return response()->json(['message' => 'Registrasi mandiri ditutup. Hubungi admin sekolah untuk akun siswa.'], 410);
     }
 
     public function login(Request $r, SessionIssuer $sessions)

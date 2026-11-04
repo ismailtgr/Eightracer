@@ -13,24 +13,13 @@ class PrdAuthenticationTest extends TestCase
 {
     use PrdFixtures,RefreshDatabase;
 
-    public function test_roster_registration_requires_email_ownership_then_links_existing_student(): void
+    public function test_roster_cannot_be_claimed_through_public_registration(): void
     {
-        $this->mailReady();
         $s = $this->student(null, ['registration_email' => 'student@example.test']);
-        $body = ['full_name' => 'Nama Akun', 'email' => 'student@example.test', 'nisn' => $s->nisn, 'password' => 'Strong-Test123!', 'password_confirmation' => 'Strong-Test123!'];
-        $this->postJson('/api/register', [...$body, 'email' => 'attacker@example.test'])->assertUnprocessable();
-        $id = $this->postJson('/api/register', $body)->assertAccepted()->assertJsonMissingPath('otp')->json('challenge_id');
+        $this->postJson('/api/register', ['nisn' => $s->nisn, 'email' => 'student@example.test'])->assertStatus(410);
+        $this->postJson('/api/register/verify', [])->assertStatus(410);
         $this->assertDatabaseCount('users', 0);
         $this->assertNull($s->fresh()->user_id);
-        $row = DB::table('auth_challenges')->where('id', $id)->first();
-        $this->assertStringNotContainsString('Nama Akun', $row->payload);
-        $this->assertStringNotContainsString('Strong-Test123!', $row->payload);
-        $code = $this->code($body['email'], 'register');
-        $u = $this->postJson('/api/register/verify', ['challenge_id' => $id, 'otp' => $code])->assertCreated()->assertJsonPath('user.role', 'siswa')->json('user.id');
-        $this->assertSame($u, $s->fresh()->user_id);
-        $this->assertSame('Murid Uji', $s->fresh()->nama_lengkap);
-        $this->postJson('/api/register/verify', ['challenge_id' => $id, 'otp' => $code])->assertUnprocessable();
-        $this->postJson('/api/login', ['email' => $body['email'], 'password' => $body['password']])->assertOk();
     }
 
     public function test_otp_expires_and_is_locked_after_five_wrong_codes(): void

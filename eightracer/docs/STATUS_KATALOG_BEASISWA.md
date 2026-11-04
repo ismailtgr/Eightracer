@@ -48,4 +48,4 @@ Jika yang dikirim hanya `periode_apply: "September–Oktober"` dan kedua tanggal
 
 Status ini khusus **program dan jadwal katalog**. Status hasil beasiswa alumni seperti `proses`, `diterima`, `ditolak`, atau catatan sumber `belum_dikonfirmasi` mempunyai makna terpisah dan tidak diganti oleh status jadwal.
 
-FE lokal sudah menampilkan kolom **Status Program** dan **Status Pendaftaran**. Field status baru yang belum tersedia pada server BE versi lama ditampilkan sebagai Jadwal belum ditentukan; FE tidak menebak tanggal atau status Dibuka.
+Field status tersedia pada BE. Sesuai arahan pemilik proyek, perubahan kolom dan tampilan FE dibatalkan; tim FE menentukan penyajiannya pada desain yang sudah ada. BE tidak menambahkan halaman baru.

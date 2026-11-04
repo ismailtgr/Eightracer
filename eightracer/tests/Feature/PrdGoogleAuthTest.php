@@ -38,13 +38,13 @@ class PrdGoogleAuthTest extends TestCase
         return ['challenge_id' => $c['challenge_id'], 'id_token' => implode('.', $parts).'.'.$enc($signature)];
     }
 
-    public function test_verified_google_registration_requires_roster_nisn_and_challenge_is_one_use(): void
+    public function test_google_cannot_register_or_claim_an_unprovisioned_student(): void
     {
-        $s = $this->student(null, ['registration_email' => 'synthetic@gmail.com']);
-        $body = $this->body(['name' => '&lt;img src=x onerror=alert(1)&gt;']);
-        $this->postJson('/api/auth/google', [...$body, 'nisn' => $s->nisn])->assertOk()->assertJsonPath('user.role', 'siswa')->assertJsonPath('user.has_password', false)->assertJsonPath('user.full_name', 'Murid Uji');
-        $this->assertNotNull($s->fresh()->user_id);
-        $this->postJson('/api/auth/google', [...$body, 'nisn' => $s->nisn])->assertUnprocessable();
+        $student = $this->student(null, ['registration_email' => 'synthetic@gmail.com']);
+        $this->postJson('/api/auth/google', $this->body())->assertForbidden();
+        $this->assertDatabaseCount('users', 0);
+        $this->assertNull($student->fresh()->user_id);
+        $this->postJson('/api/auth/google', [...$this->body(), 'nisn' => $student->nisn])->assertUnprocessable();
     }
 
     public function test_bad_signature_audience_expiry_nonce_issuer_and_unverified_email_are_rejected(): void

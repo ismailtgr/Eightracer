@@ -1,5 +1,7 @@
 # Pengamanan backend Eightracer
 
+> Revisi akun 4 November 2026: akun siswa disiapkan administrator; register publik/Google sign-up ditutup. Aktivasi akun sekolah terpisah dari verifikasi email. Ketentuan terbaru pada [AKUN_SISWA_DARI_ADMIN.md](AKUN_SISWA_DARI_ADMIN.md) menggantikan bagian pendaftaran lama di dokumen ini.
+
 Patch ini menyiapkan kontrol backend untuk aplikasi sekolah. Status pemasangan dan hasil tes ada dalam laporan audit; kode yang lulus tes belum membuktikan server deployment aman.
 
 ## Perubahan kontrak untuk FE

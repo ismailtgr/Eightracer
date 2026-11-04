@@ -26,6 +26,7 @@ class User extends Authenticatable
     {
         return ['google_id' => 'string',
             'password' => 'hashed', 'email_verified_at' => 'datetime',
+            'school_provisioned_at' => 'datetime', 'school_password_changed_at' => 'datetime',
         ];
     }
 

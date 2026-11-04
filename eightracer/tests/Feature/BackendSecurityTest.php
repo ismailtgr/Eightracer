@@ -82,7 +82,7 @@ class BackendSecurityTest extends TestCase
 
     public function test_public_registration_cannot_claim_a_school_account_or_role(): void
     {
-        $this->postJson('/api/register', ['username' => 'attacker', 'password' => 'Strong-Test123!', 'role' => 'administrator'])->assertForbidden();
+        $this->postJson('/api/register', ['username' => 'attacker', 'password' => 'Strong-Test123!', 'role' => 'administrator'])->assertStatus(410);
         $this->assertDatabaseCount('users', 0);
     }
 

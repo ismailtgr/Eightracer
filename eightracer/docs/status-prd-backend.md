@@ -1,5 +1,7 @@
 # Hasil implementasi backend Eightracer
 
+> Revisi akun 4 November 2026: akun siswa disiapkan administrator; register publik/Google sign-up ditutup. Aktivasi akun sekolah terpisah dari verifikasi email. Ketentuan terbaru pada [AKUN_SISWA_DARI_ADMIN.md](AKUN_SISWA_DARI_ADMIN.md) menggantikan bagian pendaftaran lama di dokumen ini.
+
 Tanggal: 2 November 2026. Perubahan sudah dipasang langsung di `C:\eightracer\eightracer`. Pekerjaan mengikuti peran backend/database; UI tim frontend belum diintegrasikan.
 
 ## Sudah dikerjakan

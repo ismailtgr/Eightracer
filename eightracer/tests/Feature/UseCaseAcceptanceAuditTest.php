@@ -35,24 +35,22 @@ class UseCaseAcceptanceAuditTest extends TestCase
         ])->assertOk();
     }
 
-    public function test_uc02_uc06_uc24_student_registers_logs_in_reads_own_dashboard_and_logs_out(): void
+    public function test_uc02_uc06_uc24_admin_provisions_student_then_student_logs_in_reads_own_dashboard_and_logs_out(): void
     {
-        $this->mailReady();
-        $student=$this->student(null,['registration_email'=>'journey@example.test']);
-        $body=['full_name'=>'Akun Journey','email'=>'journey@example.test','nisn'=>$student->nisn,
-            'password'=>'Strong-Test123!','password_confirmation'=>'Strong-Test123!'];
-        $challenge=$this->postJson('/api/register',$body)->assertAccepted()->json('challenge_id');
-        $this->postJson('/api/register/verify',['challenge_id'=>$challenge,'otp'=>$this->code($body['email'],'register')])->assertCreated();
-        $token=$this->postJson('/api/login',['email'=>$body['email'],'password'=>$body['password']])->assertOk()->json('token');
+        $student=$this->student();
+        $this->signIn($this->account('administrator'));
+        $account=$this->postJson('/api/akun-siswa/provision',['siswa_ids'=>[$student->id],'dry_run'=>false])
+            ->assertCreated()->json('data.0');
+        $this->app['auth']->forgetGuards();
+        $token=$this->postJson('/api/login',['nisn'=>$student->nisn,'password'=>$account['initial_password']])->assertOk()->json('token');
         $this->app['auth']->forgetGuards();
         $this->withToken($token);
         $this->getJson('/api/beranda')->assertOk()->assertJsonPath('data.nama_lengkap','Murid Uji')->assertJsonMissingPath('data.total_murid');
         $this->getJson('/api/siswa')->assertForbidden();
-        $this->getJson('/api/profile')->assertOk()->assertJsonPath('data.full_name','Akun Journey');
+        $this->getJson('/api/profile')->assertOk()->assertJsonPath('data.full_name','Murid Uji');
         $this->postJson('/api/logout')->assertOk();
         $this->app['auth']->forgetGuards();
         $this->getJson('/api/me')->assertUnauthorized();
-        // Logout revokes this device's token; other student sessions may remain.
         $this->assertDatabaseMissing('personal_access_tokens',['id'=>(int)explode('|',$token,2)[0]]);
     }
 

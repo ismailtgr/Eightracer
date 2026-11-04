@@ -1,0 +1,755 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Eightracer" version="26.0.0" modified="2026-11-04">
+  <diagram id="01_use_case" name="01 Use Case — Eightracer terpadu">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3500" pageHeight="2990" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="01 Use Case — Eightracer terpadu" style="text;html=0;fontColor=#000000;fillColor=none;strokeColor=none;fontSize=30;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="15" width="3430" height="42" />
+        </mxCell>
+        <mxCell id="subtitle" value="Seluruh modul pada satu batas sistem. B4 berfokus pada katalog, eligibilitas, rekomendasi beasiswa dan jejak alumni." style="text;html=0;fontColor=#000000;fillColor=none;strokeColor=none;fontSize=18;align=left;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="64" width="3430" height="68" />
+        </mxCell>
+        <mxCell id="system" value="SISTEM EIGHTRACER" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;fillColor=none;verticalAlign=top;align=left;spacing=12;fontStyle=1;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="360" y="150" width="2400" height="2510" />
+        </mxCell>
+        <mxCell id="admin" value="Admin sekolah&#10;(role administrator)" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="1000" width="160" height="150" />
+        </mxCell>
+        <mxCell id="student" value="Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2850" y="1150" width="130" height="150" />
+        </mxCell>
+        <mxCell id="visitor" value="Pengunjung" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2850" y="290" width="160" height="150" />
+        </mxCell>
+        <mxCell id="google" value="Google Identity" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="3220" y="350" width="170" height="150" />
+        </mxCell>
+        <mxCell id="email" value="Layanan email" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="3220" y="720" width="170" height="150" />
+        </mxCell>
+        <mxCell id="gemini" value="Gemini" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="2060" width="150" height="150" />
+        </mxCell>
+        <mxCell id="scanner" value="Pemindai&#10;ClamAV" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="3220" y="1230" width="170" height="150" />
+        </mxCell>
+        <mxCell id="UC07" value="UC07&#10;Kelola biodata, keluarga dan ekonomi" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="240" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC08" value="UC08&#10;Cari dan lihat detail master siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="400" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC09" value="UC09&#10;Catat dan koreksi asesmen bertanggal" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="560" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC11" value="UC11&#10;Kelola dan verifikasi data pendukung" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="720" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC12" value="UC12&#10;Atur dan hitung program eligibilitas" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="880" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC14" value="UC14&#10;Kelola penerimaan PT dan izin publikasi" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="1040" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC15" value="UC15&#10;Catat, revisi dan publikasikan progres kuliah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="1200" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC18" value="UC18&#10;Analitik beasiswa dan publikasi pola agregat" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="1360" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC19" value="UC19&#10;Kelola dan cari katalog beasiswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="1520" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC20" value="UC20&#10;Buat dan tinjau rekomendasi beasiswa AI" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="1680" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC22" value="UC22&#10;Kelola dan tinjau rekomendasi jurusan" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="1840" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC26" value="UC26&#10;Impor dan rekonsiliasi data sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="2000" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC27" value="UC27&#10;Kelola referensi sekolah dan kampus" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="455" y="2160" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC01" value="UC01&#10;Lihat halaman publik dan FAQ" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="240" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC02" value="UC02&#10;Siapkan akun siswa oleh admin" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="400" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC03" value="UC03&#10;Login dan kelola sesi sesuai peran" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="560" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC04" value="UC04&#10;Pulihkan password melalui OTP" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="720" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC05" value="UC05&#10;Kelola profil dan ganti password sendiri" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="880" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC06" value="UC06&#10;Lihat beranda sesuai peran" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="1040" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC10" value="UC10&#10;Lihat riwayat asesmen sendiri/terpilih" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="1200" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC13" value="UC13&#10;Lihat status eligibilitas" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="1360" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC16" value="UC16&#10;Lihat penerimaan dan progres alumni" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="1520" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC17" value="UC17&#10;Lihat timeline pendidikan alumni" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="1680" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC21" value="UC21&#10;Lihat rekomendasi beasiswa sendiri" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="1840" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC23" value="UC23&#10;Lihat rekomendasi jurusan sendiri" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="2000" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC24" value="UC24&#10;Logout dan cabut token perangkat" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="2160" width="900" height="112" />
+        </mxCell>
+        <mxCell id="UC25" value="UC25&#10;Lihat pola alumni terpublikasi" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;ellipse;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1745" y="2320" width="900" height="112" />
+        </mxCell>
+        <mxCell id="uc_legend" value="LINGKUP AKSES&#10;Admin mengelola master, sumber sekolah, verifikasi, katalog dan keputusan publikasi. Siswa membaca data sendiri atau jejak alumni berizin. Akun guru lama tidak mendapat akses admin.&#10;UC26 adalah rekonsiliasi backend terkurasi; sumber sekolah dipertahankan. Status pending = menunggu pemeriksaan. Gemini menyusun penjelasan; skor dan persyaratan dihitung backend.&#10;Akun siswa disiapkan admin; registrasi publik ditutup. Aktivasi sekolah bukan verifikasi email." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="360" y="2700" width="2400" height="220" />
+        </mxCell>
+        <mxCell id="e0" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC07">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="296" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC08">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="456" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC09">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="616" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC11">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="776" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC12">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="936" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC14">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="1096" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC15">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="1256" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC18">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="1416" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC19">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="1576" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC20">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="1736" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC22">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="1896" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC26">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="2056" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC27">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="310" y="1075.0" />
+              <mxPoint x="310" y="2216" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="visitor" target="UC01">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2810" y="365.0" />
+              <mxPoint x="2810" y="296" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC02">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2810" y="365.0" />
+              <mxPoint x="2810" y="456" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC03">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="616" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e16" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC03">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="616" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC04">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="776" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC04">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="776" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC05">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="936" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC05">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="936" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC06">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="1096" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e22" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC06">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="1096" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e23" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC10">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="1256" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e24" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC10">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="1256" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e25" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC13">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="1416" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e26" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC13">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="1416" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e27" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC16">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="1576" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e28" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC16">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="1576" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e29" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC17">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="1736" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e30" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC17">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="1736" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e31" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC21">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="1896" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e32" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC23">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="2056" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e33" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="UC24">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="1075.0" />
+              <mxPoint x="270" y="185" />
+              <mxPoint x="1550" y="185" />
+              <mxPoint x="1550" y="2216" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e34" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC24">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="2216" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e35" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="student" target="UC25">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="2785" y="1225.0" />
+              <mxPoint x="2785" y="2376" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e37" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="google" target="UC03">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="3060" y="425.0" />
+              <mxPoint x="3060" y="616.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e38" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="google" target="UC05">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="3060" y="425.0" />
+              <mxPoint x="3060" y="936.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e40" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="email" target="UC04">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="3060" y="795.0" />
+              <mxPoint x="3060" y="776.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e41" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="email" target="UC05">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="3060" y="795.0" />
+              <mxPoint x="3060" y="936.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e42" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="gemini" target="UC20">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="335" y="2135.0" />
+              <mxPoint x="335" y="1736.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e43" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="scanner" target="UC05">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="3060" y="1305.0" />
+              <mxPoint x="3060" y="936.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e44" value="" style="edgeStyle=none;rounded=0;html=0;fontFamily=Arial;fontSize=17;fontColor=#000000;labelBackgroundColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;endArrow=none;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;exitPerimeter=0;entryPerimeter=0;" edge="1" parent="1" source="scanner" target="UC11">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="3120" y="1305.0" />
+              <mxPoint x="3120" y="180" />
+              <mxPoint x="1600" y="180" />
+              <mxPoint x="1600" y="776.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="02_use_scenario" name="02 Use Scenario — seluruh skenario terpadu">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3400" pageHeight="7355" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="02 Use Scenario — seluruh skenario terpadu" style="text;html=0;fontColor=#000000;fillColor=none;strokeColor=none;fontSize=30;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="15" width="3330" height="42" />
+        </mxCell>
+        <mxCell id="subtitle" value="ID tetap sama dengan Use Case, Activity, Sequence dan matriks penelusuran. Skenario lengkap ada pada panduan dan properti use case EA." style="text;html=0;fontColor=#000000;fillColor=none;strokeColor=none;fontSize=18;align=left;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="35" y="64" width="3330" height="68" />
+        </mxCell>
+        <mxCell id="head_0" value="USE CASE / AKTOR" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="170" width="700" height="70" />
+        </mxCell>
+        <mxCell id="head_1" value="ALUR UTAMA" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="170" width="1420" height="70" />
+        </mxCell>
+        <mxCell id="head_2" value="ALTERNATIF / HASIL" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="170" width="1180" height="70" />
+        </mxCell>
+        <mxCell id="UC01_0" value="UC01 — Lihat halaman publik dan FAQ&#10;&#10;Pengunjung" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="240" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC01_1" value="1. Pengunjung membuka halaman informasi aplikasi di frontend.&#10;2. Frontend mengambil FAQ publik dari backend.&#10;3. Pengunjung memilih login; akun siswa disiapkan sekolah." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="240" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC01_2" value="Prasyarat: Tidak perlu login.&#10;&#10;Landing page milik FE; FAQ tidak membuka data murid. Kegagalan layanan menampilkan pesan umum.&#10;&#10;Hasil: Informasi publik tersedia tanpa biodata sekolah." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="240" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC02_0" value="UC02 — Siapkan akun siswa oleh admin&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="500" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC02_1" value="1. Impor/pilih master siswa; pratinjau akun.&#10;2. Validasi NISN unik dan akun yang sudah ada.&#10;3. Admin melaksanakan provisioning.&#10;4. Buat username NISN + password acak; simpan hash dan relasi secara atomik.&#10;5. Admin membagikan kredensial secara pribadi.&#10;6. Siswa login lalu dapat mengganti password sendiri." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="500" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC02_2" value="Prasyarat: Administrator aktif; master siswa tersedia.&#10;&#10;NISN tidak valid, identitas konflik, atau akun sudah ada: ditahan. Email boleh kosong dan tidak dianggap terverifikasi. Tidak ada register publik/Google sign-up.&#10;&#10;Hasil: Akun siswa aktif dari sekolah; password hanya tersimpan sebagai hash." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="500" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC03_0" value="UC03 — Login dan kelola sesi sesuai peran&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="760" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC03_1" value="1. Siswa mengirim NISN dan password; admin memakai email/password.&#10;2. Periksa kredensial serta status aktivasi sekolah/akun terverifikasi.&#10;3. Login admin mencabut sesi admin sebelumnya.&#10;4. Terbitkan token admin 72 jam atau siswa 168 jam. Google hanya untuk akun yang telah tersedia." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="760" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC03_2" value="Prasyarat: Akun tersedia; siswa diaktifkan sekolah atau akun lama terverifikasi.&#10;&#10;Kredensial salah, token tidak sah/kedaluwarsa: tolak. Email kosong tidak menghalangi siswa yang disiapkan sekolah. Sesi admin lama berakhir bila akun yang sama login lagi.&#10;&#10;Hasil: Sesi sesuai peran; aktivasi sekolah terpisah dari verifikasi email." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="760" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC04_0" value="UC04 — Pulihkan password melalui OTP&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="1020" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC04_1" value="1. Minta reset melalui email; respons awal tetap umum meski akun tidak ditemukan.&#10;2. Kirim OTP sekali pakai, masa berlaku 10 menit dan maksimal lima kesalahan.&#10;3. Verifikasi OTP menjadi reset grant sekali pakai selama lima menit.&#10;4. Validasi dan hash password baru; konsumsi grant serta cabut seluruh token/sesi lama." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="1020" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC04_2" value="Prasyarat: Email terverifikasi, layanan OTP tersedia, dan batas permintaan belum terlampaui.&#10;&#10;Siswa tanpa email meminta bantuan admin; tidak ada bypass pemulihan publik. OTP/grant salah, kedaluwarsa, atau terpakai ditolak.&#10;&#10;Hasil: Password baru tersimpan dan sesi lama dicabut." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="1020" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC05_0" value="UC05 — Kelola profil dan ganti password sendiri&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="1280" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC05_1" value="1. Pemilik token membuka profil pribadi.&#10;2. Siswa mengganti password awal memakai password lama dan konfirmasi password baru; tanpa OTP email untuk akun berpassword.&#10;3. Backend memvalidasi lalu menyimpan hash password baru.&#10;4. Cabut seluruh sesi; siswa login ulang. Perubahan email/foto mengikuti validasi tersendiri." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="1280" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC05_2" value="Prasyarat: Token sah; hanya pemilik akun yang mengubah profil/password.&#10;&#10;Password lama salah: tolak. Role/user_id tidak dapat diubah. Mengganti password tidak menimpa biodata master sekolah. Email tidak wajib untuk siswa yang disiapkan admin.&#10;&#10;Hasil: Password pribadi tersimpan sebagai hash; password awal/sesi lama tidak berlaku." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="1280" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC06_0" value="UC06 — Lihat beranda sesuai peran&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="1540" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC06_1" value="1. Backend menentukan peran dari token.&#10;2. Admin menerima ringkasan agregat sekolah.&#10;3. Siswa menerima ringkasan dan pintasan milik profilnya sendiri." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="1540" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC06_2" value="Prasyarat: Token aktif.&#10;&#10;Hasil yang belum ada ditampilkan sebagai belum tersedia; tidak diisi skor atau data siswa lain.&#10;&#10;Hasil: Beranda sesuai kewenangan." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="1540" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC07_0" value="UC07 — Kelola biodata, keluarga dan ekonomi&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="1800" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC07_1" value="1. Tambah atau pilih master siswa; isi biodata tanpa mewajibkan akun login.&#10;2. Isi ayah/ibu, kondisi dan penghasilan; wali diperlukan sesuai kondisi orang tua.&#10;3. Simpan bantuan aktif, minat dan kontak sesuai relasi pemiliknya.&#10;4. Perubahan kelas memakai tanggal nyata dan menutup histori sebelumnya; operasi ekonomi disimpan dalam transaksi." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="1800" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC07_2" value="Prasyarat: Administrator aktif.&#10;&#10;NISN unik bila diisi. Penghasilan kosong tetap tidak diketahui. Data impor tanpa tanggal/tahun ajaran tetap pada catatan sumber; tidak membuat histori kelas dengan tanggal perkiraan.&#10;&#10;Hasil: Profil dan keluarga konsisten serta data asal dipertahankan." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="1800" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC08_0" value="UC08 — Cari dan lihat detail master siswa&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="2060" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC08_1" value="1. Cari nama/NISN atau gunakan filter kelas, tahun lulus dan jenis kelamin.&#10;2. Backend mengembalikan daftar berpaginasi dalam lingkup admin.&#10;3. Buka detail termasuk catatan sumber untuk melihat kelengkapan data." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="2060" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC08_2" value="Prasyarat: Administrator aktif.&#10;&#10;Hasil kosong bukan kegagalan. Siswa/guru tidak boleh membuka modul master admin. Tahun filter adalah tahun lulus, bukan tahun ajaran sumber.&#10;&#10;Hasil: Admin memperoleh profil sekolah yang dipilih." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="2060" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC09_0" value="UC09 — Catat dan koreksi asesmen bertanggal&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="2320" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC09_1" value="1. Pilih siswa serta tanggal pelaksanaan tes; isi kategori, gaya belajar dan IQ bila tersedia.&#10;2. Bila memasukkan RIASEC angka, isi enam skor; MI memakai pasangan jenis dan skor asli.&#10;3. Koreksi mengacu asesmen lama; simpan entri baru dan relasi detail dalam transaksi.&#10;4. Tentukan entri current berdasarkan tanggal/versi tanpa menghapus histori." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="2320" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC09_2" value="Prasyarat: Murid teridentifikasi; tanggal tes diketahui dan data yang diisi bersumber dari sekolah.&#10;&#10;Tanpa tanggal, simpan sebagai catatan sumber melalui UC26; belum menjadi asesmen formal. Label MI/kode RIASEC tidak diubah menjadi skor buatan. Kategori campuran perlu konfirmasi sebelum dipaksakan ke kategori tunggal.&#10;&#10;Hasil: Histori asesmen formal dan versi current konsisten." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="2320" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC10_0" value="UC10 — Lihat riwayat asesmen sendiri/terpilih&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="2580" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC10_1" value="1. Admin meminta histori siswa terpilih; siswa memakai endpoint /saya.&#10;2. Urutkan karakteristik, RIASEC dan MI berdasarkan tanggal.&#10;3. Tampilkan data formal yang tersedia; catatan peminatan mentah tetap dibedakan." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="2580" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC10_2" value="Prasyarat: Admin memilih siswa; siswa dibatasi relasi akun sendiri.&#10;&#10;Riwayat kosong berarti belum ada tes formal yang dicatat. Permintaan identitas lain tidak diberikan kepada siswa.&#10;&#10;Hasil: Hasil tes tampil sesuai lingkup akses." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="2580" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC11_0" value="UC11 — Kelola dan verifikasi data pendukung&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="2840" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC11_1" value="1. Isi rapor semester/mapel, TKA, presensi, organisasi, karakter dan prestasi sesuai sumber.&#10;2. Validasi tipe/ukuran unggahan, pemindaian, periode, nilai dan relasi siswa.&#10;3. Catat prestasi sekolah dengan status pending; admin meninjau isi dan bukti lalu memutuskan status.&#10;4. Konfirmasi kelengkapan daftar setelah diperiksa; bobot prestasi ditentukan pada program, bukan pada record prestasi." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="2840" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC11_2" value="Prasyarat: Admin aktif; pemilik setiap record diketahui.&#10;&#10;Status pending berarti menunggu pemeriksaan, bukan penilaian bahwa sumber tidak sah. Prestasi pending tidak dihitung sebagai terverifikasi. Kolom belum lengkap atau kemungkinan pengulangan diminta konfirmasi sambil mempertahankan sumber.&#10;&#10;Hasil: Data pendukung terstruktur dan status verifikasinya jelas." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="2840" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC12_0" value="UC12 — Atur dan hitung program eligibilitas&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="3100" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC12_1" value="1. Atur kriteria, operator, ambang dan bobot program; perubahan menaikkan versi.&#10;2. Atur bobot tingkat prestasi/metode serta syarat bantuan bila dibutuhkan.&#10;3. Bangun profil dari data akademik/ekonomi/pendukung yang diketahui dan terverifikasi.&#10;4. Hitung program untuk siswa terpilih; simpan evaluasi, versi dan fingerprint sumber." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="3100" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC12_2" value="Prasyarat: Admin aktif; kebijakan program ditentukan sekolah.&#10;&#10;Syarat yang kurang menghasilkan Belum dinilai. Nilai tidak diketahui tidak dianggap nol. Hanya prestasi terverifikasi dan bantuan aktif memenuhi komponen terkait.&#10;&#10;Hasil: Hasil evaluasi dapat ditelusuri ke versi kriteria dan data." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="3100" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC13_0" value="UC13 — Lihat status eligibilitas&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="3360" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC13_1" value="1. Admin membuka hasil program atau siswa meminta ringkasan /saya.&#10;2. Evaluasi status terkini terhadap sumber yang tersedia.&#10;3. Admin melihat detail; siswa hanya status dan alasan komponen yang diizinkan." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="3360" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC13_2" value="Prasyarat: Program tersedia dan lingkup pemilik teridentifikasi.&#10;&#10;Data kurang tetap Belum dinilai. Data ekonomi dan ambang internal tidak dimasukkan ke proyeksi siswa.&#10;&#10;Hasil: Status tampil tanpa membocorkan data pribadi lain." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="3360" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC14_0" value="UC14 — Kelola penerimaan PT dan izin publikasi&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="3620" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC14_1" value="1. Pilih siswa atau buat profil alumni lama tanpa akun/NISN perkiraan.&#10;2. Isi kampus, prodi, jenjang, jalur/subjalur, pilihan serta status penerimaan.&#10;3. Sertakan nilai sesuai jalur dan prestasi yang benar-benar milik siswa tersebut.&#10;4. Publikasi adalah tindakan terpisah dengan bukti izin; perubahan isi mencabut publikasi lama." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="3620" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC14_2" value="Prasyarat: Admin aktif; identitas alumni terhubung ke profil sekolah.&#10;&#10;Sumber impor yang belum lengkap berada pada siswa.catatan sampai dikonfirmasi. Pelamar KIP-K tidak otomatis menjadi penerima. Tanggal mulai kuliah tidak disimpulkan dari penerimaan.&#10;&#10;Hasil: Penerimaan dan relasi prestasi konsisten; publikasi mengikuti izin." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="3620" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC15_0" value="UC15 — Catat, revisi dan publikasikan progres kuliah&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="3880" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC15_1" value="1. Isi status pendidikan, periode, semester, IPK, KIP-K dan UKT; IPI hanya untuk Mandiri.&#10;2. Catat beasiswa dengan status proses/diterima/ditolak per periode.&#10;3. Periode baru menambah histori; koreksi membuat revisi baru dan menandai versi lama tidak current.&#10;4. Izin publikasi progres dan izin nominal finansial dicatat terpisah." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="3880" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC15_2" value="Prasyarat: Penerimaan PT milik alumni tersedia; periode dan data progres nyata diketahui.&#10;&#10;Periode duplikat ditolak 409. Hubungan penerimaan milik orang lain ditolak. Tidak membuat progres atau beasiswa dummy dari tabel penerimaan PT.&#10;&#10;Hasil: Histori progres dan revisinya utuh." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="3880" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC16_0" value="UC16 — Lihat penerimaan dan progres alumni&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="4140" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC16_1" value="1. Cari/filter penerimaan berdasarkan alumni, tahun lulus, kampus, prodi dan jalur.&#10;2. Admin menerima detail penuh sesuai modul admin.&#10;3. Siswa hanya menerima penerimaan dan progres yang sudah berizin.&#10;4. Sertakan prestasi publik milik alumni; hilangkan kontak, identitas sensitif dan bukti privat." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="4140" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC16_2" value="Prasyarat: Token aktif; admin atau siswa memakai endpoint sesuai perannya.&#10;&#10;Nominal hanya tampil bila periode tersebut mengizinkan finansial. Draf, revisi lama dan prestasi milik siswa lain tidak ikut proyeksi siswa.&#10;&#10;Hasil: Jejak alumni tampil dengan proyeksi privasi yang benar." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="4140" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC17_0" value="UC17 — Lihat timeline pendidikan alumni&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="4400" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC17_1" value="1. Ambil milestone sekolah, penerimaan PT dan progres yang benar-benar tercatat.&#10;2. Urutkan menurut tanggal nyata; bila hanya tahun diketahui, tampilkan tahun.&#10;3. Pakai proyeksi privasi dan sertakan prestasi terkait yang boleh ditampilkan." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="4400" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC17_2" value="Prasyarat: Admin memilih alumni; siswa hanya mengakses jejak terpublikasi.&#10;&#10;Tidak membuat tanggal 1 Januari atau tanggal mulai kuliah dari tahun lulus. Catatan sumber tanpa tanggal tidak menjadi milestone palsu.&#10;&#10;Hasil: Timeline konsisten dengan rekam data dan izin." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="4400" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC18_0" value="UC18 — Analitik beasiswa dan publikasi pola agregat&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="4660" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC18_1" value="1. Filter angkatan, prodi, jenis PT, beasiswa dan periode.&#10;2. Ringkasan memakai progres terbaru; tren memakai periode serta alumni unik tanpa revisi lama ganda.&#10;3. Tampilkan status beasiswa proses/diterima/ditolak dan ekspor CSV yang aman.&#10;4. Buat pola dari agregat berizin minimal lima alumni; admin menentukan publikasi snapshot." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="4660" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC18_2" value="Prasyarat: Admin aktif; progres dan data yang diperlukan tersedia.&#10;&#10;Data kosong tetap kosong, bukan kesimpulan bahwa semua alumni tidak menerima beasiswa. Kelompok kecil disembunyikan. Pencabutan izin anggota menyembunyikan snapshot terkait.&#10;&#10;Hasil: Analitik dapat ditelusuri tanpa mengekspos identitas murid pada pola publik." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="4660" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC19_0" value="UC19 — Kelola dan cari katalog beasiswa&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="4920" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC19_1" value="1. Isi nama, penyelenggara, jenjang, durasi, periode, jadwal, tautan dan kriteria.&#10;2. Hubungkan program eligibilitas bila diperlukan.&#10;3. Cari/paginasi katalog; filter SMA atau Kuliah juga menyertakan Keduanya.&#10;4. Arsipkan program yang tidak aktif agar histori tetap dapat dibaca melalui snapshot." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="4920" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC19_2" value="Prasyarat: Admin aktif; informasi program berasal dari sumber resmi.&#10;&#10;Query tidak sah ditolak 422. Katalog kosong tidak diisi program buatan AI. Program yang diarsipkan tidak memasok evaluasi baru.&#10;&#10;Hasil: Katalog dan persyaratan menjadi acuan rekomendasi." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="4920" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC20_0" value="UC20 — Buat dan tinjau rekomendasi beasiswa AI&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="5180" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC20_1" value="1. StudentProfile membangun profil; backend memilih kandidat aktif sesuai jenjang.&#10;2. EligibilityEvaluator menghitung skor serta checklist dari kriteria, bukan dari tebakan AI.&#10;3. Gemini menjelaskan alasan dan langkah persiapan dari kandidat tanpa nama/NISN/kontak/angka penghasilan.&#10;4. Validasi respons; simpan rekomendasi dan detail sebagai pending dalam transaksi.&#10;5. Admin meninjau; persetujuan memerlukan fingerprint sama, kriteria lengkap dan kandidat yang memenuhi." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="5180" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC20_2" value="Prasyarat: Admin aktif; target jenjang diketahui dan katalog sesuai tersedia.&#10;&#10;Tanpa jenjang/kandidat: 422. Provider gagal/respons tidak sah: tidak menyimpan draft parsial. Sumber berubah: 409 dan buat ulang. Data kurang tidak dapat disetujui. Gemini tidak mengubah skor dan tidak dilatih dari spreadsheet ini.&#10;&#10;Hasil: Draft pending atau hasil disetujui/ditolak dengan pencatat dan snapshot." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="5180" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC21_0" value="UC21 — Lihat rekomendasi beasiswa sendiri&#10;&#10;Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="5440" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC21_1" value="1. Identifikasi siswa dari pemilik token; jangan menerima ID siswa bebas.&#10;2. Ambil hanya rekomendasi miliknya yang disetujui.&#10;3. Tampilkan snapshot informasi, skor kecocokan, checklist, alasan dan persiapan.&#10;4. Pola alumni ditambahkan hanya bila agregat tersebut sudah berizin dan terpublikasi." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="5440" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC21_2" value="Prasyarat: Siswa terhubung ke profil dan token sah.&#10;&#10;Pending/ditolak tidak dibuka. Tidak ada hasil disetujui: daftar kosong. Skor kecocokan bukan probabilitas lolos.&#10;&#10;Hasil: Rekomendasi personal terbaca tanpa catatan internal admin." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="5440" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC22_0" value="UC22 — Kelola dan tinjau rekomendasi jurusan&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="5700" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC22_1" value="1. Atur bobot nilai/RIASEC/MI total 100 dan bobot mapel yang dibutuhkan.&#10;2. Ambil data formal terpilih; hitung hanya bila seluruh komponen berbobot tersedia.&#10;3. Simpan batch pending dengan detail, snapshot kriteria dan fingerprint.&#10;4. Admin menyetujui atau menolak; perubahan sumber meminta generate ulang." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="5700" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC22_2" value="Prasyarat: Admin aktif; klaster dan bobot ditetapkan sekolah.&#10;&#10;Catatan peminatan mentah tanpa tanggal/skor belum otomatis menjadi input komponen formal. Data tidak cukup tidak diberi skor palsu. Tidak mengklaim prediksi diterima PT.&#10;&#10;Hasil: Hasil jurusan yang ditinjau dapat dibaca siswa." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="5700" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC23_0" value="UC23 — Lihat rekomendasi jurusan sendiri&#10;&#10;Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="5960" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC23_1" value="1. Tentukan siswa melalui token.&#10;2. Ambil batch terbaru yang disetujui dalam lingkup profil sendiri.&#10;3. Tampilkan jurusan, alasan dan komponen yang diperbolehkan." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="5960" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC23_2" value="Prasyarat: Siswa terhubung ke master sekolah.&#10;&#10;Draft/ditolak dan batch siswa lain tidak tersedia. Belum ada hasil disetujui menghasilkan daftar kosong.&#10;&#10;Hasil: Hasil jurusan personal bersifat read-only." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="5960" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC24_0" value="UC24 — Logout dan cabut token perangkat&#10;&#10;Admin sekolah / Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="6220" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC24_1" value="1. Pengguna memilih logout.&#10;2. Backend mencabut current access token.&#10;3. Frontend membersihkan token lokal dan kembali ke login." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="6220" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC24_2" value="Prasyarat: Pengguna sedang memakai token.&#10;&#10;Token telah tidak berlaku tetap diarahkan ke login. Kebijakan login admin baru mencabut semua sesi/token lamanya melalui UC03.&#10;&#10;Hasil: Token perangkat yang dicabut tidak bisa dipakai ulang." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="6220" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC25_0" value="UC25 — Lihat pola alumni terpublikasi&#10;&#10;Siswa" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="6480" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC25_1" value="1. Siswa meminta ringkasan pola.&#10;2. Backend menyaring snapshot terpublikasi dan memeriksa izin agregasi.&#10;3. Kirim DTO agregat tanpa daftar identitas maupun penghasilan individual." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="6480" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC25_2" value="Prasyarat: Siswa aktif; snapshot pola disetujui admin dan izin anggota masih sah.&#10;&#10;Anggota mencabut izin atau kelompok tidak cukup: pola tidak tampil. Dataset penerimaan PT saja belum membentuk pola penerima beasiswa.&#10;&#10;Hasil: Pola agregat membantu pemahaman tanpa membuka identitas." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="6480" width="1180" height="260" />
+        </mxCell>
+        <mxCell id="UC26_0" value="UC26 — Impor dan rekonsiliasi data sekolah&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="6740" width="700" height="285" />
+        </mxCell>
+        <mxCell id="UC26_1" value="1. Baca semua tab, pisahkan tabel individu, rekap dan lampiran pendukung.&#10;2. Cocokkan identitas, hubungan dan pengulangan; petakan hanya nilai yang didukung sumber.&#10;3. Simpan data lengkap ke tabel domain; simpan sumber yang belum lengkap pada siswa.catatan serta daftar konfirmasi.&#10;4. Prestasi baru berstatus pending; asesmen tanpa tanggal tetap sebagai catatan, tanpa skor/tanggal perkiraan.&#10;5. Simpan dalam transaksi setelah backup; periksa data lama, jumlah baris, privasi dan impor ulang tanpa duplikat." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="6740" width="1420" height="285" />
+        </mxCell>
+        <mxCell id="UC26_2" value="Prasyarat: Backend memperoleh sumber sekolah dan hak akses sah; cadangan dibuat sebelum penulisan.&#10;&#10;NIS sama untuk nama berbeda tidak dipakai untuk menggabungkan profil. Baris yang mungkin mengulang prestasi diminta konfirmasi; sumber sekolah dipertahankan. Batch rekonsiliasi ini pekerjaan backend terkurasi, bukan klaim bahwa endpoint unggah umum mendukung semua format/tab.&#10;&#10;Hasil: Data sekolah bertambah dengan jejak sumber; kelengkapan dan status verifikasi tetap terlihat." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="6740" width="1180" height="285" />
+        </mxCell>
+        <mxCell id="UC27_0" value="UC27 — Kelola referensi sekolah dan kampus&#10;&#10;Admin sekolah" style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="45" y="7025" width="700" height="260" />
+        </mxCell>
+        <mxCell id="UC27_1" value="1. Kelola referensi kelas, mapel, bantuan, hobi, cita-cita dan kampus.&#10;2. Validasi nilai dan identitas referensi sebelum simpan.&#10;3. Gunakan ID referensi pada data murid/program; penghapusan referensi yang masih dipakai ditolak." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="745" y="7025" width="1420" height="260" />
+        </mxCell>
+        <mxCell id="UC27_2" value="Prasyarat: Administrator aktif.&#10;&#10;Nama singkat yang belum pasti tidak dipaksa menjadi kampus tertentu. Kelas memerlukan tahun ajaran yang benar sebelum dipakai sebagai histori.&#10;&#10;Hasil: Referensi mendukung konsistensi seluruh modul." style="whiteSpace=wrap;html=0;fontFamily=Arial;fontSize=18;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;strokeWidth=1.5;align=left;spacing=18;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="2165" y="7025" width="1180" height="260" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  </mxfile>

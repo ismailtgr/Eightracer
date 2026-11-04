@@ -1,5 +1,7 @@
 # Backend Eightracer sesuai PRD
 
+> Revisi akun 4 November 2026: akun siswa disiapkan administrator; register publik/Google sign-up ditutup. Aktivasi akun sekolah terpisah dari verifikasi email. Ketentuan terbaru pada [AKUN_SISWA_DARI_ADMIN.md](AKUN_SISWA_DARI_ADMIN.md) menggantikan bagian pendaftaran lama di dokumen ini.
+
 Implementasi 2 November 2026. Aplikasi Laravel berada di `C:\eightracer\eightracer`. Dokumen ini menjadi acuan kontrak backend terbaru, termasuk pengganti login username dan reset melalui tautan pada dokumentasi lama. UI dikerjakan tim frontend.
 
 ## Menjalankan dan menguji

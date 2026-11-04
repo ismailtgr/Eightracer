@@ -38,7 +38,7 @@ class GoogleAuthController extends Controller
 
     public function login(Request $r, GoogleIdentityVerifier $verifier, SessionIssuer $sessions)
     {
-        $r->validate(['nisn' => 'nullable|digits:10', 'role' => 'prohibited']);
+        $r->validate(['nisn' => 'prohibited', 'role' => 'prohibited']);
         $identity = $this->identity($r, $verifier);
         $user = DB::transaction(function () use ($r, $identity) {
             $u = User::where('google_id', $identity['sub'])->lockForUpdate()->first();
@@ -55,16 +55,7 @@ class GoogleAuthController extends Controller
 
                 return $existing;
             }
-            abort_unless($identity['authoritative'], 422, 'Daftar dan verifikasi email dahulu, lalu hubungkan Google dari profil.');
-            $s = Siswa::where('nisn', $r->input('nisn'))->where('registration_email', $identity['email'])->whereNull('user_id')->lockForUpdate()->first();
-            abort_unless($s && $r->filled('nisn'), 422, 'Data pendaftaran perlu diverifikasi admin sekolah.');
-            $u = new User;
-            $u->forceFill(['username' => $identity['email'], 'email' => $identity['email'], 'full_name' => $identity['name'] ?: $s->nama_lengkap,
-                'google_id' => $identity['sub'], 'password' => null, 'role' => 'siswa', 'email_verified_at' => now()])->save();
-            $s->user_id = $u->id;
-            $s->save();
-
-            return $u;
+            abort(403, 'Akun belum disiapkan sekolah. Hubungi admin sekolah.');
         });
 
         return response()->json($sessions->issue($user));

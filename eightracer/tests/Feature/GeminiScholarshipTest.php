@@ -113,7 +113,7 @@ class GeminiScholarshipTest extends TestCase
 
     public function test_self_registration_cannot_create_an_admin(): void
     {
-        $this->postJson('/api/register', ['username' => 'intruder', 'password' => 'password123', 'password_confirmation' => 'password123', 'role' => 'administrator'])->assertForbidden();
+        $this->postJson('/api/register', ['username' => 'intruder', 'password' => 'password123', 'password_confirmation' => 'password123', 'role' => 'administrator'])->assertStatus(410);
     }
 
     public function test_missing_data_cannot_be_published_and_archiving_preserves_draft(): void
