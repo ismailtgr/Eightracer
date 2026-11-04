@@ -26,6 +26,7 @@ class BasisDataBeasiswaController extends Controller
         $filters = $request->validate([
             'search' => 'nullable|string|max:100',
             'jenjang' => 'nullable|in:SMA,Kuliah,Keduanya',
+            'page' => 'sometimes|integer|min:1',
         ]);
         $query = BasisDataBeasiswa::with('kriteriaKelayakanBeasiswa');
         if ($request->filled('search')) {
@@ -35,14 +36,19 @@ class BasisDataBeasiswaController extends Controller
             $query->whereIn('jenjang', array_unique([$filters['jenjang'], 'Keduanya']));
         }
 
-        return response()->json($query->orderBy('id')->paginate(20)->appends($filters));
+        return response()->json($query->orderBy('id')->paginate(20)->appends($filters)->through(fn ($row) => $this->catalogData($row)));
     }
 
     public function show(Request $request, BasisDataBeasiswa $beasiswa)
     {
         $this->admin($request);
 
-        return response()->json(['data' => $beasiswa->load('kriteriaKelayakanBeasiswa')]);
+        return response()->json(['data' => $this->catalogData($beasiswa->load('kriteriaKelayakanBeasiswa'))]);
+    }
+
+    private function catalogData(BasisDataBeasiswa $row): array
+    {
+        return [...$row->toArray(), 'kriteria' => $row->kriteriaKelayakanBeasiswa->toArray()];
     }
 
     private function rules(Request $request): array
@@ -69,14 +75,14 @@ class BasisDataBeasiswaController extends Controller
     {
         $this->admin($request);
 
-        return response()->json(['data' => $this->save($request, new BasisDataBeasiswa)], 201);
+        return response()->json(['data' => $this->catalogData($this->save($request, new BasisDataBeasiswa))], 201);
     }
 
     public function update(Request $request, BasisDataBeasiswa $beasiswa)
     {
         $this->admin($request);
 
-        return response()->json(['data' => $this->save($request, $beasiswa)]);
+        return response()->json(['data' => $this->catalogData($this->save($request, $beasiswa))]);
     }
 
     private function save(Request $request, BasisDataBeasiswa $beasiswa): BasisDataBeasiswa

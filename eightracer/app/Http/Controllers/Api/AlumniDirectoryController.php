@@ -110,6 +110,7 @@ class AlumniDirectoryController extends Controller
         $complete = $timeline->isComplete($record);
         abort_if($request->boolean('timeline_complete') && !$complete, 404);
         $result = [...$this->row($record),
+            'is_published' => (bool) $record->izinkan_tampil_di_buku,
             'timeline_complete' => $complete, 'education_events' => $timeline->educationEvents($record),
             'has_nisn' => filled($record->siswa?->nisn),
             'kelas_terakhir' => $record->siswa?->riwayatKelas->sortByDesc('tanggal_mulai')->first()?->kelas?->nama_kelas

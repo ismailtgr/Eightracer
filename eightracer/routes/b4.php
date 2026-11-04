@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AlumniDirectoryController;
+use App\Http\Controllers\Api\SchoolScholarshipAnalyticsController;
 use App\Http\Controllers\Api\AlumniProgressEditorController;
 use App\Http\Controllers\Api\BulkImportController;
 use App\Http\Controllers\Api\FinancialDashboardController;
@@ -24,6 +25,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
         Route::delete('/alumni/{id}/college-progress/{progress}', [AlumniProgressEditorController::class, 'archive'])->whereNumber(['id', 'progress']);
         Route::post('/alumni/{id}/progress-imports', [AlumniProgressEditorController::class, 'preview'])->whereNumber('id')->middleware('throttle:bulk-preview');
         Route::post('/alumni/{id}/progress-imports/{batch}/commit', [AlumniProgressEditorController::class, 'commit'])->whereNumber('id')->whereUuid('batch')->middleware('throttle:bulk-commit');
+        Route::get('/analitik-beasiswa/sekolah/pdf', [SchoolScholarshipAnalyticsController::class, 'pdf'])->middleware('throttle:book-pdf');
+        Route::get('/analitik-beasiswa/sekolah', [SchoolScholarshipAnalyticsController::class, 'index']);
         Route::get('/alumni', [AlumniDirectoryController::class, 'index']);
         Route::get('/alumni/{id}', [AlumniDirectoryController::class, 'show'])->whereNumber('id');
         Route::get('/riwayat-beasiswa-sumber', [ScholarshipSourceController::class, 'index']);
