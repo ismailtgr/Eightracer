@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Siswa;
+use App\Models\Kelas;
+use App\Models\RekomendasiBeasiswa;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,7 +17,7 @@ class SiswaController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $request->validate(['search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P', 'kelas_id' => 'nullable|integer|exists:kelas,id', 'angkatan' => 'nullable|digits:4']);
+        $request->validate(['search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P', 'kelas_id' => 'nullable|integer|exists:kelas,id', 'angkatan' => 'nullable|digits:4', 'rekomendasi_published' => 'nullable|boolean']);
         $query = Siswa::select(['id', 'nama_lengkap', 'nisn', 'nis', 'jenis_kelamin', 'tahun_lulus'])->with(['riwayatKelas' => fn ($q) => $q->whereNull('tanggal_selesai')->with('kelas')]);
 
         if ($request->filled('search')) {
@@ -37,12 +39,20 @@ class SiswaController extends Controller
         if ($request->filled('angkatan')) {
             $query->where('tahun_lulus', $request->input('angkatan'));
         }
+        if ($request->has('rekomendasi_published')) {
+            $published = RekomendasiBeasiswa::select('siswa_id')->where('status_review', 'disetujui');
+            $request->boolean('rekomendasi_published') ? $query->whereIn('id', $published) : $query->whereNotIn('id', $published);
+        }
         $siswa = $query->paginate($request->input('per_page', 15));
 
         return response()->json([
             'status' => 'success',
             'message' => 'Data siswa berhasil diambil',
             'data' => $siswa,
+            'filters' => [
+                'cohorts' => Siswa::whereNotNull('tahun_lulus')->distinct()->orderBy('tahun_lulus')->pluck('tahun_lulus'),
+                'classrooms' => Kelas::orderBy('nama_kelas')->get(['id', 'nama_kelas']),
+            ],
         ]);
     }
 
