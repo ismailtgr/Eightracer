@@ -95,4 +95,38 @@ class AlumniDirectoryTest extends TestCase
         $this->getJson('/api/alumni?include_filters=1')->assertOk()->assertJsonPath('total', 0)->assertJsonCount(0, 'filters.universities');
         $this->getJson('/api/alumni/'.$record->id)->assertNotFound();
     }
+
+    public function test_source_categories_replace_lainnya_without_confusing_another_acceptance_or_guessing(): void
+    {
+        $student = $this->student(null, ['tahun_lulus' => 2024, 'catatan' => json_encode([
+            'kelas_sumber' => ['XII-2'], 'data_sumber' => [
+                ['kind' => 'admission', 'source' => ['sheet' => 'SWASTA', 'year' => 2024], 'degree' => 'S1', 'program_original' => 'S1 Informatika', 'route_original' => 'Tes'],
+                ['kind' => 'admission', 'source' => ['sheet' => 'UM PTKIN', 'year' => 2024], 'degree' => 'S1', 'program_original' => 'S1 Fisika'],
+            ]])]);
+        $private = $this->admission($student, 'Lainnya');
+        $other = $this->admission($this->student(null, ['tahun_lulus' => 2024]), 'Lainnya');
+        $named = $this->admission($student, 'SNBT');
+        $this->signIn($this->account('administrator'));
+        $this->getJson('/api/alumni/'.$private->id)->assertOk()->assertJsonPath('data.jalur_masuk', 'Jalur Swasta')->assertJsonPath('data.kelas_terakhir', 'XII-2');
+        $this->getJson('/api/alumni/'.$other->id)->assertOk()->assertJsonPath('data.jalur_masuk', null);
+        $this->getJson('/api/alumni/'.$named->id)->assertOk()->assertJsonPath('data.jalur_masuk', 'SNBT');
+        $page = $this->getJson('/api/alumni?include_filters=1')->assertOk()->json();
+        $this->assertEqualsCanonicalizing(['SNBT', 'Jalur Swasta'], $page['filters']['admission_paths']);
+        $this->getJson('/api/alumni?jalur_masuk=Jalur%20Swasta')->assertOk()->assertJsonPath('total', 1)->assertJsonPath('data.0.id', $private->id);
+        $this->getJson('/api/alumni?jalur_masuk=SNBT')->assertOk()->assertJsonPath('total', 1);
+    }
+
+    public function test_adik_um_ptkin_and_overseas_use_the_school_source_category(): void
+    {
+        $this->signIn($this->account('administrator'));
+        foreach (['ADIK' => 'ADIK', 'UM PTKIN' => 'UM PTKIN', 'LUAR NEGERI' => 'Luar Negeri'] as $sheet => $label) {
+            $student = $this->student(null, ['tahun_lulus' => 2025, 'catatan' => json_encode(['data_sumber' => [
+                ['kind' => 'admission', 'source' => ['sheet' => $sheet, 'year' => 2025], 'degree' => 'S1', 'program_original' => 'S1 Informatika'],
+            ]])]);
+            $record = $this->admission($student, 'Lainnya');
+            $this->getJson('/api/alumni/'.$record->id)->assertOk()->assertJsonPath('data.jalur_masuk', $label);
+            $this->getJson('/api/alumni?jalur_masuk='.rawurlencode($label))->assertOk()->assertJsonPath('total', 1);
+        }
+    }
+
 }

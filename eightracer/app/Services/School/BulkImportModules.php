@@ -68,7 +68,7 @@ class BulkImportModules
             if (is_string($v)) {
                 $d[$k] = trim($v);
             }
-            if (in_array($k, ['penerima_kipk', 'is_pelamar_kipk', 'aktif'], true)) {
+            if (in_array($k, ['penerima_kipk', 'is_pelamar_kipk', 'aktif'], true) && ! is_bool($v)) {
                 $v = mb_strtolower((string) $v);
                 if (! in_array($v, ['1', '0', 'true', 'false', 'ya', 'tidak', 'yes', 'no'], true)) {
                     $this->fail($k, 'Gunakan Ya/Tidak atau 1/0.');
@@ -172,7 +172,7 @@ class BulkImportModules
                 break;
             case 'financial':
                 Validator::make($d, ['study_tracer_id' => 'required|integer|exists:study_tracer,id', 'periode' => 'required|string|max:50', 'semester' => 'required|integer|between:1,40', 'tahun_lulus' => 'nullable|digits:4', 'status_pendidikan' => 'required|in:aktif,cuti,lulus,nonaktif',
-                    'ipk_terkini' => 'nullable|numeric|between:0,4', 'nominal_ukt' => 'nullable|numeric|between:0,9999999999999', 'nominal_ipi' => 'nullable|numeric|between:0,9999999999999', 'tanggal_update' => 'required|date_format:Y-m-d|before_or_equal:today',
+                    'ipk_terkini' => 'nullable|numeric|between:0,4', 'nominal_ukt' => 'nullable|numeric|between:0,9999999999999', 'nominal_ipi' => 'nullable|numeric|between:0,9999999999999', 'tanggal_update' => 'required|date_format:Y-m-d|before_or_equal:'.now('Asia/Jakarta')->toDateString(),
                     'beasiswa_id' => 'nullable|integer|exists:basis_data_beasiswa,id', 'status_beasiswa' => 'required_with:beasiswa_id|in:proses,diterima,ditolak', 'nominal_beasiswa' => 'nullable|numeric|between:0,9999999999999'])->validate();
                 $admission = StudyTracer::where('siswa_id', $student->id)->find($d['study_tracer_id']);
                 if (! $admission) {

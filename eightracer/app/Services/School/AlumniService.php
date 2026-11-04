@@ -18,7 +18,7 @@ class AlumniService
         $d = $r->validate(['study_tracer_id' => ['required', 'integer', Rule::exists('study_tracer', 'id')->where('siswa_id', $s->id)],
             'periode' => 'required|string|max:50', 'semester' => 'required|integer|between:1,40', 'tahun_lulus' => 'nullable|digits:4', 'status_pendidikan' => 'required|in:aktif,cuti,lulus,nonaktif',
             'ipk_terkini' => 'nullable|numeric|between:0,4', 'penerima_kipk' => 'nullable|boolean', 'nominal_ukt' => 'nullable|numeric|between:0,9999999999999', 'nominal_ipi' => 'nullable|numeric|between:0,9999999999999',
-            'tanggal_update' => 'required|date|before_or_equal:today', 'beasiswa' => 'sometimes|array|max:20', 'beasiswa.*' => 'required|array:beasiswa_id,status_beasiswa,nominal_beasiswa',
+            'tanggal_update' => 'required|date_format:Y-m-d|before_or_equal:'.now('Asia/Jakarta')->toDateString(), 'beasiswa' => 'sometimes|array|max:20', 'beasiswa.*' => 'required|array:beasiswa_id,status_beasiswa,nominal_beasiswa',
             'beasiswa.*.beasiswa_id' => 'required|integer|distinct|exists:basis_data_beasiswa,id', 'beasiswa.*.status_beasiswa' => 'required|in:proses,diterima,ditolak', 'beasiswa.*.nominal_beasiswa' => 'nullable|numeric|between:0,9999999999999',
             'kategori_ekonomi' => 'nullable|in:di_bawah_1_juta,1_sampai_3_juta,3_sampai_5_juta,di_atas_5_juta,tidak_diketahui', 'referensi_ekonomi' => 'required_with:kategori_ekonomi|nullable|string|max:500',
             'is_published' => 'prohibited', 'publish_financials' => 'prohibited', 'siswa_id' => 'prohibited']);
@@ -27,7 +27,7 @@ class AlumniService
 
         return DB::transaction(function () use ($d, $s, $previous, $tracer) {
             Siswa::whereKey($s->id)->lockForUpdate()->firstOrFail();
-            $revision = 1;
+            $revision = (int) AlumniProgress::where("study_tracer_id", $tracer->id)->where("periode", $d["periode"])->max("revision") + 1;
             if ($previous) {
                 $previous = AlumniProgress::where('siswa_id', $s->id)->lockForUpdate()->findOrFail($previous->id);
                 abort_unless($previous->is_current && (int) $previous->study_tracer_id === $tracer->id && $previous->periode === $d['periode'], 409);

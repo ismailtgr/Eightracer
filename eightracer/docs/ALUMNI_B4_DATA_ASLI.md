@@ -1,46 +1,64 @@
-# Tahap pertama data asli B4: alumni
+# Alumni B4: data sekolah dan progres perkuliahan
 
-Pemasangan 4 November 2026 di proyek utama C:\eightracer. Halaman yang dipakai tetap /admin/alumni-perguruan-tinggi dan /admin/alumni-perguruan-tinggi/informasi-detail milik FE. Tidak ada halaman, kolom, tema, atau kartu ringkasan baru.
+Diterapkan pada proyek utama C:\eightracer, 4 November 2026. Daftar dan panel detail memakai struktur serta CSS FE yang ada.
 
-## Cakupan data
+## Data sumber dan label
 
-Database utama eightracer_db mempunyai 599 catatan penerimaan berstatus diterima, terkait 576 alumni unik dan 49 kampus. Angka ini berbeda dari jumlah seluruh profil siswa/alumni (872) maupun seluruh referensi kampus (58). Satu alumni bisa memiliki lebih dari satu penerimaan; tidak dipilihkan satu kampus seolah pasti tempat kuliah terkini.
+Database utama eightracer_db: 599 penerimaan diterima, 576 alumni unik, 49 kampus terkait. Satu alumni bisa mempunyai beberapa penerimaan; ID detail ialah study_tracer.id, bukan siswa.id.
 
-Tidak dilakukan impor ulang, penggandaan, penghapusan atau perubahan data sekolah. Riwayat yang belum cukup untuk dibentuk menjadi penerimaan formal tetap pada arsip sumber/profil untuk dilengkapi.
+Nilai lama Lainnya ditampilkan menurut kategori tab sekolah yang cocok dengan prodi, jenjang dan tahun alumni: Jalur Swasta (52), ADIK (5), UM PTKIN (6), Luar Negeri (1). SNBP, SNBT, Mandiri dan jalur spesifik lain dipertahankan. Label kategori sumber bukan penetapan metode seleksi atau keputusan beasiswa. Catatan sumber asli dipertahankan, tidak ditimpa.
 
-Tabel dan detail sekarang membaca nama, kampus, jenis kampus, prodi, jalur, tahun lulus dan kelas jika tersedia dari relasi yang sama. Status terakhir berasal dari progres perkuliahan pada penerimaan tersebut. Tidak ada progres berarti belum tersedia; tidak dianggap aktif kuliah, penerima KIP-K, semester 4, atau mempunyai biaya tertentu.
+Kelas sumber yang berupa daftar diproyeksikan sebagai teks. Field yang belum tersedia tetap null dan ditampilkan -. Tidak ada progres berarti status belum diketahui; Aktif hanya berasal dari status_pendidikan=aktif yang disimpan untuk penerimaan itu. Nol, false dan null dibedakan.
 
-Saat pemasangan, alumni_progress kosong. Form, simpan, impor, edit dan hapus progres di halaman detail ditahan; tidak lagi menulis progres contoh ke localStorage. Data IPK/UKT/IPI yang belum ada tidak diisi nol. Nilai nol hanya ditampilkan jika memang tercatat di BE.
+## Kontrak API
 
-## Kontrak API BE
+Relatif terhadap /api, wajib autentikasi admin/Guru BK berwenang. Tamu 401; siswa 403.
 
-Seluruh path relatif terhadap /api. Wajib token admin/Guru BK yang sah. Tanpa token 401; siswa 403.
-
-| Method | Path | Hasil |
+| Method | Path | Fungsi |
 |---|---|---|
-| GET | /alumni | Paginator penerimaan diterima |
-| GET | /alumni/{id} | Detail satu penerimaan dan progres yang terhubung |
+| GET | /alumni | Paginasi dan filter |
+| GET | /alumni/{id} | Detail, progres terkini, pilihan katalog aktif |
+| POST | /alumni/{id}/college-progress | Tambah progres |
+| PUT | /alumni/{id}/college-progress/{progress} | Koreksi progres dengan versi baru |
+| DELETE | /alumni/{id}/college-progress/{progress} | Arsipkan; sejarah tetap tersimpan |
+| GET | /alumni/{id}/progress-template | CSV header saja, dapat dibuka Excel |
+| POST | /alumni/{id}/progress-imports | Unggah dan pratinjau |
+| POST | /alumni/{id}/progress-imports/{batch}/commit | Simpan batch setelah konfirmasi |
 
-ID detail adalah study_tracer.id, bukan siswa.id. Gunakan id yang dikembalikan baris daftar; siswa_id hanya menjelaskan profil pemiliknya. Progres pada kampus/penerimaan lain tidak dicampur.
+Filter daftar: search, perguruan_tinggi_id, program_studi, jalur_masuk, tahun_lulus, page, per_page (1–100, default8), include_filters. Pilihan filter dan pencocokannya memakai label jalur yang sama dengan daftar/detail.
 
-Filter daftar: search (nama, maks100), perguruan_tinggi_id, program_studi (maks255), jalur_masuk (maks50), tahun_lulus (4 digit), page (integer >=1), per_page (1–100, default8), include_filters (boolean).
+ID siswa/penerimaan ditentukan server. Klien tidak boleh mengganti siswa_id, study_tracer_id atau izin publikasi. Progres pada penerimaan lain tidak dapat diedit/diarsipkan lewat ID yang sedang dibuka.
 
-include_filters=1 menambahkan filters.universities [{id,nama_pt}], filters.study_programs dan filters.admission_paths. Pilihan filter berasal dari penerimaan sekolah yang tersedia, bukan nama kampus/prodi contoh.
+Payload manual:
+- Wajib: periode (teks maks50), semester (1–40), status_pendidikan (aktif/cuti/lulus/nonaktif), tanggal_update (YYYY-MM-DD, tidak di masa depan).
+- Opsional/null: ipk_terkini (0–4), penerima_kipk (boolean), nominal_ukt, nominal_ipi. IPI hanya untuk Mandiri.
+- beasiswa: [{beasiswa_id, status_beasiswa: proses|diterima|ditolak, nominal_beasiswa: number|null}].
+- Tahun lulus harus sudah diketahui pada profil. Jenis biaya dan nama program tidak dibuat otomatis.
 
-Respons daftar memuat id, siswa_id, nama_lengkap, tahun_lulus, perguruan_tinggi {id,nama_pt,jenis_pt}, program_studi, jalur_masuk, status_penerimaan, status_terakhir. Detail menambahkan has_nisn (boolean, tanpa NISN mentah), kelas_terakhir, strata_pendidikan, sub_jalur_mandiri, pilihan_ke, tahun_masuk_pt, nilai_rapor_pendaftaran, skor_utbk, dan progress.
+POST/PUT sukses 201: {"data":{"id":123,"revision":1}}. Periode sama yang sudah ada harus diedit; koreksi mempertahankan versi sebelumnya. Periode penerimaan tidak boleh dipindahkan saat edit. Publikasi tetap melalui izin terpisah.
 
-Nilai yang tidak diketahui tetap null atau array kosong. Catatan mentah sekolah, alamat, email, WA, relasi akun, token, dan password tidak diproyeksikan oleh endpoint alumni ini. API tidak mengubah izin publikasi alumni untuk siswa.
+## Spreadsheet
 
-## Sambungan FE yang dipakai
+1. Buka detail alumni → Sinkronkan Data → Unduh template.
+2. Isi data sebenarnya. CSV memakai koma sebagai pemisah (Excel mengutip angka desimal koma); XLSX juga didukung. Maks5MB, 40 baris, satu periode per baris.
+3. Kolom wajib: periode, semester, status_pendidikan, tanggal_update.
+4. Alias yang didukung: ipk, kipk, ukt, ipi, beasiswa. Nama canonical tetap bisa dipakai.
+5. beasiswa boleh berupa ID katalog atau nama persis yang cocok dengan satu program. Bila diisi, status_beasiswa wajib proses/diterima/ditolak. Jangan memasukkan KIP sebagai keputusan diterima tanpa data konfirmasi.
+6. Pilih format angka: canonical (3500000, 3.75), atau id (3.500.000, 3,75). KIP-K menerima Ya/Tidak atau 1/0.
+7. Pratinjau memperlihatkan tambah/koreksi dan kesalahan per baris. Belum ada penulisan progres.
+8. Tekan Simpan hanya jika seluruh baris valid. Seluruh batch tersimpan atomik. Pengulangan commit tidak menggandakan data.
 
-Browser meminta GET /api/b4/alumni dan GET /api/b4/alumni/{id}. Server FE meneruskan cookie HttpOnly sebagai bearer ke BE; browser tidak menerima token. URL dasar mengikuti API_BASE_URL yang sudah terpasang (database utama, bukan /b4-test). Paginasi tetap delapan baris mengikuti tabel FE semula.
+Tanggal Excel dapat berupa tanggal/serial yang sah atau YYYY-MM-DD. Kolom opsional baru yang kosong menjadi null. Pada koreksi lewat impor, kolom kosong mempertahankan nilai lama; gunakan edit manual untuk mengosongkan nilai yang telah dikonfirmasi salah. Duplikasi periode dalam satu batch ditolak; beberapa beasiswa pada satu periode dapat dikelola melalui form manual.
 
-Parser memproyeksikan respons BE ke field tampilan serta menolak respons rusak. Pencarian/filter gagal atau koneksi putus menampilkan error dan tombol coba lagi; tidak beralih ke data contoh. Data hanya muncul untuk staf yang terautentikasi. Tampilan alumni siswa, timeline, katalog beasiswa dan rekomendasi belum diubah dalam tahap ini.
+Antivirus wajib tersedia; file terinfeksi/tidak dapat dipindai ditolak. XLSX berformula/makro/konten aktif ditolak. Batch dibatasi pemilik dan penerimaan, memiliki masa berlaku serta digest; sumber berubah setelah pratinjau mengharuskan pratinjau baru. Batch kecil ini disimpan langsung tanpa menunggu worker antrean.
 
-## Pemeriksaan
+## Sambungan dan pemeriksaan
 
-- BE: 149 tes, 1074 assertions, tidak ada kegagalan; satu tes XLSX lama dilewati.
-- FE: lima tes parser alumni lulus; pemeriksaan TypeScript dan ESLint pada berkas yang diubah lulus.
-- 33 pemeriksaan HTTP pada FE dan BE utama berhasil: autentikasi, hitungan nyata, pilihan kampus, pencarian, kombinasi filter, paginasi, detail dengan ID yang sama, data kosong, penolakan query/ID salah, privasi, serta pembatasan staf.
-- Halaman daftar dan detail memberikan HTTP200. Tidak ada klaim pemeriksaan visual lewat browser yang berhasil; perubahan memakai struktur dan CSS FE yang ada.
-- Tidak memerlukan migrasi baru untuk tahap alumni ini.
+FE memakai /api/b4/alumni dengan suffix yang sama. Server FE meneruskan cookie HttpOnly sebagai bearer ke API_BASE_URL; token tidak dikirim ke browser. Mutasi dibatasi asal aplikasi, ukuran dan field. Kesalahan server tidak diteruskan sebagai rincian internal.
+
+- BE: 161 tes / 1200 assertions lulus, satu tes XLSX lama dilewati sebelum koreksi normalisasi kelas terakhir; tes alumni diulang setelah koreksi tersebut.
+- FE: 9 tes parser/form; TypeScript dan ESLint pada berkas terkait.
+- Verifikasi HTTP daftar/detail utama, autentikasi, privasi, filter sumber dan template.
+- Simpan, koreksi, pratinjau, commit ulang dan arsip diuji pada database uji terpisah; unggahan melalui ClamAV sebenarnya.
+- Tidak menambahkan progres buatan ke database sekolah. Tidak memerlukan migrasi baru.
+- Pemeriksaan visual melalui browser otomatis belum dilakukan.

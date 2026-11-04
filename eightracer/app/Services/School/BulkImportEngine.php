@@ -4,6 +4,8 @@ namespace App\Services\School;
 
 use App\Models\SchoolImportBatch;
 use App\Models\Siswa;
+use App\Models\StudyTracer;
+use App\Models\BasisDataBeasiswa;
 use App\Models\User;
 use App\Services\Auth\SchoolAccess;
 use Carbon\Carbon;
@@ -24,6 +26,7 @@ class BulkImportEngine
 
     public function preview(UploadedFile $file, array $options, User $actor): SchoolImportBatch
     {
+        $scope = isset($options['scope_admission_id']) ? StudyTracer::where('status_penerimaan', 'diterima')->findOrFail($options['scope_admission_id']) : null;
         $fingerprint = hash('sha256', json_encode([$actor->id, hash_file('sha256', $file->getRealPath()), $options], JSON_THROW_ON_ERROR));
         $old = SchoolImportBatch::where('request_fingerprint', $fingerprint)->where(fn ($q) => $q->whereIn('status', ['completed', 'queued'])->orWhere(fn ($v) => $v->where('status', 'validated')->where('expires_at', '>', now())))->latest('created_at')->first();
         if ($old) {
@@ -47,7 +50,14 @@ class BulkImportEngine
             if (! $header || count($normalized) !== count(array_unique($normalized))) {
                 $this->fail('header_row', 'Header hilang atau berulang.');
             }
-            $columns = $spec['columns'] ?? array_combine(array_values($normalized), array_values($header));
+            if ($scope && $spec['module'] !== 'financial') $this->fail('module', 'Impor ini khusus progres alumni terpilih.');
+            $fieldNames = array_values($normalized);
+            if ($scope) {
+                $aliases = ['ipk' => 'ipk_terkini', 'ukt' => 'nominal_ukt', 'ipi' => 'nominal_ipi', 'kipk' => 'penerima_kipk', 'beasiswa' => 'beasiswa_id'];
+                $fieldNames = array_map(fn ($field) => $aliases[$field] ?? $field, $fieldNames);
+                if (count($fieldNames) !== count(array_unique($fieldNames))) $this->fail('columns', 'Kolom sumber memetakan field yang sama.');
+            }
+            $columns = $spec['columns'] ?? array_combine($fieldNames, array_values($header));
             if (! $columns || array_diff(array_keys($columns), [...BulkImportModules::FIELDS[$spec['module']], 'external_id'])) {
                 $this->fail('columns', 'Gunakan kolom canonical atau pemetaan kolom yang didukung.');
             }
@@ -67,6 +77,7 @@ class BulkImportEngine
                 if (++$total > config('b4.import_rows')) {
                     $this->fail('file', 'Maksimal 2.000 baris data per batch.');
                 }
+                if ($scope && $total > 40) $this->fail('file', 'Maksimal 40 baris progres untuk satu alumni.');
                 $sheetCount++;
                 $raw = [];
                 foreach ($indexes as $field => $index) {
@@ -86,6 +97,22 @@ class BulkImportEngine
                     } unset($value);
                 }
                 try {
+                    if ($scope) {
+                        foreach (['siswa_id' => $scope->siswa_id, 'study_tracer_id' => $scope->id] as $field => $expected) {
+                            if (isset($raw[$field]) && $raw[$field] !== '' && (string) $raw[$field] !== (string) $expected) $this->fail($field, 'Baris bukan milik alumni/penerimaan yang sedang dibuka.');
+                            $raw[$field] = (string) $expected;
+                        }
+                        if (isset($raw['status_pendidikan'])) $raw['status_pendidikan'] = mb_strtolower($raw['status_pendidikan']);
+                        if (! empty($raw['beasiswa_id']) && ! ctype_digit($raw['beasiswa_id'])) {
+                            if ($raw['beasiswa_id'] === '-') {
+                                unset($raw['beasiswa_id']);
+                            } else {
+                                $matches = BasisDataBeasiswa::where('nama_beasiswa', $raw['beasiswa_id'])->pluck('id');
+                                if ($matches->count() !== 1) $this->fail('beasiswa_id', 'Nama beasiswa belum cocok dengan satu program katalog. Gunakan ID katalog yang benar.');
+                                $raw['beasiswa_id'] = (string) $matches->first();
+                            }
+                        }
+                    }
                     if (strtolower($file->getClientOriginalExtension()) === 'xlsx') {
                         foreach ($raw as $field => &$value) {
                             if (str_starts_with($field, 'tanggal_') && $value !== '' && is_numeric($value)) {
