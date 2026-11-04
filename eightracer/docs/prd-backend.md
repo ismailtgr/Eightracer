@@ -45,7 +45,7 @@ Sekolah membuat master siswa lebih dahulu, termasuk `registration_email`. Pendaf
 
 Password baru minimal 12 karakter, huruf besar/kecil, angka dan simbol; maksimal 72 byte. OTP berlaku 10 menit, maksimal lima kesalahan per challenge, sekali pakai. Meminta OTP baru membatalkan challenge lama untuk email/tujuan yang sama. Batas permintaan tiga kali per 15 menit per email, dengan batas IP tambahan. Grant reset berlaku lima menit dan juga sekali pakai. OTP disimpan sebagai HMAC; payload pendaftaran serta job notifikasi dienkripsi.
 
-Admin hanya satu token aktif dan maksimal 72 jam. Login baru membatalkan token dan sesi sebelumnya. Siswa dapat beberapa perangkat dengan token maksimal tujuh hari. Token tanpa expiry dan email belum terverifikasi ditolak.
+Admin dapat memakai beberapa perangkat bersamaan; setiap token maksimal 72 jam. Login baru tidak membatalkan sesi perangkat lain. Siswa dapat beberapa perangkat dengan token maksimal tujuh hari. Token tanpa expiry dan email belum terverifikasi ditolak.
 
 Google harus menggunakan nonce dari challenge backend saat FE memulai login. Backend memeriksa signature RS256 dari kunci Google, issuer, audience/client ID, waktu berlaku, nonce, subject, dan email terverifikasi. Challenge hanya sekali pakai. Gmail/Workspace yang otoritatif dapat menghubungkan akun yang emailnya sudah terverifikasi; akun admin tetap harus sudah disediakan. Email Google dari penyedia pihak ketiga memerlukan login manual lalu `POST /profile/google` dengan `current_password`, challenge baru dan ID token. Pendaftaran Google tidak membuat admin. Rujukan: [verifikasi ID token Google](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
 

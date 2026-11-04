@@ -62,15 +62,15 @@ class PrdGoogleAuthTest extends TestCase
         $this->assertDatabaseCount('users', 0);
     }
 
-    public function test_only_preprovisioned_verified_admin_can_login_via_google_and_old_tokens_end(): void
+    public function test_only_preprovisioned_verified_admin_can_login_via_google_without_ending_other_devices(): void
     {
         $u = $this->account('administrator', ['email' => 'synthetic@gmail.com']);
         $old = $this->signIn($u);
         $this->postJson('/api/auth/google', $this->body())->assertOk()->assertJsonPath('user.role', 'administrator');
         $this->assertSame('test-subject', $u->fresh()->google_id);
-        $this->assertSame(1, $u->tokens()->count());
+        $this->assertSame(2, $u->tokens()->count());
         $this->app['auth']->forgetGuards();
-        $this->withToken($old)->getJson('/api/me')->assertUnauthorized();
+        $this->withToken($old)->getJson('/api/me')->assertOk();
         $this->assertDatabaseCount('users', 1);
         $this->assertLessThanOrEqual(now()->addHours(72)->timestamp, $u->tokens()->first()->expires_at->timestamp);
     }

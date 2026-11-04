@@ -6,7 +6,7 @@ Patch ini menyiapkan kontrol backend untuk aplikasi sekolah. Status pemasangan d
 
 ## Perubahan kontrak untuk FE
 
-- API tetap Bearer token. Token admin maksimal 72 jam; login admin baru mencabut perangkat lama. Token siswa/guru maksimal 7 hari dan bisa beberapa perangkat. Token lama tanpa expiry ditolak: pengguna perlu login ulang.
+- API tetap Bearer token. Token admin maksimal 72 jam per perangkat; login admin baru tidak mencabut perangkat lain. Token siswa/guru maksimal 7 hari dan bisa beberapa perangkat. Token lama tanpa expiry ditolak: pengguna perlu login ulang.
 - Endpoint master siswa, keluarga, impor, dan progres/timeline alumni hanya untuk `administrator`. Akun `guru` belum mempunyai cakupan kelas yang disetujui sehingga akses data pribadi tersebut ditutup. Endpoint `/rekomendasi-beasiswa/saya` tetap khusus hasil milik siswa yang login dan telah disetujui admin.
 - `/register` hanya untuk siswa pada master sekolah yang NISN dan email pendaftarannya cocok. Akun aktif sesudah OTP terverifikasi; pendaftaran admin tetap ditutup. Gunakan [prd-backend.md](prd-backend.md) untuk kontrak terbaru.
 - Input berupa teks biasa, panjang dan angka dibatasi; HTML/control character ditolak. Password dipertahankan persis, tidak di-trim atau dibersihkan sebagai HTML. FE tetap wajib memakai text rendering/escaping, tidak memasukkan data API/Gemini ke `innerHTML`, `v-html`, atau `dangerouslySetInnerHTML`. JSON dari backend tidak bisa menjamin cara FE menampilkannya aman.

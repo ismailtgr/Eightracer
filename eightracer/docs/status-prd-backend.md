@@ -8,7 +8,7 @@ Tanggal: 2 November 2026. Perubahan sudah dipasang langsung di `C:\eightracer\ei
 
 | Modul | Hasil backend |
 |---|---|
-| Login dan akun | Login email, Google dengan verifikasi token server, pendaftaran siswa berdasarkan master NISN+email dan OTP, reset password OTP, profil pribadi, foto, perubahan email/password, sesi admin tunggal maksimal 72 jam. |
+| Login dan akun | Login email, Google dengan verifikasi token server, pendaftaran siswa berdasarkan master NISN+email dan OTP, reset password OTP, profil pribadi, foto, perubahan email/password, sesi admin beberapa perangkat, masing-masing maksimal 72 jam. |
 | Admin sekolah | Perintah provisioning satu admin, email harus sudah diverifikasi pengelola, password diminta secara tersembunyi; tidak ada akun atau password bawaan. |
 | Data murid | Master tanpa harus membuat akun, filter/list/detail, keluarga dan ekonomi, wali bersyarat, bantuan sosial, saudara, minat, histori kelas dan referensi. |
 | Asesmen | Riwayat kepribadian, gaya belajar, IQ, RIASEC dan MI; koreksi mempertahankan data lama; input parsial/backdate tidak membuang asesmen relevan terbaru. |

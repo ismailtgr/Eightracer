@@ -97,18 +97,44 @@ class BackendSecurityTest extends TestCase
         $this->withToken($token)->getJson('/api/me')->assertOk()->assertJsonMissingPath('password')->assertJsonPath('email', $user->email);
     }
 
-    public function test_admin_new_login_revokes_old_device_but_student_can_use_two_devices(): void
+    public function test_admin_and_student_logins_keep_other_devices_active_and_logout_only_ends_current_device(): void
     {
         $admin = $this->account('administrator');
-        $old = $this->login($admin);
-        $this->login($admin);
+        $first = $this->login($admin);
+        $second = $this->login($admin);
+        $this->assertSame(2, $admin->tokens()->count());
+        $this->app['auth']->forgetGuards();
+        $this->withToken($first)->getJson('/api/me')->assertOk();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($second)->getJson('/api/me')->assertOk();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($first)->postJson('/api/logout')->assertOk();
         $this->assertSame(1, $admin->tokens()->count());
         $this->app['auth']->forgetGuards();
-        $this->withToken($old)->getJson('/api/me')->assertUnauthorized();
+        $this->withToken($first)->getJson('/api/me')->assertUnauthorized();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($second)->getJson('/api/me')->assertOk();
         $student = $this->account();
         $this->login($student);
         $this->login($student);
         $this->assertSame(2, $student->tokens()->count());
+    }
+
+    public function test_changing_admin_password_still_revokes_all_devices(): void
+    {
+        $admin = $this->account('administrator');
+        $first = $this->login($admin);
+        $second = $this->login($admin);
+        $this->app['auth']->forgetGuards();
+        $this->withToken($second)->putJson('/api/profile/password', [
+            'current_password' => 'Strong-Test123!',
+            'password' => 'New-Strong123!', 'password_confirmation' => 'New-Strong123!',
+        ])->assertOk();
+        $this->assertSame(0, $admin->tokens()->count());
+        foreach ([$first, $second] as $token) {
+            $this->app['auth']->forgetGuards();
+            $this->withToken($token)->getJson('/api/me')->assertUnauthorized();
+        }
     }
 
     public function test_expired_and_legacy_unbounded_tokens_are_rejected(): void

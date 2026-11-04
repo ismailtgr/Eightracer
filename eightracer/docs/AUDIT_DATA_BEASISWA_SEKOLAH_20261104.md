@@ -75,7 +75,7 @@ API data asli telah diuji pada server utama dan melalui HTTPS Tailscale: Admin 2
 
 Pembaruan sambungan FE, 4 November: halaman `/admin/basis-data-beasiswa` sudah dihubungkan ke arsip asli melalui pilihan **Riwayat Sekolah**, sementara **Katalog Program** mempertahankan katalog sebelumnya. FE memakai `GET /api/b4/riwayat-beasiswa`, yang membaca Laravel dengan `include_summary=1`. Daftar dan ringkasan dikirim dalam satu respons agar server PHP lokal tidak perlu melayani dua permintaan paralel. Parameter `search` (maksimal100 karakter) mencari catatan, alumni, kampus/prodi. Terdapat14 pemeriksaan HTTP FE→BE yang berhasil; pemeriksaan visual otomatis belum berhasil dimulai.
 
-Koleksi `b4-uji-20261105/B4_Data_Asli.postman_collection.json` dan environment `B4_Data_Asli.postman_environment.json` menyediakan enam request login/baca/logout untuk data utama. Password/token awal kosong. Simpan password hanya secara pribadi; login admin yang sama mencabut sesi admin sebelumnya. Koleksi ini tidak menyediakan operasi tambah/edit/arsip data sekolah.
+Koleksi `b4-uji-20261105/B4_Data_Asli.postman_collection.json` dan environment `B4_Data_Asli.postman_environment.json` menyediakan enam request login/baca/logout untuk data utama. Password/token awal kosong. Simpan password hanya secara pribadi; sesuai revisi sesi 4 November, login admin yang sama kini mempertahankan sesi perangkat lain, masing-masing maksimal 72 jam. Koleksi ini tidak menyediakan operasi tambah/edit/arsip data sekolah.
 
 ## Yang sudah bisa dan yang masih memerlukan data
 

@@ -49,7 +49,7 @@ Pemulihan melalui email OTP hanya tersedia bagi email terverifikasi dengan layan
 
 ## Masa login dan FE
 
-Sesi admin/staf maksimal 72 jam (3 hari), dihitung sejak diterbitkan, tidak diperpanjang oleh aktivitas. Login admin baru mencabut sesi admin yang lama. Akun admin yang dipakai bergantian dapat keluar sebelum 72 jam. Siswa maksimal 168 jam (7 hari), mendukung beberapa perangkat. Ganti password dan logout juga mencabut token sesuai cakupannya.
+Sesi admin/staf maksimal 72 jam (3 hari), dihitung sejak diterbitkan, tidak diperpanjang oleh aktivitas. Akun admin yang sama dapat dipakai bersamaan di beberapa perangkat; login baru tidak mencabut sesi perangkat lain. Setiap token tetap kedaluwarsa 72 jam sejak diterbitkan. Siswa maksimal 168 jam (7 hari), mendukung beberapa perangkat. Ganti password dan logout juga mencabut token sesuai cakupannya.
 
 FE menyimpan cookie HttpOnly dengan expires_at dari BE; jangan memasang batas terpisah dua hari atau menganggap gangguan jaringan sebagai token kedaluwarsa. Bedakan 401 (sesi tidak sah), 403 (izin), dan 503 (layanan belum dapat dihubungi). localhost dan 127.0.0.1 mempunyai cookie masing-masing: gunakan alamat FE yang sama.
 

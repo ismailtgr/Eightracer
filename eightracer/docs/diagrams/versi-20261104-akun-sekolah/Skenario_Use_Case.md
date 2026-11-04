@@ -61,10 +61,10 @@ Data prestasi berasal dari sekolah. `pending` adalah status menunggu pemeriksaan
 
 1. Siswa mengirim NISN/password awal atau password yang sudah diubah; admin mengirim email/password. Google hanya untuk akun yang sudah tersedia dan memenuhi bukti kepemilikan email.
 2. Backend memeriksa kredensial/nonce serta pembatasan percobaan.
-3. SessionIssuer mengunci akun; admin mencabut token dan sesi lama.
+3. SessionIssuer mengunci akun dan membuat token baru khusus perangkat ini; sesi perangkat lain tetap aktif.
 4. Terbitkan token admin maksimal 72 jam atau siswa 168 jam; tampilkan profil sesuai role.
 
-**Alternatif dan validasi:** Kredensial salah menggunakan pesan umum. Token tanpa expiry atau kedaluwarsa ditolak. Aktivasi siswa oleh sekolah terpisah dari verifikasi email. Login ulang akun admin yang sama mencabut perangkat lama, walaupun belum 72 jam. Login Google hanya memberi hak sesuai akun server; role guru lama tidak mendapat akses admin.
+**Alternatif dan validasi:** Kredensial salah menggunakan pesan umum. Token tanpa expiry atau kedaluwarsa ditolak. Aktivasi siswa oleh sekolah terpisah dari verifikasi email. Akun admin yang sama dapat dipakai beberapa perangkat bersamaan; masa berlaku setiap token tetap 72 jam dan login baru tidak memperpanjang token lama. Login Google hanya memberi hak sesuai akun server; role guru lama tidak mendapat akses admin.
 
 **Hasil:** Token server berlaku sesuai kebijakan peran.
 
@@ -541,7 +541,7 @@ Data prestasi berasal dari sekolah. `pending` adalah status menunggu pemeriksaan
 2. Backend mencabut current access token.
 3. Frontend membersihkan token lokal dan kembali ke login.
 
-**Alternatif dan validasi:** Token telah tidak berlaku tetap diarahkan ke login. Kebijakan login admin baru mencabut semua sesi/token lamanya melalui UC03.
+**Alternatif dan validasi:** Token telah tidak berlaku tetap diarahkan ke login. Logout hanya mencabut token perangkat yang dipakai; perangkat lain tetap aktif. Ganti/reset password mencabut seluruh token akun.
 
 **Hasil:** Token perangkat yang dicabut tidak bisa dipakai ulang.
 

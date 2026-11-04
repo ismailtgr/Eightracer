@@ -89,6 +89,6 @@ Aktifkan ulang memakai proses yang sama dengan `is_active:true`. Jangan mengirim
 
 401 minta login ulang, 403 akses ditolak, 404 ID tidak ada, 409 konflik/revisi berubah, 429 batas permintaan, 503 layanan belum tersedia. Jangan tampilkan token atau stack trace. Perlakukan teks katalog sebagai teks polos, tanpa `dangerouslySetInnerHTML`.
 
-Sesi Admin/BK 72 jam dan login admin baru mencabut token admin lama. Sesi siswa 168 jam. Dua penguji yang memakai akun admin yang sama dapat saling mengakhiri sesi; koordinasikan atau buat akun uji tambahan melalui BE. Nilai `expires_at` dari respons login adalah acuan FE.
+Revisi 4 November 2026: sesi Admin/BK mendukung beberapa perangkat bersamaan. Login baru tidak mencabut token admin lain. Masing-masing token berlaku 72 jam; siswa 168 jam. Logout hanya mencabut token perangkat yang meminta logout; ganti/reset password tetap mencabut semua token. Nilai `expires_at` dari respons login adalah acuan FE.
 
 Lihat `Contoh_Payload_Beasiswa.json`, `Contoh_Response_Terverifikasi.json`, dan koleksi Postman di folder ini untuk contoh yang cocok dengan implementasi.

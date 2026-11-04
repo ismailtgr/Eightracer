@@ -118,4 +118,21 @@ class SchoolProvisionedAccountsTest extends TestCase
         $this->withToken($token)->getJson('/api/me')->assertUnauthorized();
         $this->travelBack();
     }
+    public function test_each_admin_device_keeps_its_own_expiry_without_renewing_older_tokens(): void
+    {
+        $admin = $this->account('administrator');
+        $body = ['email' => $admin->email, 'password' => 'Strong-Test123!'];
+        $first = $this->postJson('/api/login', $body)->assertOk()->json('token');
+        $this->travel(48)->hours();
+        $this->app['auth']->forgetGuards();
+        $second = $this->postJson('/api/login', $body)->assertOk()->json('token');
+        $this->app['auth']->forgetGuards();
+        $this->withToken($first)->getJson('/api/me')->assertOk();
+        $this->travel(24)->hours();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($first)->getJson('/api/me')->assertUnauthorized();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($second)->getJson('/api/me')->assertOk();
+        $this->travelBack();
+    }
 }

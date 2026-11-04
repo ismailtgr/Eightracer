@@ -12,9 +12,7 @@ class SessionIssuer
         return DB::transaction(function () use ($user) {
             $user = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
             abort_unless(SchoolAccess::canAuthenticate($user), 403, 'Akun belum aktif. Hubungi admin sekolah.');
-            if (SchoolAccess::isStaff($user)) {
-                $this->revoke($user);
-            }
+            // Each device keeps its own token. A new login must not evict another active device.
             $expires = now()->addHours(SchoolAccess::isStaff($user) ? 72 : 168);
             $token = $user->createToken('auth-token', ['*'], $expires)->plainTextToken;
 
