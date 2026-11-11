@@ -20,6 +20,11 @@ class AlumniImport implements Import, WithMultipleSheets
         $this->filePath = $path;
     }
 
+        public function getFilePath()
+    {
+        return $this->filePath;
+    }
+
     public function sheets(): array
     {
         $mapping = config('alumni_import.sheets', []);
@@ -36,10 +41,7 @@ class AlumniImport implements Import, WithMultipleSheets
 
                 $sheet = $spreadsheet->getSheetByName($name);
                 $headingRow = 1;
-                $maxScan = min(10, $sheet->getHighestRow());
-
-                // Kata kunci yang biasanya ada di baris header
-                $headerKeywords = ['NAMA', 'NO', 'KLS', 'KELAS', 'JENJANG', 'PROGRAM STUDI', 'PERGURUAN TINGGI', 'PIL', 'NOMOR WA', 'KIPK', 'JURUSAN'];
+                $maxScan = min(15, $sheet->getHighestRow()); // Pindai 15 baris pertama
 
                 for ($r = 1; $r <= $maxScan; $r++) {
                     $rowValues = [];
@@ -49,19 +51,20 @@ class AlumniImport implements Import, WithMultipleSheets
                         }
                     }
 
-                    // Hitung berapa kata kunci header yang cocok di baris ini
-                    $matchCount = 0;
-                    foreach ($headerKeywords as $kw) {
-                        foreach ($rowValues as $val) {
-                            if ($val !== '' && str_contains($val, $kw)) {
-                                $matchCount++;
-                                break;
-                            }
+                    $hasNama = false;
+                    $hasProdi = false;
+
+                    foreach ($rowValues as $val) {
+                        if (str_contains($val, 'NAMA')) {
+                            $hasNama = true;
+                        }
+                        if (str_contains($val, 'PROGRAM STUDI') || str_contains($val, 'JURUSAN')) {
+                            $hasProdi = true;
                         }
                     }
 
-                    // Baris dianggap header jika cocok minimal 3 kata kunci
-                    if ($matchCount >= 3) {
+                    // SYARAT MUTLAK: Harus ada kolom NAMA dan PROGRAM STUDI di baris yang sama
+                    if ($hasNama && $hasProdi) {
                         $headingRow = $r;
                         break;
                     }

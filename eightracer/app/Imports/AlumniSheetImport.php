@@ -79,11 +79,14 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         ];
 
         foreach ($rows as $index => $row) {
-            $rowNumber = $index + 1;
+            // HeadingRow berada di baris Excel yang terdeteksi oleh AlumniImport.
+            $rowNumber = $this->headingRowNumber + (int) $index + 1;
 
-            $namaRaw = $this->getValue($row, $this->config['nama']);
+            $namaRaw = $this->getValue($row, $this->config['nama'] ?? null);
             $namaStr = strtoupper(trim((string) $namaRaw));
 
+            // Hentikan hanya ketika memasuki bagian rekap/keterangan,
+            // bukan setelah sejumlah baris data tertentu.
             foreach ($stopKeywords as $kw) {
                 if ($namaStr !== '' && str_contains($namaStr, $kw)) {
                     return;
@@ -158,7 +161,35 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         $subJalur = $this->getValue($row, $this->config['sub_jalur'] ?? null);
         $subJalur = $subJalur ? trim((string) $subJalur) : null;
 
-        $skorUtbk = $this->parseFloat($this->getValue($row, $this->config['skor_utbk'] ?? null));
+        // $skorUtbk = $this->parseFloat($this->getValue($row, $this->config['skor_utbk'] ?? null));
+
+        // 1. Ambil nilai mentah RATA2
+        $rawRata2 = $this->getValue($row, $this->config['skor_utbk'] ?? null);
+
+
+        // 2. Coba konversi ke angka
+        $skorUtbk = $this->parseFloat($rawRata2);
+
+        // 3. Jika gagal (karena berisi rumus Excel), hitung manual dari kolom pendukung
+        if ($skorUtbk === null && is_string($rawRata2) && str_contains($rawRata2, '=')) {
+            $kpu = $this->parseFloat($row->get('kpu'));
+            $kk  = $this->parseFloat($row->get('kk'));
+            $ppu = $this->parseFloat($row->get('ppu'));
+            $kbm = $this->parseFloat($row->get('kbm'));
+            $lbinSa = $this->parseFloat($row->get('lbin_saintek'));
+            $lbinSo = $this->parseFloat($row->get('lbin_soshum'));
+            $lbig = $this->parseFloat($row->get('lbig'));
+            $pm = $this->parseFloat($row->get('pm'));
+
+            // Kumpulkan nilai yang tidak null
+            $values = array_filter([$kpu, $kk, $ppu, $kbm, $lbinSa, $lbinSo, $lbig, $pm], fn($val) => $val !== null);
+
+            // Hitung rata-rata (sesuai rumus Excel: dibagi 8)
+            if (count($values) > 0) {
+                $skorUtbk = round(array_sum($values) / 8, 5);
+            }
+        }
+
 
         $subJalur = $this->getValue($row, $this->config['sub_jalur'] ?? null);
         $subJalur = $subJalur ? trim((string) $subJalur) : null;
@@ -196,28 +227,217 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         $this->parent->successCount++;
     }
 
+    private function getSkorDirectFromExcel($namaSiswa)
+    {
+        // Path file Excel yang sedang di-upload (didapat dari controller)
+        // Kita asumsikan file disimpan sementara
+        $filePath = $this->parent->getFilePath();
+        if (!file_exists($filePath)) return null;
+
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filePath);
+        // Cari sheet yang namanya mengandung "SKOR UTBK"
+        $sheet = null;
+        foreach ($spreadsheet->getSheetNames() as $sheetName) {
+            if (str_contains(strtoupper($sheetName), 'SKOR UTBK')) {
+                $sheet = $spreadsheet->getSheetByName($sheetName);
+                break;
+            }
+        }
+
+        if (!$sheet) return null;
+
+        // Cari baris yang mengandung nama siswa
+        $highestRow = $sheet->getHighestRow();
+        for ($row = 1; $row <= $highestRow; $row++) {
+            // Asumsi nama ada di kolom B (index 2)
+            $cellName = $sheet->getCell('B' . $row)->getValue();
+            if (strtoupper(trim($cellName)) === strtoupper(trim($namaSiswa))) {
+                // Asumsi RATA2 ada di kolom O (index 15)
+                $skorCell = $sheet->getCell('O' . $row)->getValue();
+                if (is_numeric($skorCell) && $skorCell > 0) {
+                    return (float) $skorCell;
+                }
+            }
+        }
+        return null;
+    }
+
     private function updateSkorOnly(Collection $row, string $nama, int $rowNumber): void
     {
-        $siswa = Siswa::whereRaw('UPPER(TRIM(nama_lengkap)) = ?', [$nama])->first();
-        if (! $siswa) {
+        $skorMentah = $this->getValue(
+            $row,
+            $this->config['skor_utbk'] ?? 'RATA2'
+        );
+
+        $skorUtbk = $this->parseFloat($skorMentah);
+
+        // Jika RATA2 berupa formula atau tidak memiliki cached value,
+        // hitung dari delapan komponen UTBK.
+        if ($skorUtbk === null) {
+            $skorUtbk = $this->calculateScoreFromComponents($row);
+        }
+
+        // Baris tanpa skor tidak boleh mengosongkan atau mengubah data lama.
+        if ($skorUtbk === null || $skorUtbk <= 0) {
+            return;
+        }
+
+        $namaLookup = $nama;
+
+        // Alias eksplisit untuk variasi ejaan yang sudah ditemukan saat
+        // mencocokkan file Excel dengan database.
+        $nameAliases = [
+            'M ZUKHRUF DANISH P S' => 'M ZUKHRUF DANIS P S',
+        ];
+        $namaLookup = $nameAliases[$namaLookup] ?? $namaLookup;
+
+        // Nama siswa tidak selalu unik di tabel siswas. Kumpulkan semua
+        // siswa dengan nama sama, lalu cocokkan tracer berdasarkan jalur.
+        $siswaMatches = Siswa::whereRaw(
+            'UPPER(TRIM(nama_lengkap)) = ?',
+            [$namaLookup]
+        )->get();
+
+        if ($siswaMatches->isEmpty()) {
             throw new \Exception("Siswa tidak ditemukan: {$nama}");
         }
 
-        $skor = $this->parseFloat($this->getValue($row, $this->config['skor_utbk'] ?? null));
-        if ($skor === null || $skor <= 0) {
-            return; // lewati, jangan timpa skor lama dengan 0
+        $jalurMasuk = $this->config['jalur_masuk'];
+
+        // Prodi/PTN menjadi petunjuk tambahan bila tersedia pada konfigurasi.
+        $prodiRaw = trim((string) $this->getValue(
+            $row,
+            $this->config['prodi'] ?? null
+        ));
+        $ptnRaw = trim((string) $this->getValue(
+            $row,
+            $this->config['pt'] ?? null
+        ));
+
+        $baseQuery = StudyTracer::whereIn('siswa_id', $siswaMatches->pluck('id'))
+            ->where('jalur_masuk', $jalurMasuk);
+
+        // Sheet yang diproses adalah sheet skor UTBK. Untuk MANDIRI,
+        // pilih sub-jalur SKOR UTBK, bukan tracer RAPOT atau sub-jalur lain.
+        if (Str::upper(trim((string) $jalurMasuk)) === 'MANDIRI') {
+            $baseQuery->whereRaw(
+                "UPPER(TRIM(COALESCE(sub_jalur_mandiri, ''))) LIKE ?",
+                ['%SKOR UTBK%']
+            );
         }
 
-        $updated = StudyTracer::where('siswa_id', $siswa->id)
-            ->where('jalur_masuk', $this->config['jalur_masuk'])
-            ->update(['skor_utbk' => $skor]);
+        $baseMatches = $baseQuery->get();
 
-        if ($updated === 0) {
-            throw new \Exception("Siswa belum punya study tracer {$this->config['jalur_masuk']}");
+        if ($baseMatches->isEmpty()) {
+            throw new \Exception(
+                "Study tracer jalur {$jalurMasuk} tidak ditemukan untuk {$nama}"
+            );
+        }
+
+        $normalize = static function (?string $value): string {
+            $value = Str::upper(trim((string) $value));
+            $value = preg_replace('/[^A-Z0-9]+/u', ' ', $value);
+            return trim(preg_replace('/\s+/', ' ', $value));
+        };
+
+        $selected = collect();
+
+        // Prioritas pertama: prodi yang sama persis setelah normalisasi.
+        if ($prodiRaw !== '') {
+            $normalizedProdi = $normalize($prodiRaw);
+            $selected = $baseMatches->filter(
+                fn($item) => $normalize($item->program_studi) === $normalizedProdi
+            )->values();
+        }
+
+        // Jika prodi tidak cocok atau menghasilkan beberapa kandidat,
+        // gunakan PTN dari Excel untuk mempersempit pilihan.
+        if ($selected->count() !== 1 && $ptnRaw !== '') {
+            $normalizedPtn = $normalize($ptnRaw);
+            $ptMatches = $baseMatches->filter(function ($item) use ($normalizedPtn, $normalize) {
+                $namaPtn = $item->perguruanTinggi?->nama_pt;
+                return $namaPtn !== null && $normalize($namaPtn) === $normalizedPtn;
+            })->values();
+
+            if ($ptMatches->count() === 1) {
+                $selected = $ptMatches;
+            } elseif ($ptMatches->count() > 1) {
+                $selected = $ptMatches;
+            }
+        }
+
+        // Jika tidak ada petunjuk yang cocok, satu-satunya tracer milik siswa
+        // pada jalur ini aman dipilih. Jika lebih dari satu, jangan menebak.
+        if ($selected->isEmpty() && $baseMatches->count() === 1) {
+            $selected = $baseMatches;
+        }
+
+        // Jika beberapa tracer masih cocok, update massal hanya diizinkan
+        // bila identitas PTN dan prodi benar-benar sama.
+        if ($selected->count() > 1) {
+            $identityKeys = $selected->map(function ($item) use ($normalize) {
+                return (string) $item->perguruan_tinggi_id . '|'
+                    . $normalize($item->program_studi);
+            })->unique();
+
+            if ($identityKeys->count() !== 1) {
+                throw new \Exception(
+                    "Ditemukan beberapa study tracer {$jalurMasuk} untuk {$nama}; "
+                        . "prodi/PTN tidak cukup untuk menentukan baris yang benar. Update dibatalkan"
+                );
+            }
+        }
+
+        if ($selected->isEmpty()) {
+            $detail = $prodiRaw !== '' ? " (prodi Excel: {$prodiRaw})" : '';
+            throw new \Exception(
+                "Study tracer {$jalurMasuk} untuk {$nama} tidak dapat dicocokkan secara aman{$detail}"
+            );
+        }
+
+        foreach ($selected as $studyTracer) {
+            $studyTracer->update(['skor_utbk' => $skorUtbk]);
         }
 
         $this->parent->successCount++;
     }
+
+    /**
+     * Hitung rata-rata 8 komponen UTBK jika nilai RATA2 tidak tersedia.
+     * Pembagi tetap 8 mengikuti rumus pada file Excel sumber.
+     */
+    private function calculateScoreFromComponents(Collection $row): ?float
+    {
+        $componentKeys = [
+            'kpu',
+            'kk',
+            'ppu',
+            'kbm',
+            'lbin_saintek',
+            'lbin_soshum',
+            'lbig',
+            'pm',
+        ];
+
+        $total = 0.0;
+        $hasValue = false;
+
+        foreach ($componentKeys as $key) {
+            $value = $this->parseFloat($row->get($key));
+
+            if ($value !== null) {
+                $total += $value;
+                $hasValue = true;
+            }
+        }
+
+        if (! $hasValue || $total <= 0) {
+            return null;
+        }
+
+        return round($total / 8, 5);
+    }
+
     private function getValue(Collection $row, ?string $key): mixed
     {
         if (! $key) {
@@ -313,8 +533,26 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
         if ($value === null || $value === '' || $value === '-') {
             return null;
         }
-        $value = str_replace(',', '.', (string) $value);
-        $f = (float) filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        return $f > 0 ? $f : null;
+
+        if (is_string($value)) {
+            $value = trim($value);
+
+            // Contoh format pada file: "477, 60" menjadi "477.60".
+            $value = preg_replace('/\s+/', '', $value);
+            $value = str_replace(',', '.', $value);
+
+            // Abaikan teks/hasil error rumus seperti #VALUE!.
+            if (! preg_match('/^-?\d+(?:\.\d+)?$/', $value)) {
+                return null;
+            }
+        }
+
+        if (! is_numeric($value)) {
+            return null;
+        }
+
+        $number = (float) $value;
+
+        return $number > 0 ? $number : null;
     }
 }
