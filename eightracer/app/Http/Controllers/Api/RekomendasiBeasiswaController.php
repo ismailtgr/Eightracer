@@ -109,6 +109,13 @@ class RekomendasiBeasiswaController extends Controller
     {
         abort_unless($request->user()->role === 'siswa', 403);
         $siswa = $request->user()->siswa;
+        $preview = app(\App\Services\School\LocalStudentPreview::class)->enabled($request);
+        $hasPublished = $siswa && RekomendasiBeasiswa::where('siswa_id', $siswa->id)->where('status_review', 'disetujui')->exists();
+        if ($preview && ! $hasPublished) {
+            $catalog = \App\Models\BasisDataBeasiswa::where('is_active', true)->orderBy('id')->get([
+                'id','nama_beasiswa','jenjang','penyelenggara','periode_apply','tanggal_buka','tanggal_tutup','durasi','satuan_durasi']);
+            return response()->json(['data' => [], 'preview' => true, 'catalog_preview' => $catalog]);
+        }
         abort_unless($siswa, 404, 'Akun belum terhubung dengan data siswa.');
         $latest = RekomendasiBeasiswa::selectRaw('MAX(id)')->where('siswa_id', $siswa->id)->groupBy('target_jenjang');
         $rows = RekomendasiBeasiswa::whereIn('id', $latest)->where('status_review', 'disetujui')

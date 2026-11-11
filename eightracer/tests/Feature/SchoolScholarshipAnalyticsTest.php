@@ -112,4 +112,19 @@ class SchoolScholarshipAnalyticsTest extends TestCase
         config(['b4.python_binary' => 'invalid-internal-binary']);
         $this->getJson('/api/analitik-beasiswa/sekolah/pdf')->assertStatus(503)->assertDontSee('invalid-internal-binary');
     }
+
+    public function test_gpa_distribution_counts_latest_values_at_boundaries_without_counting_null_as_zero(): void
+    {
+        foreach ([null, 0, 2.49, 2.5, 3.0, 3.49, 3.5, 4] as $value) {
+            $student = $this->student(null, ['tahun_lulus' => 2026]);
+            $admission = $this->admission($student);
+            \App\Models\AlumniProgress::create(['siswa_id' => $student->id, 'study_tracer_id' => $admission->id,
+                'tahun_lulus' => 2026, 'periode' => 'Ganjil 2026/2027', 'semester' => 1,
+                'status_pendidikan' => 'aktif', 'tanggal_update' => today(), 'is_current' => true, 'ipk_terkini' => $value]);
+        }
+        $this->signIn($this->account('administrator'));
+        $response = $this->getJson('/api/analitik-beasiswa/sekolah')->assertOk();
+        $response->assertJsonPath('data.financial.ipk.known', 7)->assertJsonPath('data.financial.ipk.unknown', 1);
+        $this->assertSame([2, 1, 2, 2], array_column($response->json('data.financial.ipk_distribution'), 'count'));
+    }
 }

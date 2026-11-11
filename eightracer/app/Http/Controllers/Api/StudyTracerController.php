@@ -93,6 +93,12 @@ class StudyTracerController extends Controller
 
     public function studentIndex(Request $r, AlumniService $service)
     {
+        $preview = app(\App\Services\School\LocalStudentPreview::class);
+        if ($preview->enabled($r)) {
+            $result = $this->query($r)->where('status_penerimaan', 'diterima')->latest('id')
+                ->paginate($r->integer('per_page', 20))->through(fn ($t) => $preview->admission($t))->toArray();
+            return response()->json($result + ['preview' => true, 'notice' => 'Pratinjau lokal data alumni; izin publikasi belum diubah.']);
+        }
         $query = $this->query($r, true)->with(['alumniProgress' => fn ($q) => $q->where('is_current', true)->where('is_published', true)
             ->with('alumniProgressBeasiswa.beasiswa')->orderByDesc('tanggal_update')->orderByDesc('id')]);
         $result = $query->latest('id')->paginate($r->integer('per_page', 20))->through(fn ($t) => [
@@ -114,8 +120,14 @@ class StudyTracerController extends Controller
         return response()->json($result);
     }
 
-    public function studentShow(int $id, AlumniService $service)
+    public function studentShow(Request $request, int $id, AlumniService $service)
     {
+        $preview = app(\App\Services\School\LocalStudentPreview::class);
+        if ($preview->enabled($request)) {
+            $row = StudyTracer::where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi'])->findOrFail($id);
+            return response()->json(['preview' => true, 'data' => ['masuk_pt' => $preview->admission($row),
+                'progress' => [], 'education_events' => [], 'timeline' => []]]);
+        }
         $t = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi', 'prestasi'])->findOrFail($id);
 
         return response()->json(['data' => ['masuk_pt' => $service->admission($t), 'progress' => $t->alumniProgress()->where('is_current', true)->where('is_published', true)->with('alumniProgressBeasiswa.beasiswa')->orderByDesc('tanggal_update')->orderByDesc('id')->get()->map(fn ($p) => $service->progress($p)), 'education_events' => app(AlumniTimeline::class)->educationEvents($t), 'timeline' => $service->timeline($t)]]);
