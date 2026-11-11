@@ -80,7 +80,7 @@ class SchoolScholarshipAnalytics
             $filter['beasiswa'] = $value;
         }
 
-        $allStudents = $this->bounded(Siswa::whereNotNull('tahun_lulus')->select(['id', 'tahun_lulus']));
+        $allStudents = $this->bounded(LocalExampleRecords::exclude(Siswa::query())->whereNotNull('tahun_lulus')->select(['id', 'tahun_lulus']));
         $allIds = $allStudents->pluck('id');
         $allAdmissions = $this->bounded(StudyTracer::where('status_penerimaan', 'diterima')
             ->whereIn('siswa_id', $allIds)->with('perguruanTinggi:id,nama_pt'));

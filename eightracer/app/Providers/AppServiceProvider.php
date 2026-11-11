@@ -38,9 +38,11 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinutes(15, 15)->by('otp-ip:'.$request->ip()),
         ]);
         RateLimiter::for('otp-verify', fn ($request) => Limit::perMinute(10)->by('otp-check:'.$request->ip()));
-        foreach (['bulk-preview' => 3, 'bulk-commit' => 3, 'book-pdf' => 3, 'scholarship-chat' => 5] as $name => $max) {
+        foreach (['bulk-preview' => 3, 'bulk-commit' => 3, 'book-pdf' => 3, 'profile-submission' => 5] as $name => $max) {
             RateLimiter::for($name, fn ($request) => Limit::perMinute($max)->by($name.':'.$request->user()->id));
         }
+        RateLimiter::for('scholarship-chat', fn ($request) => Limit::perMinute(max(10, min(60, (int) config('gemini.chat_requests_per_minute', 30))))
+            ->by('scholarship-chat:v2:'.$request->user()->id));
         RateLimiter::for('api', fn ($request) => Limit::perMinute(120)->by($request->user()->id));
     }
 }

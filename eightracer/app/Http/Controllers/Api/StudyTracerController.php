@@ -125,6 +125,16 @@ class StudyTracerController extends Controller
         $preview = app(\App\Services\School\LocalStudentPreview::class);
         if ($preview->enabled($request)) {
             $row = StudyTracer::where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi'])->findOrFail($id);
+            if (\App\Services\School\LocalExampleRecords::isAlumniExample($row->siswa)) {
+                $progress = $row->alumniProgress()->where('is_current', true)->with('alumniProgressBeasiswa.beasiswa')->orderBy('semester')->get()
+                    ->map(fn ($p) => $service->progress($p))->values();
+                $education = app(AlumniTimeline::class)->educationEvents($row);
+                $timeline = collect($education)->map(fn ($event) => [...$event, 'granularity' => $event['date'] ? 'date' : 'year'])
+                    ->concat($progress->map(fn ($p) => ['type' => 'progress_semester', 'date' => $p['tanggal_update'], 'label' => $p['periode'], 'data' => $p]))->values();
+                return response()->json(['preview' => true, 'data' => ['masuk_pt' => [...$preview->admission($row),
+                    'strata_pendidikan' => $row->strata_pendidikan, 'nilai_rapor_pendaftaran' => $row->nilai_rapor_pendaftaran,
+                    'skor_utbk' => $row->skor_utbk], 'progress' => $progress, 'education_events' => $education, 'timeline' => $timeline]]);
+            }
             return response()->json(['preview' => true, 'data' => ['masuk_pt' => $preview->admission($row),
                 'progress' => [], 'education_events' => [], 'timeline' => []]]);
         }

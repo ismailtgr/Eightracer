@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
     Route::middleware(RequireStudent::class)->group(function () {
         Route::get('/profil-siswa/saya', [StudentInitialProfileController::class, 'show']);
-        Route::post('/profil-siswa/saya/submission', [StudentInitialProfileController::class, 'submit'])->middleware('throttle:scholarship-chat');
+        Route::post('/profil-siswa/saya/submission', [StudentInitialProfileController::class, 'submit'])->middleware('throttle:profile-submission');
         Route::post('/chat-beasiswa', [ScholarshipChatController::class, 'mine'])->middleware('throttle:scholarship-chat');
     });
     Route::middleware('administrator')->group(function () {

@@ -18,7 +18,8 @@ class LocalStudentPreview
     {
         return ['id' => $row->id, 'nama_lengkap' => $row->siswa->nama_lengkap,
             'tahun_lulus' => $row->siswa->tahun_lulus,
-            'perguruan_tinggi' => ['nama_pt' => $row->perguruanTinggi?->nama_pt],
+            'perguruan_tinggi' => ['nama_pt' => $row->perguruanTinggi?->nama_pt, 'jenis_pt' => $row->perguruanTinggi?->jenis_pt],
+            'strata_pendidikan' => $row->strata_pendidikan,
             'program_studi' => $row->program_studi,
             'jalur_masuk' => app(AlumniAdmissionPath::class)->label($row),
             'status_penerimaan' => $row->status_penerimaan,

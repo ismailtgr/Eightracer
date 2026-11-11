@@ -27,7 +27,7 @@ class FinancialDashboard
     {
         $d = $this->filters($r);
         // Select the latest revision/period before filtering price, university or award status.
-        $q = AlumniProgress::where('is_current', true)->whereNotNull('study_tracer_id')
+        $q = AlumniProgress::where('is_current', true)->whereHas('siswa', fn ($s) => LocalExampleRecords::exclude($s))->whereNotNull('study_tracer_id')
             ->whereNotExists(function ($newer) use ($d) {
                 $newer->selectRaw('1')->from('alumni_progress as newer')->whereColumn('newer.siswa_id', 'alumni_progress.siswa_id')->where('newer.is_current', true)->whereNotNull('newer.study_tracer_id');
                 if (isset($d['periode'])) {

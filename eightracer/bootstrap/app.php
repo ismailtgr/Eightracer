@@ -39,8 +39,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 409 => 'Data berubah. Muat ulang dan coba kembali.', 413 => 'File atau input terlalu besar.',
                 419 => 'Sesi tidak valid.', 429 => 'Terlalu banyak percobaan. Coba lagi nanti.',
                 503 => 'Layanan sementara belum tersedia.'];
-            return response()->json(['message' => $messages[$status] ?? 'Permintaan tidak dapat diproses.'], $status,
-                $error instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface ? $error->getHeaders() : []);
+            $headers = $error instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface ? $error->getHeaders() : [];
+            $payload = ['message' => $messages[$status] ?? 'Permintaan tidak dapat diproses.'];
+            if ($status === 429) $payload['retry_after'] = max(1, min(300, (int) ($headers['Retry-After'] ?? 60)));
+            return response()->json($payload, $status, $headers);
         });
         $exceptions->report(function (\Throwable $error) {
             if (app()->bound('request') && request()->is('api/*')) {
