@@ -13,10 +13,22 @@ class MediaSosial extends Model
 
     protected $fillable = [
         'siswa_id',
-        'jenis_media',
+        'jenis_media', 'platform',
         'username',
         'nomor_wa',
     ];
+
+    protected $appends = ['platform'];
+
+    public function getPlatformAttribute(): ?string
+    {
+        return $this->attributes['jenis_media'] ?? null;
+    }
+
+    public function setPlatformAttribute(string $value): void
+    {
+        $this->attributes['jenis_media'] = $value;
+    }
 
     public function siswa(): BelongsTo
     {
