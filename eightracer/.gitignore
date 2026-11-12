@@ -37,3 +37,5 @@ postman/
 *.p12
 *.pfx
 *.key
+
+!.env.staging.example

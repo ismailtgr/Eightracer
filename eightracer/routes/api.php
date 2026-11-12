@@ -17,6 +17,9 @@ use App\Http\Controllers\Api\AlumniStatistikController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/internal/run-scheduler', \App\Http\Controllers\Api\InternalSchedulerController::class)
+    ->middleware('throttle:6,1');
+
 Route::get('/perguruan-tinggi', [PerguruanTinggiController::class, 'index']);
 
 Route::post('/register', [SchoolAuthController::class, 'register'])->middleware('throttle:otp-request');

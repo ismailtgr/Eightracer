@@ -94,7 +94,12 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'sslmode' => env('DB_SSLMODE', 'require'),
+            'sslrootcert' => env('DB_SSLROOTCERT'),
+            // Shared Supavisor transaction pooling does not support prepared statements.
+            'options' => [
+                PDO::ATTR_EMULATE_PREPARES => filter_var(env('DB_EMULATE_PREPARES', false), FILTER_VALIDATE_BOOLEAN),
+            ],
         ],
 
         'sqlsrv' => [

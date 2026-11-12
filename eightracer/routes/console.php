@@ -8,4 +8,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('school:purge-import-plans')->daily();
+Schedule::command('school:purge-import-plans')->daily()->withoutOverlapping(5);
