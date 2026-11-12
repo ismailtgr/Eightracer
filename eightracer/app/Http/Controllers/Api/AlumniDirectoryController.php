@@ -56,7 +56,7 @@ class AlumniDirectoryController extends Controller
         if ($timelineOnly) $base->whereIn('id', app(AlumniTimeline::class)->completeIds());
         $query = (clone $base)->with($this->relations());
         if ($request->filled('search')) {
-            $query->whereHas('siswa', fn ($q) => $q->where('nama_lengkap', 'ilike', '%'.$data['search'].'%'));
+            $query->whereHas('siswa', fn ($q) => $q->whereLike('nama_lengkap', '%'.$data['search'].'%'));
         }
         $sourcePaths = collect();
         if ($request->filled('jalur_masuk') || $request->boolean('include_filters')) {

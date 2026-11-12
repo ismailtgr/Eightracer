@@ -12,13 +12,38 @@
 - SANCTUM_STATEFUL_DOMAINS bukan pengganti FRONTEND_URLS dan bukan syarat tunggal login BFF Bearer. Tidak ada perubahan komponen visual FE.
 - 8 tests / 34 assertions lulus pada database testing terisolasi, schedule:run dimock. Tidak menjalankan purge data sekolah untuk pengujian.
 
-## Yang belum selesai
+## Migrasi aktif selesai — 12 November 2026
 
-Database aktif tetap MySQL, tidak diubah menjadi database Postgres kosong. .env.staging belum berisi DB_HOST, DB_USERNAME dan DB_PASSWORD nyata. Koneksi staging Supabase, migration PostgreSQL dan perpindahan isi database belum diuji. Konfigurasi pgsql yang tersedia tidak membuktikan koneksi aktif telah berpindah. Query ilike yang sudah ada tidak kompatibel dengan MySQL aktif; penyelesaiannya menunggu cutover Postgres, tidak diubah kembali pada pekerjaan ini.
+Backend utama di `C:\eightracer\eightracer` sudah memakai PostgreSQL Supabase project `hitxegwqiezzomhibpwf`, versi 17.11. Session pooler yang diverifikasi: `aws-0-ap-southeast-1.pooler.supabase.com:5432`, TLS require. Aplikasi memakai role khusus `eightracer_runtime` tanpa superuser, CREATE ROLE, CREATE DATABASE, ownership tabel, atau BYPASSRLS. Kredensial hanya disimpan dalam berkas privat yang dikecualikan Git.
 
-## Isi staging secara privat
+- 57 migration Laravel berhasil pada tujuan yang semula kosong. Tidak mengubah migration lama dan tidak menjalankan migrate:fresh.
+- Snapshot sumber: 63 tabel / 2.344 baris (termasuk 57 catatan migration). Sebanyak 2.287 baris aplikasi dipindahkan; 57 catatan migration tujuan dihasilkan Laravel, nama migration diverifikasi sama.
+- Isi semua 63 tabel dibandingkan berdasarkan seluruh kolom sumber (nama migration untuk repository migration): cocok. Data sumber dicek ulang sebelum cutover dan tidak berubah.
+- Jumlah penting: siswa 874; study_tracer 600; school_scholarship_observations 574; perguruan_tinggi 58; alumni_progress 8; basis_data_beasiswa 2; users 2. Angka tabel bukan seluruhnya jumlah alumni unik.
+- ID, foreign key, hash password, APP_KEY dan isi terenkripsi dipertahankan. Sequence diatur berdasarkan ID hasil impor. MySQL tidak dihapus atau diperbarui.
+- RLS diaktifkan untuk semua 63 tabel; anon/authenticated/PUBLIC tidak mendapat akses tabel atau sequence. Policy runtime hanya untuk koneksi server Laravel; otorisasi siswa/admin tetap dikerjakan backend. Security advisor Supabase: tidak ada lint.
+- Login kedua role, endpoint alumni, profil, rekomendasi tersimpan, analitik dan dashboard berhasil pada PostgreSQL. PDF analitik menghasilkan HTTP 200 application/pdf. Role siswa ditolak 403 pada endpoint admin.
+- CRUD katalog diuji langsung pada PostgreSQL dan di-rollback; jumlah katalog tetap dua. Pengujian runtime cache INSERT/UPDATE/DELETE juga di-rollback.
+- Pencarian kini memakai whereLike/orWhereLike bawaan Laravel: tetap menghasilkan ILIKE di PostgreSQL dan dapat diuji dengan SQLite terisolasi. Ini memperbaiki delapan kegagalan pengujian akibat operator ILIKE mentah pada SQLite.
+- Suite otomatis: 213 tests, 1.840 assertions, tidak ada failure/error; satu pengujian XLSX dilewati oleh prasyarat lingkungan. Suite memakai SQLite memory; bukti PostgreSQL berasal dari migration, verifikasi isi, CRUD rollback, dan HTTP checks di atas.
+- Local dan Tailscale: FAQ 200 JSON; /me tanpa token 401 JSON. Server PHP di-restart setelah driver PostgreSQL diaktifkan.
 
-Buka .env.staging dalam proyek utama, isi dari Supabase Dashboard > Connect. File tersebut diabaikan Git. .env.staging.example merupakan template publik tanpa secret.
+Snapshot, konfigurasi sebelum cutover, hasil perbandingan dan hasil HTTP berada di `.migration-private/`, bukan untuk Git atau dikirim kepada FE. Tidak ada perubahan visual frontend pada tahap migrasi ini. Render/Vercel belum dideploy oleh tahap ini.
+
+### Pengoperasian setelah cutover
+
+Aplikasi biasa membaca `.env` (role runtime). Migration berikutnya memakai role migrator melalui `.env.staging`:
+
+    .\.tools\php84\php.exe artisan migrate --env=staging --force
+    .\.tools\php84\php.exe scripts\secure-supabase-backend.php
+
+Jalankan pengamanan sesudah migration yang membuat tabel baru agar role runtime mendapat hak tabel baru dan RLS/policy yang sesuai. Jangan memberi runtime hak administrasi hanya agar migrate berjalan. Jangan menjalankan ulang impor pada tujuan berisi data; skrip menolaknya. Untuk mengulang staging di project lain, gunakan parameter dan rencana terpisah, jangan menyalin secret.
+
+Rollback koneksi memerlukan pemulihan `.env` dari `.migration-private/env-before-supabase-20261112`, config:clear, dan restart backend. Jika sudah ada perubahan data baru di Supabase, rekonsiliasi dahulu sebelum kembali ke MySQL; jangan menghilangkan perubahan tersebut.
+
+## Referensi konfigurasi koneksi
+
+File .env.staging sekarang sudah terisi koneksi migrator proyek yang diverifikasi dan diabaikan Git. .env.staging.example tetap template publik tanpa secret.
 
 Untuk Session pooler gunakan host exact dari Connect, port 5432, user postgres.PROJECT_REF. Untuk direct gunakan db.PROJECT_REF.supabase.co, port 5432, user postgres; direct memerlukan konektivitas IPv6 kecuali ada IPv4 add-on. Jangan menggabungkan host direct dan username pooler.
 
@@ -30,7 +55,7 @@ Jalankan dari folder backend:
 
 Verifier berdiri sendiri: membaca .env.staging, tidak mem-boot Laravel dengan konfigurasi lokal, tidak mengganti .env, tidak menjalankan migration/seed/import, tidak mencetak kredensial. Verifier membuka transaksi repeatable-read READ ONLY, membaca versi PostgreSQL dan jumlah baris tabel utama bila ada, lalu rollback. Koneksi gagal dikembalikan sebagai kode generik tanpa exception/DSN privat.
 
-## Langkah setelah koneksi terverifikasi
+## Checklist migrasi berikutnya (referensi, cutover lokal sudah selesai)
 
 1. Pastikan fingerprint tujuan dan status staging sesuai proyek yang diizinkan; periksa tabel/data yang sudah ada.
 2. Backup MySQL dan simpan APP_KEY yang sekarang; jangan generate ulang APP_KEY untuk data terenkripsi yang dipindahkan.

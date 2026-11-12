@@ -23,7 +23,7 @@ class StudyTracerController extends Controller
         }
         if ($r->filled('search')) {
             $term = $r->input('search');
-            $q->whereHas('siswa', fn ($s) => $s->where('nama_lengkap', 'ilike', '%'.$term.'%'));
+            $q->whereHas('siswa', fn ($s) => $s->whereLike('nama_lengkap', '%'.$term.'%'));
         }
         if ($r->filled('angkatan')) {
             $q->whereHas('siswa', fn ($s) => $s->where('tahun_lulus', $r->input('angkatan')));

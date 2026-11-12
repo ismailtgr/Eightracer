@@ -39,3 +39,5 @@ postman/
 *.key
 
 !.env.staging.example
+
+/.migration-private/

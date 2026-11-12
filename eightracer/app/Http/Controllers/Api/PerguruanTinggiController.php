@@ -21,8 +21,8 @@ class PerguruanTinggiController extends Controller
         if (! empty($validated['search'])) {
             $search = trim($validated['search']);
             $query->where(function ($q) use ($search) {
-                $q->where('nama_pt', 'ilike', "%{$search}%")
-                  ->orWhere('nama_singkat', 'ilike', "%{$search}%");
+                $q->whereLike('nama_pt', "%{$search}%")
+                  ->orWhereLike('nama_singkat', "%{$search}%");
             });
         }
 

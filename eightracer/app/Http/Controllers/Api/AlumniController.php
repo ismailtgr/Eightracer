@@ -25,12 +25,12 @@ class AlumniController extends Controller
         if (! empty($validated['univ'])) {
             $univ = trim($validated['univ']);
             $query->whereHas('perguruanTinggi', function ($q) use ($univ) {
-                $q->where('nama_pt', 'ilike', "%{$univ}%");
+                $q->whereLike('nama_pt', "%{$univ}%");
             });
         }
 
         if (! empty($validated['prodi'])) {
-            $query->where('program_studi', 'ilike', '%' . trim($validated['prodi']) . '%');
+            $query->whereLike('program_studi', '%' . trim($validated['prodi']) . '%');
         }
 
         if (! empty($validated['jalur'])) {
@@ -40,7 +40,7 @@ class AlumniController extends Controller
         if (! empty($validated['search'])) {
             $search = trim($validated['search']);
             $query->whereHas('siswa', function ($q) use ($search) {
-                $q->where('nama_lengkap', 'ilike', "%{$search}%");
+                $q->whereLike('nama_lengkap', "%{$search}%");
             });
         }
 
