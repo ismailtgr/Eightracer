@@ -51,7 +51,7 @@ class ScholarshipRecommendationService
                     $candidateProfile = app(SchoolEligibility::class)->programProfile($siswa, $program, $candidateProfile);
                 }
             }
-            $evaluation = $this->evaluator->evaluate($candidateProfile, $criteria);
+            $evaluation = $this->officialEvaluation($candidateProfile, $criteria, $beasiswa);
             $snapshot = $beasiswa->only(['nama_beasiswa', 'jenjang', 'tanggal_buka', 'tanggal_tutup', 'link_pendaftaran', 'penyelenggara', 'durasi', 'satuan_durasi', 'periode_apply']);
             $snapshot['konteks'] = $profile['jenjang'] !== $profile['target_jenjang'] ? 'Persiapan jenjang berikutnya' : 'Jenjang saat ini';
             $candidates[] = ['beasiswa_id' => $beasiswa->id, 'beasiswa' => $snapshot, 'evaluasi' => $evaluation];
@@ -64,6 +64,11 @@ class ScholarshipRecommendationService
 
         return ['target_jenjang' => $profile['target_jenjang'], 'source_fingerprint' => $fingerprint,
             'pemeringkatan_ml' => $ml, 'kandidat' => $candidates];
+    }
+
+    private function officialEvaluation(array $profile, array $criteria, BasisDataBeasiswa $program): array
+    {
+        return app(OfficialScholarshipEligibility::class)->evaluate($profile, $criteria, $program);
     }
 
     public function generate(Siswa $siswa, ?string $target = null): RekomendasiBeasiswa

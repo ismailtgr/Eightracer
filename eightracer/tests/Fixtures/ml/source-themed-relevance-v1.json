@@ -1,0 +1,186 @@
+{
+  "version": "source-themed-relevance-v1",
+  "label_origin": "independent_author_rubric_not_BK_not_model_output",
+  "scope": "Thematic content relevance only; eligibility, dates and admission outcomes are NOT evaluated by these labels. Financial theme queries are retrieval probes, not claims of financial need inferred from hobbies.",
+  "corpus": "database/data/scholarships/official-20261112.json",
+  "limitations": [
+    "Two programs only.",
+    "Constructed query documents, not real student outcomes.",
+    "Rubric labels are not independent human preference ground truth.",
+    "English and paraphrase probes intentionally measure lexical limitations."
+  ],
+  "cases": [
+    {
+      "query_id": "dev01",
+      "split": "development",
+      "interest_document": "prestasi akademik IPK",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik fokus tema yang dinyatakan dalam dokumen sumber."
+    },
+    {
+      "query_id": "dev02",
+      "split": "development",
+      "interest_document": "pendidikan ekonomi finansial",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik fokus tema yang dinyatakan dalam dokumen sumber."
+    },
+    {
+      "query_id": "dev03",
+      "split": "development",
+      "interest_document": "kepemimpinan organisasi komunitas",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik fokus tema yang dinyatakan dalam dokumen sumber."
+    },
+    {
+      "query_id": "dev04",
+      "split": "development",
+      "interest_document": "pengabdian masyarakat komunikasi",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik fokus tema yang dinyatakan dalam dokumen sumber."
+    },
+    {
+      "query_id": "test01",
+      "split": "held_out",
+      "interest_document": "prestasi akademik",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test02",
+      "split": "held_out",
+      "interest_document": "akademik IPK pendidikan",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test03",
+      "split": "held_out",
+      "interest_document": "ekonomi finansial pendidikan",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test04",
+      "split": "held_out",
+      "interest_document": "IPK prestasi",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test05",
+      "split": "held_out",
+      "interest_document": "keuangan pendidikan",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test06",
+      "split": "held_out",
+      "interest_document": "academic excellence",
+      "relevance": {
+        "1": 3,
+        "2": 0
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test07",
+      "split": "held_out",
+      "interest_document": "organisasi komunitas sosial",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test08",
+      "split": "held_out",
+      "interest_document": "pengabdian masyarakat kepemimpinan",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test09",
+      "split": "held_out",
+      "interest_document": "komunikasi kontribusi masyarakat",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test10",
+      "split": "held_out",
+      "interest_document": "pengembangan diri organisasi",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test11",
+      "split": "held_out",
+      "interest_document": "leadership volunteering",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    },
+    {
+      "query_id": "test12",
+      "split": "held_out",
+      "interest_document": "memimpin relawan",
+      "relevance": {
+        "1": 0,
+        "2": 3
+      },
+      "label_basis": "Rubrik LOTTE: prestasi akademik/dukungan pendidikan-ekonomi; TELADAN: kepemimpinan, organisasi, kontribusi masyarakat. Profil ini buatan, bukan siswa sekolah."
+    }
+  ],
+  "safety_cases": [
+    {
+      "query_id": "unknown01",
+      "interest_document": "astronomi teleskop galaksi",
+      "expected_reason": "no_eligible_overlap"
+    },
+    {
+      "query_id": "empty01",
+      "interest_document": "",
+      "expected_reason": "profile_insufficient"
+    }
+  ]
+}

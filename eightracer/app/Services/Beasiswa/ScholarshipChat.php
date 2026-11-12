@@ -36,7 +36,7 @@ class ScholarshipChat
             }
         }
         $criteria = $selected->kriteriaKelayakanBeasiswa->sortBy('id')->values()->toArray();
-        $evaluation = app(EligibilityEvaluator::class)->evaluate($profile, $criteria);
+        $evaluation = app(OfficialScholarshipEligibility::class)->evaluate($profile, $criteria, $selected);
         $target = $profile['target_jenjang'];
         if (! $target || ! in_array($selected->jenjang, [$target, 'Keduanya'], true)) {
             $evaluation['memenuhi'] = false;

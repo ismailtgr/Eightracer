@@ -59,7 +59,7 @@ class BasisDataBeasiswaController extends Controller
             'tanggal_buka' => 'nullable|date_format:Y-m-d',
             'tanggal_tutup' => ['nullable', 'date_format:Y-m-d', Rule::when($request->filled('tanggal_buka'), 'after_or_equal:tanggal_buka')],
             'link_pendaftaran' => 'nullable|url:http,https|max:500', 'is_active' => 'sometimes|boolean',
-            'status_program' => 'prohibited', 'status_pendaftaran' => 'prohibited',
+            'status_program' => 'prohibited', 'status_pendaftaran' => 'prohibited', 'official_policy' => 'prohibited',
             'durasi' => 'nullable|numeric|gt:0|max:100', 'satuan_durasi' => 'required_with:durasi|nullable|in:tahun,semester,bulan', 'periode_apply' => 'nullable|string|max:255',
             'program_eligibilitas_id' => 'nullable|integer|exists:program_eligibilitas,id',
             'kriteria' => 'required|array|min:1|max:30',
@@ -109,6 +109,11 @@ class BasisDataBeasiswaController extends Controller
         return DB::transaction(function () use ($beasiswa, $data) {
             $criteria = $data['kriteria'];
             unset($data['kriteria']);
+            if ($beasiswa->exists && $beasiswa->official_policy) {
+                $policy = $beasiswa->official_policy;
+                $policy['review_required'] = true;
+                $beasiswa->official_policy = $policy;
+            }
             $beasiswa->fill($data)->save();
             $beasiswa->kriteriaKelayakanBeasiswa()->delete();
             $beasiswa->kriteriaKelayakanBeasiswa()->createMany($criteria);

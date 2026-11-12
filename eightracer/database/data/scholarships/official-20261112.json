@@ -1,0 +1,210 @@
+{
+  "version": "official-20261112-v1",
+  "items": [
+    {
+      "id": 1,
+      "expected_name": "Beasiswa Lotte",
+      "changes": {
+        "penyelenggara": "Lotte Scholarship Foundation",
+        "jenjang": "Kuliah",
+        "deskripsi": "LOTTE Global Scholarship memberi bantuan pendidikan untuk mahasiswa. Rujukan entri ini adalah pengumuman Universitas Brawijaya untuk First Half 2026: mahasiswa aktif S1/D4 semester empat, jalur prestasi akademik dengan IPK sekurangnya 3,20 atau jalur ekonomi dengan IPK sekurangnya 2,80 disertai SKTM. Pendaftaran melalui SIAM UB berakhir 9 April 2026. Ketentuan kampus atau periode lain perlu diperiksa tersendiri. Fokus: dukungan ekonomi, kebutuhan finansial, prestasi akademik, IPK, dan pendidikan tinggi.",
+        "tanggal_buka": null,
+        "tanggal_tutup": "2026-04-09",
+        "link_pendaftaran": "https://feb.ub.ac.id/wp-content/uploads/2026/03/00327_Informasi-Pendaftaran-Beasiswa-SHIN-KYUK-HO-LOTTE-Global-Scholarship-2026.pdf",
+        "periode_apply": "Rujukan UB First Half 2026; ditutup 9 April 2026",
+        "durasi": null,
+        "satuan_durasi": null,
+        "program_eligibilitas_id": null
+      },
+      "criteria": [
+        {
+          "nama_kriteria": "Semester kuliah sesuai penawaran UB 2026",
+          "tipe_kriteria": "semester_kuliah",
+          "operator": "=",
+          "nilai_kriteria": "4",
+          "bobot": 1
+        }
+      ],
+      "official_policy": {
+        "version": "official-20261112-v1",
+        "verified_at": "2026-11-12",
+        "offering": "SHIN KYUK-HO LOTTE Global Scholarship, UB First Half 2026",
+        "sources": [
+          {
+            "url": "https://feb.ub.ac.id/wp-content/uploads/2026/03/00327_Informasi-Pendaftaran-Beasiswa-SHIN-KYUK-HO-LOTTE-Global-Scholarship-2026.pdf",
+            "authority": "Universitas Brawijaya",
+            "document_date": "2026-03-26",
+            "document_number": "00327/DST/UN10.A0301/B/KM.01.00/2026"
+          }
+        ],
+        "scope_checks": [
+          {
+            "field": "status_kuliah",
+            "values": [
+              "aktif"
+            ]
+          },
+          {
+            "field": "nama_perguruan_tinggi",
+            "values": [
+              "Universitas Brawijaya",
+              "UB",
+              "Brawijaya University"
+            ]
+          },
+          {
+            "field": "strata_pendidikan",
+            "values": [
+              "S1",
+              "D4"
+            ]
+          }
+        ],
+        "manual_requirements": [],
+        "alternative_paths": [
+          {
+            "label": "Prestasi akademik",
+            "criteria": [
+              {
+                "nama_kriteria": "IPK jalur prestasi",
+                "tipe_kriteria": "ipk",
+                "operator": ">=",
+                "nilai_kriteria": "3.2",
+                "bobot": 1
+              }
+            ]
+          },
+          {
+            "label": "Kondisi ekonomi",
+            "criteria": [
+              {
+                "nama_kriteria": "IPK jalur ekonomi",
+                "tipe_kriteria": "ipk",
+                "operator": ">=",
+                "nilai_kriteria": "2.8",
+                "bobot": 1
+              }
+            ],
+            "manual_requirements": [
+              "SKTM sesuai ketentuan penawaran"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "expected_name": "beasiswa tanoto",
+      "changes": {
+        "penyelenggara": "Tanoto Foundation",
+        "jenjang": "Kuliah",
+        "deskripsi": "TELADAN adalah program Tanoto Foundation untuk pengembangan kepemimpinan mahasiswa, disertai dukungan biaya kuliah dan hidup. Rujukan cohort 2027 ditujukan bagi mahasiswa reguler S1 semester pertama pada sepuluh kampus mitra. Program menekankan pengalaman organisasi, komunitas sosial, kontribusi masyarakat, komunikasi, pengabdian, dan pengembangan diri. Persyaratan akademik memakai rata-rata rapor kelas XII minimal 80 pada skala 100, bukan nilai TKA. Ketentuan lain mencakup WNI, komitmen program, tidak kuliah ganda, dan pembatasan beasiswa lain dengan pengecualian KIP-K. Pendaftaran 1 Juli sampai 7 September 2026; program pengembangan berjalan semester 2–8.",
+        "tanggal_buka": "2026-07-01",
+        "tanggal_tutup": "2026-09-07",
+        "link_pendaftaran": "https://www.tanotofoundation.org/teladan-2027/",
+        "periode_apply": "TELADAN cohort 2027; 1 Juli–7 September 2026",
+        "durasi": 7,
+        "satuan_durasi": "semester",
+        "program_eligibilitas_id": null
+      },
+      "criteria": [
+        {
+          "nama_kriteria": "Rata-rata rapor kelas XII, skala 100",
+          "tipe_kriteria": "rata_rapor_kelas_12",
+          "operator": ">=",
+          "nilai_kriteria": "80",
+          "bobot": 1
+        },
+        {
+          "nama_kriteria": "Mahasiswa semester pertama",
+          "tipe_kriteria": "semester_kuliah",
+          "operator": "=",
+          "nilai_kriteria": "1",
+          "bobot": 1
+        }
+      ],
+      "official_policy": {
+        "version": "official-20261112-v1",
+        "verified_at": "2026-11-12",
+        "offering": "TELADAN cohort 2027",
+        "sources": [
+          {
+            "url": "https://www.tanotofoundation.org/teladan-2027/",
+            "authority": "Tanoto Foundation"
+          },
+          {
+            "url": "https://fasilkom-ti.usu.ac.id/id/berita/pendaftaran-program-beasiswa-teladan-tanoto-foundation-2027-resmi-dibuka",
+            "authority": "Universitas Sumatera Utara",
+            "document_date": "2026-07-08"
+          }
+        ],
+        "scope_checks": [
+          {
+            "field": "status_kuliah",
+            "values": [
+              "aktif"
+            ]
+          },
+          {
+            "field": "strata_pendidikan",
+            "values": [
+              "S1"
+            ]
+          },
+          {
+            "field": "nama_perguruan_tinggi",
+            "values": [
+              "Universitas Sumatera Utara",
+              "USU",
+              "Universitas Indonesia",
+              "UI",
+              "Institut Teknologi Bandung",
+              "ITB",
+              "IPB University",
+              "Institut Pertanian Bogor",
+              "IPB",
+              "Universitas Gadjah Mada",
+              "UGM",
+              "Universitas Diponegoro",
+              "UNDIP",
+              "Universitas Brawijaya",
+              "UB",
+              "Universitas Hasanuddin",
+              "UNHAS",
+              "Universitas Riau",
+              "UNRI",
+              "Universitas Mulawarman",
+              "UNMUL"
+            ]
+          }
+        ],
+        "manual_requirements": [
+          {
+            "code": "kewarganegaraan",
+            "label": "Bukti WNI"
+          },
+          {
+            "code": "kuliah_ganda",
+            "label": "Tidak menjalani kuliah ganda"
+          },
+          {
+            "code": "komitmen_teladan",
+            "label": "Komitmen dan potensi kepemimpinan"
+          },
+          {
+            "code": "komunikasi",
+            "label": "Kemampuan komunikasi sesuai ketentuan"
+          },
+          {
+            "code": "non_akademik",
+            "label": "Bukti pengalaman non-akademik"
+          },
+          {
+            "code": "beasiswa_lain",
+            "label": "Pembatasan bantuan lain; KIP-K dikecualikan"
+          }
+        ]
+      }
+    }
+  ]
+}

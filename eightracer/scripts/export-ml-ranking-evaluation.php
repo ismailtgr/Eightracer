@@ -1,0 +1,14 @@
+<?php
+declare(strict_types=1);
+require dirname(__DIR__).'/vendor/autoload.php';$root=dirname(__DIR__);$app=require $root.'/bootstrap/app.php';$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+// Pure local ranking on versioned public text and constructed queries. No database or LLM call.
+$corpusFile=$root.'/database/data/scholarships/official-20261112.json';$queriesFile=$root.'/tests/Fixtures/ml/source-themed-relevance-v1.json';
+$corpus=json_decode(file_get_contents($corpusFile),true,512,JSON_THROW_ON_ERROR);$queries=json_decode(file_get_contents($queriesFile),true,512,JSON_THROW_ON_ERROR);
+$dir=$root.'/.migration-private/ml-evaluation';if(!is_dir($dir))mkdir($dir,0700,true);
+$docs=[];$candidates=[];foreach($corpus['items'] as $i){$docs[$i['id']]=$i['changes']['deskripsi'];$candidates[]=['beasiswa_id'=>$i['id'],'evaluasi'=>['memenuhi'=>true,'lengkap'=>true,'skor'=>100,'checklist'=>[]]];}
+$ranker=app(App\Services\Beasiswa\ScholarshipContentRanker::class);$baseline=$candidates;usort($baseline,fn($a,$b)=>$a['beasiswa_id']<=>$b['beasiswa_id']);$baselineRanks=array_flip(array_column($baseline,'beasiswa_id'));
+$csv=fopen($dir.'/held-out.csv','w');fputcsv($csv,['query_id','beasiswa_id','relevance','baseline_rank','ml_rank'],',','"','');$results=[];
+foreach($queries['cases'] as $q){[$ranked,$meta]=$ranker->rank($candidates,$docs,$q['interest_document']);$rows=[];foreach($ranked as $index=>$row){$id=$row['beasiswa_id'];$rows[]=['id'=>$id,'rank'=>$index+1,'similarity'=>$row['evaluasi']['pemeringkatan_ml']['skor_kemiripan'],'relevance'=>$q['relevance'][$id]];if($q['split']==='held_out')fputcsv($csv,[$q['query_id'],$id,$q['relevance'][$id],$baselineRanks[$id]+1,$index+1],',','"','');}$results[]=['query_id'=>$q['query_id'],'split'=>$q['split'],'ranking'=>$rows,'status'=>$meta['status'],'reason'=>$meta['alasan_status']];}
+fclose($csv);$safety=[];foreach($queries['safety_cases'] as $q){[,$meta]=$ranker->rank($candidates,$docs,$q['interest_document']);$safety[]=['query_id'=>$q['query_id'],'expected'=>$q['expected_reason'],'actual'=>$meta['alasan_status'],'pass'=>$q['expected_reason']===$meta['alasan_status']];}
+$out=['dataset_version'=>$queries['version'],'algorithm'=>App\Services\Beasiswa\TfidfScholarshipModel::VERSION,'corpus_sha256'=>hash_file('sha256',$corpusFile),'queries_sha256'=>hash_file('sha256',$queriesFile),'scope'=>$queries['scope'],'limitations'=>$queries['limitations'],'results'=>$results,'safety'=>$safety,'school_data_changed'=>false,'llm_called'=>false];
+file_put_contents($dir.'/ranking-results.json',json_encode($out,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR));echo json_encode(['ok'=>true,'development_cases'=>count(array_filter($results,fn($r)=>$r['split']==='development')),'held_out_cases'=>count(array_filter($results,fn($r)=>$r['split']==='held_out')),'safety_pass'=>!in_array(false,array_column($safety,'pass'),true)]).PHP_EOL;

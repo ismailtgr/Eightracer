@@ -42,7 +42,7 @@ class BasisDataBeasiswa extends Model
         return ['durasi' => 'decimal:2',
             'tanggal_buka' => 'date:Y-m-d',
             'tanggal_tutup' => 'date:Y-m-d',
-            'is_active' => 'boolean',
+            'is_active' => 'boolean', 'official_policy' => 'array',
         ];
     }
 

@@ -1,0 +1,53 @@
+{
+  "evaluation_version": "source-themed-relevance-v1",
+  "algorithm": "tfidf-cosine-v1",
+  "corpus_sha256": "aaac38aa0b9c64f318b667e46ff88bc94fdb1f5bf73cf2beace878760da8c45b",
+  "queries_sha256": "df136155b672196600dff6341bf8a6d52ce5b54fa2cc45f1bb20caa09197561e",
+  "data_origin": "constructed_queries_labeled_by_source_theme_rubric",
+  "development_cases": 4,
+  "held_out_cases": 12,
+  "metrics": {
+    "status": "evaluated",
+    "queries": 12,
+    "k": 1,
+    "queries_without_positive_relevance": 0,
+    "queries_with_fewer_than_k_candidates": 0,
+    "note": "Kandidat yang sama, sudah eligible. Precision memakai penyebut k; NDCG mengabaikan query tanpa relevansi positif. Ini relevansi menurut label, bukan peluang lolos.",
+    "baseline": {
+      "precision_at_k": 0.5,
+      "ndcg_at_k": 0.5
+    },
+    "ml": {
+      "precision_at_k": 0.833333,
+      "ndcg_at_k": 0.833333
+    }
+  },
+  "ml_applied_cases": 9,
+  "fallback_cases": 3,
+  "errors": [
+    "test11",
+    "test12"
+  ],
+  "safety": [
+    {
+      "query_id": "unknown01",
+      "expected": "no_eligible_overlap",
+      "actual": "no_eligible_overlap",
+      "pass": true
+    },
+    {
+      "query_id": "empty01",
+      "expected": "profile_insufficient",
+      "actual": "profile_insufficient",
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "Two programs only.",
+    "Constructed query documents, not real student outcomes.",
+    "Rubric labels are not independent human preference ground truth.",
+    "English and paraphrase probes intentionally measure lexical limitations."
+  ],
+  "real_school_outcomes_evaluated": false,
+  "provider_calls": 0
+}

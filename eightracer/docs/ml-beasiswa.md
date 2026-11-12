@@ -84,11 +84,11 @@ Untuk menguji manfaat sesungguhnya:
 
 1. Isi katalog resmi dengan deskripsi yang menjelaskan bidang/sasaran serta syarat terstruktur. Catat sumber dan masa berlaku.
 2. Lengkapi minat dan bidang prestasi terverifikasi. Data yang belum diketahui tetap kosong.
-3. BK memberi penilaian relevansi pasangan profil–beasiswa: 0 tidak relevan, 1 lemah, 2 relevan, 3 sangat relevan. Gunakan ID profil pseudonim pada dataset evaluasi, tanpa nama/NISN/kontak.
+3. Penilai mandiri memberi label berdasarkan rubrik eksplisit untuk pasangan profil–beasiswa: 0 tidak relevan, 1 lemah, 2 relevan, 3 sangat relevan. Gunakan ID profil pseudonim pada dataset evaluasi, tanpa nama/NISN/kontak.
 4. Simpan urutan baseline kriteria dan urutan ML untuk kandidat yang sama. Gunakan `docs/ml-evaluation-template.csv`; semua kandidat pada template evaluasi sudah eligible.
 5. Pisahkan profil untuk pengembangan dan penilaian akhir; versi siswa yang sama tidak masuk dua kelompok. Bila memakai histori, fitur harus berasal dari waktu rekomendasi, tanpa informasi hasil yang baru muncul kemudian.
 6. Jalankan `python tools/evaluate_scholarship_ranking.py docs/ml-evaluation-template.csv --k 5`. Tanpa label, hasilnya `awaiting_labels`; tidak ada skor mutu palsu. Laporan membandingkan Precision@5 dan NDCG@5. Uji kode sintetis hanya membuktikan fungsi, bukan mutu pada murid sekolah.
-7. Tinjau hasil per kelompok data dan kasus meleset bersama BK. Aktifkan klaim peningkatan mutu hanya setelah evaluasi terpisah mendukungnya. Model supervised dapat dipertimbangkan setelah hasil dan keputusan relevansi yang cukup serta representatif terkumpul.
+7. Tinjau hasil per kelompok data dan kasus meleset secara mandiri, dengan sumber dan alasan label yang dapat diperiksa. Aktifkan klaim peningkatan mutu hanya setelah evaluasi terpisah mendukungnya. Model supervised dapat dipertimbangkan setelah hasil dan keputusan relevansi yang cukup serta representatif terkumpul.
 
 ## Berkas implementasi
 

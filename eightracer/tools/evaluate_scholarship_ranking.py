@@ -25,7 +25,7 @@ def evaluate(rows, k=5):
             raise ValueError(f'Baris {i} tidak valid; periksa format dan nilai.') from None
     if not groups:
         return dict(status='awaiting_labels', queries=0, k=k, baseline=None, ml=None,
-                    note='Belum ada label BK; efektivitas ML belum dapat dihitung.')
+                    note='Belum ada label relevansi; efektivitas ML belum dapat dihitung.')
     values = {'baseline': [], 'ml': []}
     no_positive = short = 0
     for items in groups.values():

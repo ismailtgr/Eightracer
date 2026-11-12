@@ -26,7 +26,7 @@ class Criteria
             if (! $status) {
                 $value = (float) $row['nilai_kriteria'];
                 $bounds = match ($row['tipe_kriteria']) {
-                    'nilai_tka', 'rata_rapor', 'persentase_kehadiran', 'skor_prestasi' => [0, 100],
+                    'nilai_tka', 'rata_rapor', 'rata_rapor_kelas_12', 'persentase_kehadiran', 'skor_prestasi' => [0, 100],
                     'ipk' => [0, 4], 'semester_kuliah' => [1, 40],
                     'bantuan_sosial_sesuai' => [0, 1], 'poin_karakter' => [-1000000, 1000000],
                     default => [0, 9999999999999],

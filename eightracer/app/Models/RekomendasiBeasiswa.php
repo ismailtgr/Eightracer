@@ -40,6 +40,6 @@ class RekomendasiBeasiswa extends Model
 
     public function rekomendasiBeasiswaDetail(): HasMany
     {
-        return $this->hasMany(RekomendasiBeasiswaDetail::class, 'rekomendasi_beasiswa_id');
+        return $this->hasMany(RekomendasiBeasiswaDetail::class, 'rekomendasi_beasiswa_id')->orderBy('id');
     }
 }

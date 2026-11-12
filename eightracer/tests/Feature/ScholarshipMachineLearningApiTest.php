@@ -9,6 +9,7 @@ use App\Services\Beasiswa\ScholarshipInterestProfile;
 use App\Services\Beasiswa\ScholarshipRecommendationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Tests\Concerns\PrdFixtures;
 use Tests\TestCase;
@@ -129,5 +130,34 @@ class ScholarshipMachineLearningApiTest extends TestCase
         $this->assertStringNotContainsString('PRIVATE_', $output);
         $this->assertDatabaseCount('rekomendasi_beasiswa', 0);
         Http::assertNothingSent();
+    }
+    public function test_stored_ml_rank_is_preserved_when_database_returns_unordered_rows(): void
+    {
+        [$student, $owner, $items] = $this->fixture();
+        config(['gemini.api_key' => 'isolated-test-key']);
+        Http::fake(['generativelanguage.googleapis.com/*' => function ($request) {
+            $input = json_decode($request['input'], true);
+            $text = json_encode(['rekomendasi' => array_map(fn ($c) => [
+                'beasiswa_id' => $c['beasiswa_id'], 'alasan' => 'Kriteria katalog.',
+                'persiapan' => ['Periksa syarat resmi.'],
+            ], $input)]);
+            return Http::response(['status' => 'completed', 'steps' => [[
+                'type' => 'model_output', 'content' => [['type' => 'text', 'text' => $text]],
+            ]]]);
+        }]);
+        $recommendation = app(ScholarshipRecommendationService::class)->generate($student);
+        $recommendation->update(['status_review' => 'disetujui']);
+        $this->signIn($owner);
+        // SQLite's diagnostic mode exposes reliance on accidental row order.
+        // TestCase enforces an isolated SQLite :memory: database.
+        $this->assertSame('sqlite', DB::connection()->getDriverName());
+        DB::statement('PRAGMA reverse_unordered_selects = ON');
+        try {
+            $data = $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->json('data.0.beasiswa');
+            $this->assertSame([$items[1]->id, $items[0]->id], array_column($data, 'beasiswa_id'));
+            $this->assertSame([1, 2], array_column(array_column($data, 'pemeringkatan_ml'), 'peringkat'));
+        } finally {
+            DB::statement('PRAGMA reverse_unordered_selects = OFF');
+        }
     }
 }
