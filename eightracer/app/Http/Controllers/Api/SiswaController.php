@@ -23,9 +23,9 @@ class SiswaController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('nama_lengkap', 'like', "%{$search}%")
-                    ->orWhere('nisn', 'like', "%{$search}%")
-                    ->orWhere('nis', 'like', "%{$search}%");
+                $q->where('nama_lengkap', 'ilike', "%{$search}%")
+                    ->orWhere('nisn', 'ilike', "%{$search}%")
+                    ->orWhere('nis', 'ilike', "%{$search}%");
             });
         }
 

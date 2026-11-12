@@ -1,101 +1,119 @@
 <?php
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Mapping kolom per sheet Excel
-    |--------------------------------------------------------------------------
-    | Kunci = nama sheet (case-insensitive, akan dinormalisasi)
-    | Nilai = array mapping:
-    |   - nama       : kolom nama siswa (wajib)
-    |   - pt         : kolom nama perguruan tinggi (wajib)
-    |   - prodi      : kolom nama program studi (wajib)
-    |   - strata     : kolom jenjang (opsional; null jika tidak ada)
-    |   - strata_from: kolom sumber jenjang jika bergabung (opsional)
-    |   - pilihan_ke : kolom pilihan ke-
-    |   - kontak_wa  : kolom nomor WA
-    |   - kipk       : kolom status KIP-K
-    |   - skor_utbk  : kolom skor/rata-rata UTBK
-    |   - jalur_masuk: nama jalur yang disimpan (override nama sheet)
-    */
-
     'sheets' => [
         'SNBP' => [
-            'nama'        => 'NAMA',
-            'pt'          => 'PERGURUAN TINGGI',
-            'prodi'       => '4',              // kolom tanpa header
-            'strata'      => 'PROGRAM STUDI',  // berisi S1/D4/D3
-            'strata_from' => null,
-            'pilihan_ke'  => 'PIL',
-            'kontak_wa'   => 'NOMOR WA',
-            'kipk'        => 'KIPK',
-            'skor_utbk'   => null,
-            'jalur_masuk' => 'SNBP',
+            'nama' => 'NAMA', 'pt' => 'PERGURUAN TINGGI', 'prodi' => '4',
+            'strata' => 'PROGRAM STUDI', 'strata_from' => null,
+            'pilihan_ke' => 'PIL', 'kontak_wa' => 'NOMOR WA', 'kipk' => 'KIPK',
+            'skor_utbk' => null, 'sub_jalur' => null, 'jalur_masuk' => 'SNBP',
         ],
-
         'SNBT' => [
-            'nama'        => 'Nama',
-            'pt'          => 'Jurusan/Program Studi/Departemen',  // berisi universitas
-            'prodi'       => '4',                                  // kolom tanpa header
-            'strata'      => 'Nama Perguruan Tinggi',              // berisi S1/D4/D3
-            'strata_from' => null,
-            'pilihan_ke'  => 'Pil',
-            'kontak_wa'   => 'Nomor WA',
-            'kipk'        => 'KIPK',
-            'skor_utbk'   => null,
-            'jalur_masuk' => 'SNBT',
+            'nama' => 'Nama', 'pt' => 'Jurusan/Program Studi/Departemen', 'prodi' => '4',
+            'strata' => 'Nama Perguruan Tinggi', 'strata_from' => null,
+            'pilihan_ke' => 'Pil', 'kontak_wa' => 'Nomor WA', 'kipk' => 'KIPK',
+            'skor_utbk' => null, 'sub_jalur' => null, 'jalur_masuk' => 'SNBT',
         ],
-
         'SIMAMA' => [
-            'nama'        => 'NAMA',
-            'pt'          => 'PERGURUAN TINGGI',
-            'prodi'       => 'JURUSAN/PROGAM STUDI',
-            'strata'      => null,
-            'strata_from' => 'JURUSAN/PROGAM STUDI',
-            'pilihan_ke'  => 'PIL',
-            'kontak_wa'   => 'NO. HP',
-            'kipk'        => null,
-            'skor_utbk'   => null,
-            'jalur_masuk' => 'SIMAMA',
+            'nama' => 'NAMA', 'pt' => 'PERGURUAN TINGGI', 'prodi' => 'JURUSAN/PROGAM STUDI',
+            'strata' => null, 'strata_from' => 'JURUSAN/PROGAM STUDI',
+            'pilihan_ke' => 'PIL', 'kontak_wa' => 'NO. HP', 'kipk' => null,
+            'skor_utbk' => null, 'sub_jalur' => null, 'jalur_masuk' => 'SIMAMA',
         ],
-
         'SIMAMI' => [
+            'nama' => 'NAMA', 'pt' => 'PERGURUAN TINGGI', 'prodi' => 'JURUSAN/PROGAM STUDI',
+            'strata' => null, 'strata_from' => 'JURUSAN/PROGAM STUDI',
+            'pilihan_ke' => 'PIL', 'kontak_wa' => 'NO. HP', 'kipk' => null,
+            'skor_utbk' => null, 'sub_jalur' => null, 'jalur_masuk' => 'SIMAMI',
+        ],
+        'PMDP' => [
+            'nama' => 'NAMA', 'pt' => 'PERGURUAN TINGGI', 'prodi' => 'JURUSAN/PROGAM STUDI',
+            'strata' => null, 'strata_from' => 'JURUSAN/PROGAM STUDI',
+            'pilihan_ke' => 'PIL. KE', 'kontak_wa' => 'NO. HP', 'kipk' => null,
+            'skor_utbk' => null, 'sub_jalur' => null, 'jalur_masuk' => 'PMDP',
+        ],
+        'UM PTKIN' => [
+            'nama' => 'Nama', 'pt' => 'Jurusan/Program Studi/Departemen', 'prodi' => '4',
+            'strata' => 'Nama Perguruan Tinggi', 'strata_from' => null,
+            'pilihan_ke' => 'Pil', 'kontak_wa' => 'Nomor WA', 'kipk' => 'KIPK',
+            'skor_utbk' => null, 'sub_jalur' => null, 'jalur_masuk' => 'UM PTKIN',
+        ],
+        'MANDIRI' => [
+            'nama' => 'NAMA LENGKAP', 'pt' => 'PERGURUAN TINGGI', 'prodi' => 'PROGRAM STUDI',
+            'strata' => null, 'strata_from' => 'PROGRAM STUDI',
+            'pilihan_ke' => 'PIL KE', 'kontak_wa' => 'NOMOR WA', 'kipk' => 'BEASISWA',
+            'skor_utbk' => null, 'sub_jalur' => 'JENIS MANDIRI', 'jalur_masuk' => 'MANDIRI',
+        ],
+        'SWASTA' => [
+            'nama' => 'NAMA', 'pt' => 'PERGURUAN TINGGI', 'prodi' => 'PROGRAM STUDI',
+            'strata' => null, 'strata_from' => 'PROGRAM STUDI',
+            'pilihan_ke' => 'PIL KE', 'kontak_wa' => 'NOMOR HP', 'kipk' => 'BEASISWA',
+            'skor_utbk' => null, 'sub_jalur' => 'JALUR', 'jalur_masuk' => 'SWASTA',
+        ],
+        'ADIK' => [
             'nama'        => 'NAMA',
             'pt'          => 'PERGURUAN TINGGI',
-            'prodi'       => 'JURUSAN/PROGAM STUDI',
+            'prodi'       => 'PROGRAM STUDI',
             'strata'      => null,
-            'strata_from' => 'JURUSAN/PROGAM STUDI',
-            'pilihan_ke'  => 'PIL',
-            'kontak_wa'   => 'NO. HP',
+            'strata_from' => 'PROGRAM STUDI',
+            'pilihan_ke'  => 'PIL KE',
+            'kontak_wa'   => 'NOMOR HP',
             'kipk'        => null,
             'skor_utbk'   => null,
-            'jalur_masuk' => 'SIMAMI',
+            'jalur_masuk' => 'ADIK',
         ],
-
-        'SERTIFIKAT SNBP' => [
-            'nama'        => 'NAMA LENGKAP',
-            'pt'          => 'PTN',
+        'KEDINASAN' => [
+            'nama'        => 'NAMA',
+            'pt'          => 'PERGURUAN TINGGI',
             'prodi'       => 'PROGRAM STUDI',
-            'strata'      => 'JENJANG',
-            'strata_from' => null,
+            'strata'      => null,
+            'strata_from' => 'PROGRAM STUDI',
+            'pilihan_ke'  => 'PIL KE',
+            'kontak_wa'   => 'NOMOR HP',
+            'kipk'        => null,
+            'skor_utbk'   => null,
+            'jalur_masuk' => 'KEDINASAN',
+            'sub_jalur'   => 'JALUR',
+        ],
+        'LUAR NEGERI' => [
+            'nama'        => 'NAMA',
+            'pt'          => 'PERGURUAN TINGGI',
+            'prodi'       => 'PROGRAM STUDI',
+            'strata'      => null,
+            'strata_from' => 'PROGRAM STUDI',
             'pilihan_ke'  => null,
-            'kontak_wa'   => null,
+            'kontak_wa'   => 'NOMOR HP',
             'kipk'        => null,
             'skor_utbk'   => null,
-            'jalur_masuk' => 'SNBP',
+            'jalur_masuk' => 'LUAR NEGERI',
         ],
-
-        'SKOR UTBK (MANDIRI)' => [
+        'SKOR UTBK (SNBT)' => [
             'nama'        => 'NAMA LENGKAP',
             'pt'          => 'PTN',
             'prodi'       => 'PROGRAM STUDI',
-            'strata'      => 'JENJANG',
+            'strata'      => '4',
             'strata_from' => null,
             'pilihan_ke'  => null,
             'kontak_wa'   => null,
             'kipk'        => null,
             'skor_utbk'   => 'RATA2',
+            'sub_jalur'   => null,
+            'jalur_masuk' => 'SNBT',
+            'mode'        => 'update_skor',
+        ],
+        'SKOR UTBK (Mandiri)' => [
+            'nama'        => 'NAMA LENGKAP',
+            'pt'          => 'PTN',
+            'prodi'       => 'PROGRAM STUDI',
+            'strata'      => '4',
+            'strata_from' => null,
+            'pilihan_ke'  => null,
+            'kontak_wa'   => null,
+            'kipk'        => null,
+            'skor_utbk'   => 'RATA2',
+            'sub_jalur'   => null,
             'jalur_masuk' => 'MANDIRI',
+            'mode'        => 'update_skor',
         ],
     ],
 ];

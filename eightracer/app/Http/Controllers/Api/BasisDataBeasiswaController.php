@@ -30,7 +30,7 @@ class BasisDataBeasiswaController extends Controller
         ]);
         $query = BasisDataBeasiswa::with('kriteriaKelayakanBeasiswa');
         if ($request->filled('search')) {
-            $query->where('nama_beasiswa', 'like', '%'.$filters['search'].'%');
+            $query->where('nama_beasiswa', 'ilike', '%'.$filters['search'].'%');
         }
         if ($request->filled('jenjang')) {
             $query->whereIn('jenjang', array_unique([$filters['jenjang'], 'Keduanya']));

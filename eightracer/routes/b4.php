@@ -27,8 +27,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
         Route::post('/alumni/{id}/progress-imports/{batch}/commit', [AlumniProgressEditorController::class, 'commit'])->whereNumber('id')->whereUuid('batch')->middleware('throttle:bulk-commit');
         Route::get('/analitik-beasiswa/sekolah/pdf', [SchoolScholarshipAnalyticsController::class, 'pdf'])->middleware('throttle:book-pdf');
         Route::get('/analitik-beasiswa/sekolah', [SchoolScholarshipAnalyticsController::class, 'index']);
-        Route::get('/alumni', [AlumniDirectoryController::class, 'index']);
-        Route::get('/alumni/{id}', [AlumniDirectoryController::class, 'show'])->whereNumber('id');
+        Route::get('/b4/alumni', [AlumniDirectoryController::class, 'index']);
+        Route::get('/b4/alumni/{id}', [AlumniDirectoryController::class, 'show'])->whereNumber('id');
         Route::get('/riwayat-beasiswa-sumber', [ScholarshipSourceController::class, 'index']);
         Route::get('/riwayat-beasiswa-sumber/ringkasan', [ScholarshipSourceController::class, 'summary']);
         Route::put('/school-staff/{user}/bk-access', [SchoolStaffController::class, 'save'])->whereNumber('user');

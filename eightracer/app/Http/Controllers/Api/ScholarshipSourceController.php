@@ -24,11 +24,11 @@ class ScholarshipSourceController extends Controller
         }
         if ($r->filled('search')) {
             $pattern = '%'.$d['search'].'%';
-            $q->where(fn ($filter) => $filter->where('nilai_sumber', 'like', $pattern)
-                ->orWhere('kampus_sumber', 'like', $pattern)->orWhere('prodi_sumber', 'like', $pattern)
-                ->orWhereHas('siswa', fn ($student) => $student->where('nama_lengkap', 'like', $pattern))
-                ->orWhereHas('studyTracer', fn ($admission) => $admission->where('program_studi', 'like', $pattern)
-                    ->orWhereHas('perguruanTinggi', fn ($campus) => $campus->where('nama_pt', 'like', $pattern))));
+            $q->where(fn ($filter) => $filter->where('nilai_sumber', 'ilike', $pattern)
+                ->orWhere('kampus_sumber', 'ilike', $pattern)->orWhere('prodi_sumber', 'ilike', $pattern)
+                ->orWhereHas('siswa', fn ($student) => $student->where('nama_lengkap', 'ilike', $pattern))
+                ->orWhereHas('studyTracer', fn ($admission) => $admission->where('program_studi', 'ilike', $pattern)
+                    ->orWhereHas('perguruanTinggi', fn ($campus) => $campus->where('nama_pt', 'ilike', $pattern))));
         }
         $page = $q->orderBy('id')->paginate($r->integer('per_page', 20))->appends($d);
         $page->through(function ($row) {

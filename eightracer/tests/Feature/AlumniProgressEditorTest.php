@@ -45,7 +45,7 @@ class AlumniProgressEditorTest extends TestCase
         $this->signIn($this->account('administrator'));
         $url = '/api/alumni/'.$admission->id.'/college-progress';
         $first = $this->postJson($url, $this->payload())->assertCreated()->assertJsonPath('data.revision', 1)->json('data.id');
-        $this->getJson('/api/alumni/'.$admission->id)->assertOk()->assertJsonPath('data.status_terakhir', 'aktif')
+        $this->getJson('/api/b4/alumni/'.$admission->id)->assertOk()->assertJsonPath('data.status_terakhir', 'aktif')
             ->assertJsonPath('data.progress.0.ipk_terkini', null)->assertJsonPath('data.progress.0.nominal_ukt', null)
             ->assertJsonPath('data.progress.0.penerima_kipk', null)->assertJsonPath('data.progress.0.tanggal_update', now('Asia/Jakarta')->toDateString());
         $this->postJson($url, $this->payload())->assertConflict();
@@ -53,10 +53,10 @@ class AlumniProgressEditorTest extends TestCase
             ->assertCreated()->assertJsonPath('data.revision', 2)->json('data.id');
         $this->assertFalse(AlumniProgress::findOrFail($first)->is_current);
         $this->assertSame($first, AlumniProgress::findOrFail($second)->supersedes_id);
-        $this->getJson('/api/alumni/'.$admission->id)->assertOk()->assertJsonCount(1, 'data.progress')->assertJsonPath('data.status_terakhir', 'cuti');
+        $this->getJson('/api/b4/alumni/'.$admission->id)->assertOk()->assertJsonCount(1, 'data.progress')->assertJsonPath('data.status_terakhir', 'cuti');
         $this->deleteJson($url.'/'.$second)->assertOk();
         $this->assertDatabaseCount('alumni_progress', 2);
-        $this->getJson('/api/alumni/'.$admission->id)->assertOk()->assertJsonCount(0, 'data.progress')->assertJsonPath('data.status_terakhir', null);
+        $this->getJson('/api/b4/alumni/'.$admission->id)->assertOk()->assertJsonCount(0, 'data.progress')->assertJsonPath('data.status_terakhir', null);
         $this->postJson($url, $this->payload())->assertCreated()->assertJsonPath('data.revision', 3);
     }
 

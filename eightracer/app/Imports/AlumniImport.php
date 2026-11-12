@@ -9,12 +9,19 @@ class AlumniImport implements \Maatwebsite\Excel\Concerns\Import, WithMultipleSh
 {
     public array $errors = [];
     public int $successCount = 0;
+    public ?int $bukuAlumniId = null;
+    public array $onlySheets = [];
 
     private ?string $filePath = null;
 
     public function setFilePath(string $path): void
     {
         $this->filePath = $path;
+    }
+
+        public function getFilePath()
+    {
+        return $this->filePath;
     }
 
     public function sheets(): array
@@ -35,10 +42,7 @@ class AlumniImport implements \Maatwebsite\Excel\Concerns\Import, WithMultipleSh
 
                 $sheet = $spreadsheet->getSheetByName($name);
                 $headingRow = 1;
-                $maxScan = min(10, $sheet->getHighestRow());
-
-                // Kata kunci yang biasanya ada di baris header
-                $headerKeywords = ['NAMA', 'NO', 'KLS', 'KELAS', 'JENJANG', 'PROGRAM STUDI', 'PERGURUAN TINGGI', 'PIL', 'NOMOR WA', 'KIPK', 'JURUSAN'];
+                $maxScan = min(15, $sheet->getHighestRow()); // Pindai 15 baris pertama
 
                 for ($r = 1; $r <= $maxScan; $r++) {
                     $rowValues = [];
@@ -48,19 +52,20 @@ class AlumniImport implements \Maatwebsite\Excel\Concerns\Import, WithMultipleSh
                         }
                     }
 
-                    // Hitung berapa kata kunci header yang cocok di baris ini
-                    $matchCount = 0;
-                    foreach ($headerKeywords as $kw) {
-                        foreach ($rowValues as $val) {
-                            if ($val !== '' && str_contains($val, $kw)) {
-                                $matchCount++;
-                                break;
-                            }
+                    $hasNama = false;
+                    $hasProdi = false;
+
+                    foreach ($rowValues as $val) {
+                        if (str_contains($val, 'NAMA')) {
+                            $hasNama = true;
+                        }
+                        if (str_contains($val, 'PROGRAM STUDI') || str_contains($val, 'JURUSAN')) {
+                            $hasProdi = true;
                         }
                     }
 
-                    // Baris dianggap header jika cocok minimal 3 kata kunci
-                    if ($matchCount >= 3) {
+                    // SYARAT MUTLAK: Harus ada kolom NAMA dan PROGRAM STUDI di baris yang sama
+                    if ($hasNama && $hasProdi) {
                         $headingRow = $r;
                         break;
                     }
@@ -81,6 +86,14 @@ class AlumniImport implements \Maatwebsite\Excel\Concerns\Import, WithMultipleSh
             }
 
             if ($matched === null) {
+                continue;
+            }
+
+            if ($this->onlySheets !== [] && ! in_array(
+                strtoupper(trim($matched)),
+                array_map(fn($s) => strtoupper(trim((string) $s)), $this->onlySheets),
+                true
+            )) {
                 continue;
             }
 

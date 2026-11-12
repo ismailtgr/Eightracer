@@ -10,8 +10,14 @@ use App\Http\Controllers\Api\SchoolAuthController;
 use App\Http\Controllers\Api\SchoolAccountController;
 use App\Http\Controllers\Api\SiswaController;
 use App\Services\Auth\SessionIssuer;
+use App\Http\Controllers\Api\AlumniFormController;
+use App\Http\Controllers\Api\PerguruanTinggiController;
+use App\Http\Controllers\Api\AlumniController;
+use App\Http\Controllers\Api\AlumniStatistikController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/perguruan-tinggi', [PerguruanTinggiController::class, 'index']);
 
 Route::post('/register', [SchoolAuthController::class, 'register'])->middleware('throttle:otp-request');
 Route::post('/login', [SchoolAuthController::class, 'login'])->middleware('throttle:login');
@@ -20,6 +26,14 @@ Route::post('/forgot-password', [SchoolAuthController::class, 'forgot'])->middle
 Route::post('/reset-password', [SchoolAuthController::class, 'reset'])->middleware('throttle:otp-verify');
 
 Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(function () {
+    Route::prefix('alumni-form')->group(function () {
+        Route::get('/status', [AlumniFormController::class, 'status']);
+        Route::post('/step-1', [AlumniFormController::class, 'step1']);
+        Route::post('/step-2', [AlumniFormController::class, 'step2']);
+        Route::post('/step-3', [AlumniFormController::class, 'step3']);
+        Route::post('/step-4', [AlumniFormController::class, 'step4']);
+        Route::get('/summary', [AlumniFormController::class, 'summary']);
+    });
     Route::get('/beasiswa', [BasisDataBeasiswaController::class, 'index']);
     Route::get('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'show']);
     Route::post('/beasiswa', [BasisDataBeasiswaController::class, 'store']);
@@ -40,6 +54,12 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
 
     Route::middleware('administrator')->group(function () {
         Route::post('/akun-siswa/provision', [SchoolAccountController::class, 'provision'])->middleware('throttle:2,1');
+
+        // B3 directory contract is preserved; B4 directory uses /b4/alumni.
+        Route::get('/alumni/statistik', [AlumniStatistikController::class, 'index']);
+        Route::get('/alumni', [AlumniController::class, 'index']);
+        Route::get('/alumni/filter-options', [AlumniController::class, 'filterOptions']);
+        Route::get('/alumni/{id}', [AlumniController::class, 'show'])->whereNumber('id');
 
         // --- Kelompok B3 ---
         Route::post('/alumni/import', [AlumniImportController::class, 'import'])->middleware('throttle:2,1');

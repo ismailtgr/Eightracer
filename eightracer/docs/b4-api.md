@@ -1,5 +1,6 @@
 # Kontrak API backend B4 untuk FE
 
+Kontrak setelah merge main: baca [INTEGRASI-MAIN-B3-B4.md](INTEGRASI-MAIN-B3-B4.md). Direktori B4 memakai `/api/b4/alumni`; `/api/alumni` mempertahankan kontrak B3.
 Seluruh URL di bawah diawali `/api`. Gunakan base URL backend privat/HTTPS yang disepakati. Jangan memberi FE isi .env, key Gemini, akses phpMyAdmin atau password database. Autentikasi memakai `Authorization: Bearer <token>` dan `Accept: application/json`; untuk unggahan biarkan browser membuat boundary multipart.
 
 `staff` berarti administrator atau guru dengan grant BK aktif, email terverifikasi dan allowlist yang sesuai. Administrator tetap satu-satunya pihak yang dapat memberi/mencabut grant BK. Role guru tanpa grant ditolak. Semua ID di contoh adalah ilustrasi dan harus diganti ID referensi aktual.
@@ -9,8 +10,8 @@ Seluruh URL di bawah diawali `/api`. Gunakan base URL backend privat/HTTPS yang 
 | Method/URL | Hak | Input | Respons sukses |
 |---|---|---|---|
 | POST /login | Publik, rate limit | `{nisn:"0012345678",password:"..."}` ATAU `{email:"...",password:"..."}`; jangan kirim role atau kedua identifier sekaligus | 200 `{message,user:{id,email,role,school_staff,school_role,email_verified,...},token,expires_at}` |
-| POST /register | Publik | full_name,email,nisn,password,password_confirmation; master NISN + registration_email harus cocok | 202 challenge_id,expires_in,message; belum langsung aktif |
-| POST /register/verify | Publik | challenge_id UUID,otp string 6 digit | 201 token,user,expires_at |
+| POST /register | Publik | Tidak menerima pendaftaran mandiri | 410; akun disiapkan Admin/sekolah |
+| POST /register/verify | Publik | Pendaftaran mandiri dinonaktifkan | 410 |
 | POST /forgot-password | Publik | email | 200 challenge_id,expires_in,message generik |
 | POST /forgot-password/verify | Publik | challenge_id,otp | 200 challenge_id baru,reset_token,expires_in |
 | POST /reset-password | Publik | challenge_id,reset_token,password,password_confirmation | 200 message; token/sesi lama dicabut |
