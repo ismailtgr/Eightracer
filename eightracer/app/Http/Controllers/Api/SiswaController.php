@@ -17,8 +17,13 @@ class SiswaController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $request->validate(['search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P', 'kelas_id' => 'nullable|integer|exists:kelas,id', 'angkatan' => 'nullable|digits:4', 'rekomendasi_published' => 'nullable|boolean']);
+        $request->validate(['penerima_beasiswa' => 'sometimes|boolean', 'search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P', 'kelas_id' => 'nullable|integer|exists:kelas,id', 'angkatan' => 'nullable|digits:4', 'rekomendasi_published' => 'nullable|boolean']);
         $query = Siswa::select(['id', 'nama_lengkap', 'nisn', 'nis', 'jenis_kelamin', 'tahun_lulus'])->with(['riwayatKelas' => fn ($q) => $q->whereNull('tanggal_selesai')->with('kelas')]);
+
+        if ($request->boolean('penerima_beasiswa')) {
+            app(\App\Services\School\ScholarshipRecipients::class)->restrict($query);
+            $query->orderByRaw('LOWER(TRIM(nama_lengkap)) ASC')->orderBy('id');
+        }
 
         if ($request->filled('search')) {
             $search = $request->input('search');

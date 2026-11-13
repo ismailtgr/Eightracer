@@ -36,7 +36,7 @@ class BasisDataBeasiswaController extends Controller
             $query->whereIn('jenjang', array_unique([$filters['jenjang'], 'Keduanya']));
         }
 
-        return response()->json($query->orderBy('id')->paginate(20)->appends($filters)->through(fn ($row) => $this->catalogData($row)));
+        return response()->json($query->orderByDesc('is_active')->orderByRaw('LOWER(TRIM(nama_beasiswa)) ASC')->orderBy('id')->paginate(20)->appends($filters)->through(fn ($row) => $this->catalogData($row)));
     }
 
     public function show(Request $request, BasisDataBeasiswa $beasiswa)

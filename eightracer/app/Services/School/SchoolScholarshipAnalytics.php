@@ -160,6 +160,7 @@ class SchoolScholarshipAnalytics
                 return ['university' => $g->first()->perguruanTinggi?->nama_pt ?? '-', 'program' => $g->first()->program_studi ?? '-',
                     'count' => $count, 'stats' => $this->stats($values->pluck('nominal_ukt'), $count)];
             })->sortBy(fn ($row) => $row['university'].' '.$row['program'])->values();
+        $tuition = app(TuitionRanges::class)->aggregate($admissions, $current);
         $periods = $history->groupBy('periode')->map(function ($group, $period) use ($filter) {
             $rows = $group->unique('siswa_id');
             $programs = [];
@@ -189,7 +190,8 @@ class SchoolScholarshipAnalytics
             'filters' => ['cohorts' => $allStudents->pluck('tahun_lulus')->unique()->sort()->map(fn ($v) => (string) $v)->values(),
                 'scholarships' => collect($labels)->map(fn ($label, $value) => ['value' => (string) ($catalogs->first(fn ($item) => $this->key($item->nama_beasiswa) === $value)?->id ?? $value), 'label' => $label])->sortBy('label')->values()],
             'kip_by_cohort' => $cohorts, 'scholarships' => $distribution,
-            'financial' => ['measured_alumni' => $current->count(), 'ukt' => $this->stats($current->pluck('nominal_ukt'), $students->count()),
+            'financial' => ['measured_alumni' => $current->count(),
+                'ukt_alumni_diketahui' => $current->whereNotNull('nominal_ukt')->count(), 'tuition_ranges' => $tuition, 'ukt' => $this->stats($current->pluck('nominal_ukt'), $students->count()),
                 'ipk' => $this->stats($current->pluck('ipk_terkini'), $students->count()), 'ranges' => $ranges,
                 'ipk_distribution' => collect([[0, 2.5, '< 2,50'], [2.5, 3, '2,50–2,99'], [3, 3.5, '3,00–3,49'], [3.5, 4.01, '3,50–4,00']])->map(fn ($bin) => [
                     'label' => $bin[2], 'count' => $current->filter(fn ($p) => $p->ipk_terkini !== null && (float) $p->ipk_terkini >= $bin[0] && (float) $p->ipk_terkini < $bin[1])->count(),

@@ -87,7 +87,7 @@ class FinancialDashboard
         $rows = $groups->map(function ($g) {
             $t = $g->first()->studyTracer;
 
-            return ['perguruan_tinggi_id' => $t->perguruan_tinggi_id, 'universitas' => $t->perguruanTinggi->nama_pt, 'program_studi' => $t->program_studi,
+            return ['perguruan_tinggi_id' => $t->perguruan_tinggi_id, 'universitas' => $t->perguruanTinggi->nama_pt, 'nama_pt' => $t->perguruanTinggi->nama_pt, 'program_studi' => $t->program_studi,
                 'jumlah_alumni' => $g->count(), 'ukt' => $this->stats($g->pluck('nominal_ukt'), $g->count()), 'ipk' => $this->stats($g->pluck('ipk_terkini'), $g->count()), 'jumlah_penerima_kipk' => $g->where('penerima_kipk', true)->count()];
         })->sortBy(fn ($g) => $g['universitas'].' '.$g['program_studi'])->values();
         $history = AlumniProgress::where('is_current', true)->whereIn('study_tracer_id', $latest->pluck('study_tracer_id'))->whereIn('siswa_id', $latest->pluck('siswa_id'))
@@ -102,7 +102,10 @@ class FinancialDashboard
                     'semester' => $p->semester, 'jumlah_alumni' => $g->count(), 'ipk' => $this->stats($g->pluck('ipk_terkini'), $g->count())];
             })->sortBy(fn ($g) => $g['universitas'].' '.$g['program_studi'].' '.str_pad((string) $g['semester'], 2, '0', STR_PAD_LEFT))->values();
 
-        return ['as_of' => now()->toIso8601String(), 'filters' => $this->filters($r), 'jumlah_alumni' => $latest->count(),
+        $tuition = app(TuitionRanges::class)->aggregate($latest->pluck('studyTracer'), $latest);
+
+        return ['as_of' => now()->toIso8601String(), 'tuition_ranges' => $tuition,
+            'ukt_alumni_diketahui' => $latest->whereNotNull('nominal_ukt')->count(), 'filters' => $this->filters($r), 'jumlah_alumni' => $latest->count(),
             'ukt' => $this->stats($latest->pluck('nominal_ukt'), $latest->count()), 'ipk' => $this->stats($latest->pluck('ipk_terkini'), $latest->count()),
             'per_kampus_prodi' => $rows, 'tren_ipk' => $trend, 'catatan' => 'Snapshot memakai progres terbaru per alumni dalam periode yang dipilih. Tren mengikuti riwayat semester kampus alumni pada snapshot; nilai kosong tidak dianggap nol. Tidak menyatakan biaya atau IPK seluruh populasi kampus.'];
     }

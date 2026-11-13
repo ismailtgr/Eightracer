@@ -25,7 +25,13 @@ class RekomendasiBeasiswaController extends Controller
 
         $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah', 'siswa_id' => 'prohibited', 'status_review' => 'prohibited']);
 
-        return response()->json(['data' => $service->generate($siswa, $input['target_jenjang'] ?? null)], 201);
+        $draft = $service->generate($siswa, $input['target_jenjang'] ?? null);
+
+        return response()->json([
+            'message' => 'Draft rekomendasi berhasil dibuat ulang. Tinjau hasil sebelum dipublikasikan.',
+            'data' => $draft,
+            'meta' => ['generated_at' => now()->toIso8601String(), 'published' => false, 'requires_review' => true],
+        ], 201);
     }
 
     public function preview(Request $request, Siswa $siswa, ScholarshipRecommendationService $service)
@@ -36,6 +42,14 @@ class RekomendasiBeasiswaController extends Controller
         unset($data['source_fingerprint']);
 
         return response()->json(['data' => $data]);
+    }
+
+    public function recipients(Request $request)
+    {
+        $this->admin($request);
+        $request->merge(['penerima_beasiswa' => true]);
+
+        return app(SiswaController::class)->index($request);
     }
 
     public function index(Request $request)

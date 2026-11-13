@@ -9,6 +9,7 @@ use App\Models\Siswa;
 use App\Services\School\SchoolEligibility;
 use App\Services\School\StudentProfile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class ScholarshipRecommendationService
 {
@@ -73,6 +74,18 @@ class ScholarshipRecommendationService
 
     public function generate(Siswa $siswa, ?string $target = null): RekomendasiBeasiswa
     {
+        $lock = Cache::lock('scholarship-generate:'.$siswa->id, max(150, (int) config('gemini.timeout', 90) + 60));
+        abort_unless($lock->get(), 409, 'Rekomendasi siswa ini sedang diproses. Tunggu hasil sebelum mencoba lagi.');
+
+        try {
+            return $this->generateLocked(Siswa::findOrFail($siswa->id), $target);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function generateLocked(Siswa $siswa, ?string $target): RekomendasiBeasiswa
+    {
         $preview = $this->preview($siswa, $target);
         $candidates = $preview['kandidat'];
         $providerCandidates = array_map(function ($candidate) {
@@ -84,7 +97,10 @@ class ScholarshipRecommendationService
         $explanations = $this->gemini->explain($providerCandidates);
 
         return DB::transaction(function () use ($siswa, $preview, $candidates, $explanations) {
-            Siswa::whereKey($siswa->id)->lockForUpdate()->firstOrFail();
+            $freshStudent = Siswa::whereKey($siswa->id)->lockForUpdate()->firstOrFail();
+            [, , $fingerprint] = $this->sources($freshStudent, $preview['target_jenjang']);
+            abort_unless(hash_equals($preview['source_fingerprint'], $fingerprint), 409,
+                'Data sumber berubah. Generate ulang dan tinjau kembali sebelum publikasi.');
             $recommendation = RekomendasiBeasiswa::create([
                 'target_jenjang' => $preview['target_jenjang'], 'siswa_id' => $siswa->id, 'tanggal_rekomendasi' => today(), 'status_review' => 'pending',
                 'ai_model' => config('gemini.model'), 'prompt_version' => 'beasiswa-v1', 'source_fingerprint' => $preview['source_fingerprint'],
