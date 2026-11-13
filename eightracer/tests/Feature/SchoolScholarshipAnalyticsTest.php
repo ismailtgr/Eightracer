@@ -127,4 +127,39 @@ class SchoolScholarshipAnalyticsTest extends TestCase
         $response->assertJsonPath('data.financial.ipk.known', 7)->assertJsonPath('data.financial.ipk.unknown', 1);
         $this->assertSame([2, 1, 2, 2], array_column($response->json('data.financial.ipk_distribution'), 'count'));
     }
+
+    public function test_award_confirmation_without_period_keeps_recipient_totals_without_empty_trends(): void
+    {
+        $student = $this->student(null, ['tahun_lulus' => 2026]);
+        $admission = $this->admission($student);
+        \App\Models\AlumniProgress::create(['siswa_id' => $student->id, 'study_tracer_id' => $admission->id,
+            'tahun_lulus' => 2026, 'periode' => null, 'semester' => null, 'is_current' => true,
+            'penerima_kipk' => true, 'ipk_terkini' => null, 'nominal_ukt' => null, 'tanggal_update' => today()]);
+        $report = app(SchoolScholarshipAnalytics::class)->aggregate(Request::create('/api/analitik-beasiswa/sekolah'));
+        $this->assertSame(1, $report['summary']['kip']);
+        $this->assertSame(1, $report['summary']['all_aid']);
+        $this->assertCount(0, $report['periods']);
+        $this->assertCount(0, $report['financial']['ipk_trend']);
+        $this->assertSame(0, $report['financial']['ukt']['known']);
+        $this->assertNull($report['financial']['ukt']['minimum']);
+    }
+
+    public function test_only_known_periods_enter_trends_and_real_zero_tuition_is_preserved(): void
+    {
+        foreach ([null, '   ', 'Ganjil 2026/2027'] as $period) {
+            $student = $this->student(null, ['tahun_lulus' => 2026]);
+            $admission = $this->admission($student);
+            \App\Models\AlumniProgress::create(['siswa_id' => $student->id, 'study_tracer_id' => $admission->id,
+                'tahun_lulus' => 2026, 'periode' => $period, 'semester' => $period === 'Ganjil 2026/2027' ? 1 : null,
+                'is_current' => true, 'penerima_kipk' => true, 'ipk_terkini' => 3.5,
+                'nominal_ukt' => 0, 'tanggal_update' => today()]);
+        }
+        $report = app(SchoolScholarshipAnalytics::class)->aggregate(Request::create('/api/analitik-beasiswa/sekolah'));
+        $this->assertSame(3, $report['summary']['kip']);
+        $this->assertCount(1, $report['periods']);
+        $this->assertSame('Ganjil 2026/2027', $report['periods'][0]['label']);
+        $this->assertSame(1, $report['periods'][0]['count']);
+        $this->assertCount(1, $report['financial']['ipk_trend']);
+        $this->assertSame(0.0, (float) $report['financial']['ukt']['minimum']);
+    }
 }

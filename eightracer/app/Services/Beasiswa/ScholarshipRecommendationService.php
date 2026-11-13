@@ -100,7 +100,7 @@ class ScholarshipRecommendationService
             $freshStudent = Siswa::whereKey($siswa->id)->lockForUpdate()->firstOrFail();
             [, , $fingerprint] = $this->sources($freshStudent, $preview['target_jenjang']);
             abort_unless(hash_equals($preview['source_fingerprint'], $fingerprint), 409,
-                'Data sumber berubah. Generate ulang dan tinjau kembali sebelum publikasi.');
+                'Data sumber berubah. Hitung ulang rekomendasi.');
             $recommendation = RekomendasiBeasiswa::create([
                 'target_jenjang' => $preview['target_jenjang'], 'siswa_id' => $siswa->id, 'tanggal_rekomendasi' => today(), 'status_review' => 'pending',
                 'ai_model' => config('gemini.model'), 'prompt_version' => 'beasiswa-v1', 'source_fingerprint' => $preview['source_fingerprint'],

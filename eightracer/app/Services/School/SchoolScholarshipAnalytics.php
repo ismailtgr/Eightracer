@@ -161,7 +161,8 @@ class SchoolScholarshipAnalytics
                     'count' => $count, 'stats' => $this->stats($values->pluck('nominal_ukt'), $count)];
             })->sortBy(fn ($row) => $row['university'].' '.$row['program'])->values();
         $tuition = app(TuitionRanges::class)->aggregate($admissions, $current);
-        $periods = $history->groupBy('periode')->map(function ($group, $period) use ($filter) {
+        $datedHistory = $history->filter(fn ($p) => is_string($p->periode) && trim($p->periode) !== '');
+        $periods = $datedHistory->groupBy('periode')->map(function ($group, $period) use ($filter) {
             $rows = $group->unique('siswa_id');
             $programs = [];
             foreach ($rows as $p) foreach ($p->alumniProgressBeasiswa as $award) {
@@ -196,7 +197,7 @@ class SchoolScholarshipAnalytics
                 'ipk_distribution' => collect([[0, 2.5, '< 2,50'], [2.5, 3, '2,50–2,99'], [3, 3.5, '3,00–3,49'], [3.5, 4.01, '3,50–4,00']])->map(fn ($bin) => [
                     'label' => $bin[2], 'count' => $current->filter(fn ($p) => $p->ipk_terkini !== null && (float) $p->ipk_terkini >= $bin[0] && (float) $p->ipk_terkini < $bin[1])->count(),
                 ])->values(),
-                'ipk_trend' => $history->groupBy('periode')->map(fn ($g, $period) => ['label' => (string) $period,
+                'ipk_trend' => $datedHistory->groupBy('periode')->map(fn ($g, $period) => ['label' => (string) $period,
                     'stats' => $this->stats($g->unique('siswa_id')->pluck('ipk_terkini'), $g->unique('siswa_id')->count())])->sortBy('label')->values()],
             'periods' => $periods, 'notes' => $notes];
     }

@@ -75,18 +75,18 @@ class GeminiScholarshipTest extends TestCase
             && ! str_contains(json_encode($r->data()), 'PRIVATE_NAME')
             && ! str_contains(json_encode($r->data()), $siswa->nisn));
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('automatic', true)->assertJsonCount(1, 'data.kandidat');
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertForbidden();
         $this->signIn($this->user('administrator'));
         $this->patchJson("/api/rekomendasi-beasiswa/{$draft}/review", ['status_review' => 'disetujui', 'catatan_admin' => 'PRIVATE_NOTE'])->assertOk();
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data')->assertDontSee('PRIVATE_NOTE');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.kandidat')->assertDontSee('PRIVATE_NOTE');
         $this->signIn($this->user());
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertNotFound();
         $other = $this->user();
         $this->student($other);
         $this->signIn($other);
-        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$siswa->id)->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$siswa->id)->assertUnprocessable();
     }
 
     public function test_bad_provider_output_never_creates_draft(): void

@@ -45,7 +45,7 @@ class PrdScholarshipStagesTest extends TestCase
         $this->patchJson("/api/rekomendasi-beasiswa/{$id}/review", ['status_review' => 'disetujui'])->assertOk();
         $b->update(['durasi' => 2]);
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.0.beasiswa.0.informasi.konteks', 'Persiapan jenjang berikutnya')->assertJsonPath('data.0.beasiswa.0.informasi.durasi', '4.00');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.kandidat.0.beasiswa.konteks', 'Persiapan jenjang berikutnya')->assertJsonPath('data.kandidat.0.beasiswa.durasi', '2.00');
     }
 
     public function test_actual_college_progress_supplies_ipk_without_requiring_an_active_sma_class(): void

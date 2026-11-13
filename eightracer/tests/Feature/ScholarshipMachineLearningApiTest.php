@@ -91,7 +91,7 @@ class ScholarshipMachineLearningApiTest extends TestCase
         $this->patchJson("/api/rekomendasi-beasiswa/{$id}/review", ['status_review' => 'disetujui'])->assertOk();
         $this->signIn($owner);
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()
-            ->assertJsonPath('data.0.beasiswa.0.pemeringkatan_ml.metode', 'tfidf-cosine-v1')->assertDontSee('model_hash')->assertDontSee('PRIVATE_');
+            ->assertJsonPath('data.kandidat.0.evaluasi.pemeringkatan_ml.metode', 'tfidf-cosine-v1')->assertDontSee('model_hash')->assertDontSee('PRIVATE_');
     }
 
     public function test_interest_changes_invalidate_pending_draft_fingerprint(): void
@@ -153,9 +153,9 @@ class ScholarshipMachineLearningApiTest extends TestCase
         $this->assertSame('sqlite', DB::connection()->getDriverName());
         DB::statement('PRAGMA reverse_unordered_selects = ON');
         try {
-            $data = $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->json('data.0.beasiswa');
-            $this->assertSame([$items[1]->id, $items[0]->id], array_column($data, 'beasiswa_id'));
-            $this->assertSame([1, 2], array_column(array_column($data, 'pemeringkatan_ml'), 'peringkat'));
+            $data = $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->json('data.kandidat');
+            $this->assertSame([$items[1]->id, $items[0]->id, $items[2]->id], array_column($data, 'beasiswa_id'));
+            $this->assertSame([1, 2, 3], array_column(array_column(array_column($data, 'evaluasi'), 'pemeringkatan_ml'), 'peringkat'));
         } finally {
             DB::statement('PRAGMA reverse_unordered_selects = OFF');
         }

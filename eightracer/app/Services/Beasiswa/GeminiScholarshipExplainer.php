@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GeminiScholarshipExplainer
 {
-    public function explain(array $candidates): array
+    public function explain(array $candidates, ?int $timeout = null): array
     {
         $key = config('gemini.api_key');
         abort_unless(is_string($key) && $key !== '', 503, 'Layanan rekomendasi belum tersedia.');
@@ -28,7 +28,7 @@ class GeminiScholarshipExplainer
         try {
             // Only server-computed criterion outcomes; never send a student record or raw income.
             $response = Http::acceptJson()->withHeaders(['x-goog-api-key' => $key])
-                ->connectTimeout(10)->timeout(config('gemini.timeout', 90))
+                ->connectTimeout(min(10, $timeout ?? 10))->timeout($timeout ?? config('gemini.timeout', 90))
                 ->post('https://generativelanguage.googleapis.com/v1beta/interactions', [
                     'model' => config('gemini.model'),
                     'store' => false,

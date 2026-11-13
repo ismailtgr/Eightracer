@@ -19,7 +19,7 @@ class AlumniDirectoryController extends Controller
 
     private function row(StudyTracer $record): array
     {
-        $latest = $record->alumniProgress->first();
+        $latest = $record->alumniProgress->first(fn ($p) => (int) $p->siswa_id === (int) $record->siswa_id);
 
         return [
             'id' => $record->id, 'siswa_id' => $record->siswa_id,
@@ -35,7 +35,7 @@ class AlumniDirectoryController extends Controller
     private function relations(): array
     {
         return ['siswa', 'perguruanTinggi', 'alumniProgress' => fn ($q) => $q
-            ->where('is_current', true)->orderByDesc('tanggal_update')->orderByDesc('id')];
+            ->where('is_current', true)->orderByRaw('tanggal_update DESC NULLS LAST')->orderByDesc('id')];
     }
 
     public function index(Request $request)
@@ -113,13 +113,14 @@ class AlumniDirectoryController extends Controller
             'is_published' => (bool) $record->izinkan_tampil_di_buku,
             'timeline_complete' => $complete, 'education_events' => $timeline->educationEvents($record),
             'has_nisn' => filled($record->siswa?->nisn),
+            'scholarship_summary' => app(\App\Services\School\AlumniScholarshipEvidence::class)->summarize($record),
             'kelas_terakhir' => $record->siswa?->riwayatKelas->sortByDesc('tanggal_mulai')->first()?->kelas?->nama_kelas
                 ?? $this->sourceClassroom($record),
             'strata_pendidikan' => $record->strata_pendidikan,
             'sub_jalur_mandiri' => $record->sub_jalur_mandiri,
             'pilihan_ke' => $record->pilihan_ke, 'tahun_masuk_pt' => $record->tahun_masuk_pt,
             'nilai_rapor_pendaftaran' => $record->nilai_rapor_pendaftaran, 'skor_utbk' => $record->skor_utbk,
-            'progress' => $record->alumniProgress->map(fn ($p) => [
+            'progress' => $record->alumniProgress->filter(fn ($p) => (int) $p->siswa_id === (int) $record->siswa_id)->map(fn ($p) => [
                 'id' => $p->id, 'semester' => $p->semester, 'periode' => $p->periode,
                 'revision' => $p->revision, 'tanggal_update' => $p->tanggal_update?->toDateString(),
                 'is_published' => $p->is_published, 'publish_financials' => $p->publish_financials,

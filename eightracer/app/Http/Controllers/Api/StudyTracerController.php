@@ -136,11 +136,13 @@ class StudyTracerController extends Controller
                     'skor_utbk' => $row->skor_utbk], 'progress' => $progress, 'education_events' => $education, 'timeline' => $timeline]]);
             }
             return response()->json(['preview' => true, 'data' => ['masuk_pt' => $preview->admission($row),
-                'progress' => [], 'education_events' => [], 'timeline' => []]]);
+                'scholarship_summary' => app(\App\Services\School\AlumniScholarshipEvidence::class)->summarize($row, true),
+                'progress' => [], 'education_events' => app(AlumniTimeline::class)->educationEvents($row),
+                'timeline' => collect(app(AlumniTimeline::class)->educationEvents($row))->map(fn ($event) => [...$event, 'granularity' => $event['date'] ? 'date' : 'year'])->values()]]);
         }
         $t = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi', 'prestasi'])->findOrFail($id);
 
-        return response()->json(['data' => ['masuk_pt' => $service->admission($t), 'progress' => $t->alumniProgress()->where('is_current', true)->where('is_published', true)->with('alumniProgressBeasiswa.beasiswa')->orderByDesc('tanggal_update')->orderByDesc('id')->get()->map(fn ($p) => $service->progress($p)), 'education_events' => app(AlumniTimeline::class)->educationEvents($t), 'timeline' => $service->timeline($t)]]);
+        return response()->json(['data' => ['masuk_pt' => $service->admission($t), 'scholarship_summary' => app(\App\Services\School\AlumniScholarshipEvidence::class)->summarize($t, true, false), 'progress' => $t->alumniProgress()->where('is_current', true)->where('is_published', true)->with('alumniProgressBeasiswa.beasiswa')->orderByDesc('tanggal_update')->orderByDesc('id')->get()->map(fn ($p) => $service->progress($p)), 'education_events' => app(AlumniTimeline::class)->educationEvents($t), 'timeline' => $service->timeline($t)]]);
     }
 
     public function progress(Request $r, int $id, AlumniService $service)

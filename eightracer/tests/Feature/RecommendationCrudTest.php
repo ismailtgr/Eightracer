@@ -38,7 +38,7 @@ class RecommendationCrudTest extends TestCase
         return [$owner, $student, $admin, $draft, $ids];
     }
 
-    public function test_recommendation_crud_is_persisted_and_synchronizes_only_after_review(): void
+    public function test_admin_notes_persist_without_gating_or_replacing_automatic_student_results(): void
     {
         [$owner, $student, $admin, $draft, $ids] = $this->setupDraft();
         $id = $draft['id']; $detail = $draft['rekomendasi_beasiswa_detail'][0]['id'];
@@ -50,38 +50,38 @@ class RecommendationCrudTest extends TestCase
         };
         $publish(1);
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.0.beasiswa');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat');
         $this->signIn($admin);
         $this->patchJson($url, ['siswa_id' => $student->id, 'revision' => 2,
             'alasan_rekomendasi' => 'Alasan ditinjau sekolah.', 'waktu_disarankan' => 'Januari 2027'])
             ->assertOk()->assertJsonPath('data.revision', 3)->assertJsonPath('data.status_review', 'pending')
             ->assertJsonPath('data.rekomendasi_beasiswa_detail.0.alasan_rekomendasi', 'Alasan ditinjau sekolah.');
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat');
         $this->signIn($admin); $publish(3);
         $this->signIn($owner);
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()
-            ->assertJsonPath('data.0.beasiswa.0.alasan', 'Alasan ditinjau sekolah.')
-            ->assertJsonPath('data.0.beasiswa.0.waktu_disarankan', 'Januari 2027')
+            ->assertDontSee('Alasan ditinjau sekolah.')
+            ->assertDontSee('Januari 2027')
             ->assertDontSee('source_fingerprint')->assertDontSee('reviewed_by');
         $this->signIn($admin);
         $this->patchJson($url, ['siswa_id' => $student->id, 'revision' => 4, 'is_hidden' => true])->assertOk();
         $publish(5);
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.0.beasiswa')
-            ->assertJsonPath('data.0.beasiswa.0.beasiswa_id', $ids[1]);
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat')
+            ->assertJsonPath('data.kandidat.0.beasiswa_id', $ids[0]);
         $this->signIn($admin);
         $this->patchJson($url, ['siswa_id' => $student->id, 'revision' => 6, 'is_hidden' => false])->assertOk();
         $publish(7);
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.0.beasiswa');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat');
         $this->signIn($admin);
         $this->deleteJson($url, ['siswa_id' => $student->id, 'revision' => 8])->assertOk()->assertJsonCount(1, 'data.rekomendasi_beasiswa_detail');
         $this->assertSoftDeleted('rekomendasi_beasiswa_detail', ['id' => $detail]);
         $publish(9);
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.0.beasiswa')
-            ->assertJsonPath('data.0.beasiswa.0.beasiswa_id', $ids[1]);
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat')
+            ->assertJsonPath('data.kandidat.0.beasiswa_id', $ids[0]);
         $this->signIn($admin);
         $this->deleteJson("/api/rekomendasi-beasiswa/$id/detail/$otherDetail", ['siswa_id' => $student->id, 'revision' => 10])->assertOk();
         $this->patchJson("/api/rekomendasi-beasiswa/$id/review", ['revision' => 11, 'status_review' => 'disetujui'])->assertUnprocessable();
@@ -114,7 +114,7 @@ class RecommendationCrudTest extends TestCase
         $this->deleteJson($url, ['siswa_id' => $student->id, 'revision' => 2])->assertForbidden();
     }
 
-    public function test_newer_draft_retracts_old_publication_and_old_batch_cannot_be_republished(): void
+    public function test_newer_admin_draft_does_not_retract_automatic_results_and_old_batch_stays_locked(): void
     {
         [$owner, $student, $admin, $draft] = $this->setupDraft();
         $id = $draft['id']; $detail = $draft['rekomendasi_beasiswa_detail'][0]['id'];
@@ -124,13 +124,13 @@ class RecommendationCrudTest extends TestCase
         $this->patchJson("/api/rekomendasi-beasiswa/$id/detail/$detail", ['siswa_id' => $student->id, 'revision' => 2, 'is_hidden' => true])->assertConflict();
         $this->patchJson("/api/rekomendasi-beasiswa/$id/review", ['revision' => 2, 'status_review' => 'disetujui'])->assertConflict();
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat');
         $this->signIn($admin);
         $this->patchJson("/api/rekomendasi-beasiswa/$new/review", ['revision' => 1, 'status_review' => 'disetujui'])->assertOk();
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $new);
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat')->assertJsonPath('automatic', true);
         $stranger = $this->account(); $this->student($stranger); $this->signIn($stranger);
-        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$student->id)->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$student->id)->assertUnprocessable();
     }
 
     public function test_catalog_crud_and_archival_are_real_and_keep_recommendation_history(): void

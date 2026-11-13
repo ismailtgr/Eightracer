@@ -28,9 +28,9 @@ class RekomendasiBeasiswaController extends Controller
         $draft = $service->generate($siswa, $input['target_jenjang'] ?? null);
 
         return response()->json([
-            'message' => 'Draft rekomendasi berhasil dibuat ulang. Tinjau hasil sebelum dipublikasikan.',
+            'message' => 'Hasil rekomendasi berhasil diperbarui. Siswa mengakses hasil perhitungan secara otomatis.',
             'data' => $draft,
-            'meta' => ['generated_at' => now()->toIso8601String(), 'published' => false, 'requires_review' => true],
+            'meta' => ['generated_at' => now()->toIso8601String(), 'automatic' => true, 'requires_review' => false],
         ], 201);
     }
 
@@ -122,31 +122,10 @@ class RekomendasiBeasiswaController extends Controller
     public function mine(Request $request)
     {
         abort_unless($request->user()->role === 'siswa', 403);
-        $siswa = $request->user()->siswa;
-        $preview = app(\App\Services\School\LocalStudentPreview::class)->enabled($request);
-        $hasPublished = $siswa && RekomendasiBeasiswa::where('siswa_id', $siswa->id)->where('status_review', 'disetujui')->exists();
-        if ($preview && ! $hasPublished) {
-            $catalog = \App\Models\BasisDataBeasiswa::where('is_active', true)->orderBy('id')->get([
-                'id','nama_beasiswa','jenjang','penyelenggara','periode_apply','tanggal_buka','tanggal_tutup','durasi','satuan_durasi']);
-            return response()->json(['data' => [], 'preview' => true, 'catalog_preview' => $catalog]);
-        }
-        abort_unless($siswa, 404, 'Akun belum terhubung dengan data siswa.');
-        $latest = RekomendasiBeasiswa::selectRaw('MAX(id)')->where('siswa_id', $siswa->id)->groupBy('target_jenjang');
-        $rows = RekomendasiBeasiswa::whereIn('id', $latest)->where('status_review', 'disetujui')
-            ->with('rekomendasiBeasiswaDetail.beasiswa')->latest('id')->paginate(15);
-        // Explicit projection: never serialize student relations, source hashes, or private admin notes.
-        $rows->through(fn ($row) => [
-            'target_jenjang' => $row->target_jenjang, 'id' => $row->id, 'tanggal_rekomendasi' => $row->tanggal_rekomendasi, 'status' => 'Terpublikasi',
-            'beasiswa' => $row->rekomendasiBeasiswaDetail->filter(fn ($detail) => ! $detail->is_hidden && $detail->is_recommended && $detail->beasiswa?->is_active)->values()->map(fn ($detail) => [
-                'detail_id' => $detail->id, 'status_program' => $detail->beasiswa?->status_program, 'status_pendaftaran' => $detail->beasiswa?->status_pendaftaran,
-                'pola_alumni' => app(Analytics::class)->published()->where('beasiswa_id', $detail->beasiswa_id)->values(), 'beasiswa_id' => $detail->beasiswa_id, 'informasi' => $detail->beasiswa_snapshot,
-                'skor_kecocokan' => $detail->skor_kecocokan, 'memenuhi_syarat' => $detail->is_recommended,
-                'pemeringkatan_ml' => isset($detail->evaluasi_kriteria['pemeringkatan_ml']) ? array_intersect_key($detail->evaluasi_kriteria['pemeringkatan_ml'], array_flip(['metode', 'status', 'skor_kemiripan', 'peringkat'])) : null,
-                'checklist' => $detail->evaluasi_kriteria['checklist'] ?? [],
-                'alasan' => $detail->alasan_rekomendasi, 'waktu_disarankan' => $detail->waktu_disarankan, 'persiapan' => $detail->persiapan,
-            ]),
-        ]);
-
-        return response()->json($rows);
+        $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah', 'siswa_id' => 'prohibited']);
+        $student = $request->user()->siswa()->first();
+        abort_unless($student, 404, 'Akun belum terhubung dengan data siswa.');
+        return response()->json(app(\App\Services\Beasiswa\AutomaticScholarshipRecommendations::class)
+            ->forStudent($student, $input['target_jenjang'] ?? null));
     }
 }

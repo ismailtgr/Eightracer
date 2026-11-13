@@ -21,8 +21,8 @@ class LocalStudentPreviewTest extends TestCase
         $this->signIn($this->account());
         $this->withServerVariables(['REMOTE_ADDR'=>'127.0.0.1']);
         $this->getJson('/api/jejak-alumni')->assertOk()->assertJsonPath('preview',true)->assertJsonPath('total',1)->assertDontSee('PRIVATE_PHONE')->assertDontSee('nisn');
-        $this->getJson('/api/jejak-alumni/'.$admission->id)->assertOk()->assertJsonCount(0,'data.progress')->assertJsonCount(0,'data.timeline')->assertDontSee('PRIVATE_PHONE');
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('preview',true)->assertJsonCount(0,'data')->assertJsonPath('catalog_preview.0.id',$b->id);
+        $this->getJson('/api/jejak-alumni/'.$admission->id)->assertOk()->assertJsonCount(0,'data.progress')->assertJsonCount(2,'data.timeline')->assertDontSee('PRIVATE_PHONE');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertNotFound();
         $this->assertDatabaseCount('rekomendasi_beasiswa',0);
         $this->assertFalse((bool)$admission->fresh()->izinkan_tampil_di_buku);
         $this->assertNull($alumni->fresh()->user_id);

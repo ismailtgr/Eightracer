@@ -51,12 +51,12 @@ class RecommendationConnectionTest extends TestCase
             'catatan_admin' => 'PRIVATE_NOTE'])->assertOk()->assertJsonPath('data.status_review', 'disetujui')
             ->assertJsonCount(2, 'data.rekomendasi_beasiswa_detail');
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.0.beasiswa')
-            ->assertJsonPath('data.0.beasiswa.0.beasiswa_id', $b->id)->assertJsonStructure(['data' => [['beasiswa' => [['detail_id', 'status_pendaftaran']]]]])
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat')
+            ->assertJsonPath('data.kandidat.0.beasiswa_id', $b->id)->assertJsonPath('automatic', true)
             ->assertDontSee('source_fingerprint')->assertDontSee('PRIVATE_NOTE');
         $this->getJson('/api/rekomendasi-beasiswa/'.$draft)->assertForbidden();
         $b->update(['is_active' => false]);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(0, 'data.0.beasiswa');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.kandidat')->assertDontSee('Program Cukup');
     }
 
     public function test_selected_student_cannot_be_swapped_during_publication_and_filters_stay_scoped(): void
@@ -84,7 +84,7 @@ class RecommendationConnectionTest extends TestCase
         $this->patchJson('/api/rekomendasi-beasiswa/'.$r->json('data.id').'/review', ['status_review' => 'disetujui'])->assertUnprocessable();
         $this->assertNull($s->fresh()->nilai_tka);
         $this->signIn($owner);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.kandidat')->assertJsonPath('data.kandidat.0.evaluasi.lengkap', false);
         $this->postJson('/api/siswa/'.$s->id.'/rekomendasi-beasiswa/generate')->assertForbidden();
     }
 
@@ -97,7 +97,7 @@ class RecommendationConnectionTest extends TestCase
         $this->patchJson('/api/rekomendasi-beasiswa/'.$id.'/review', ['status_review' => 'disetujui'])->assertOk();
         $other = $this->account(); $this->student($other);
         $this->signIn($other);
-        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$s->id)->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$s->id)->assertUnprocessable();
         $this->getJson('/api/rekomendasi-beasiswa/'.$id)->assertForbidden();
         $this->postJson('/api/chat-beasiswa', ['message' => 'Periksa beasiswa saya', 'siswa_id' => $s->id])->assertUnprocessable();
         $this->assertSame(1, RekomendasiBeasiswa::count());

@@ -36,8 +36,8 @@ class GenerateWorkflowTest extends TestCase
         $this->mock(GeminiScholarshipExplainer::class,fn($mock)=>$mock->shouldReceive('explain')->twice()->andReturnUsing(fn($c)=>$this->explanations($c)));
         $this->signIn($this->account('administrator'));
         $path="/api/siswa/{$student->id}/rekomendasi-beasiswa/generate";
-        $one=$this->postJson($path)->assertCreated()->assertJsonPath('meta.published',false)
-            ->assertJsonPath('meta.requires_review',true)->assertJsonPath('data.status_review','pending')
+        $one=$this->postJson($path)->assertCreated()->assertJsonPath('meta.automatic',true)
+            ->assertJsonPath('meta.requires_review',false)->assertJsonPath('data.status_review','pending')
             ->assertJsonStructure(['message','meta'=>['generated_at'],'data'=>['id','rekomendasi_beasiswa_detail']]);
         $two=$this->postJson($path)->assertCreated();
         $this->assertNotEquals($one->json('data.id'),$two->json('data.id'));
