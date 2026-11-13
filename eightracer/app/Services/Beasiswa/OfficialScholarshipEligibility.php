@@ -32,6 +32,8 @@ class OfficialScholarshipEligibility {
   $states=array_column($checks,'status');$result['checklist']=$checks;
   $result['lengkap']=count($checks)>0 && !in_array('belum_diketahui',$states,true);
   $result['memenuhi']=count($checks)>0 && count(array_filter($states,fn($v)=>$v!=='terpenuhi'))===0;
+  $result['cakupan_data']=count($checks)>0 ? round(100*count(array_filter($states,fn($v)=>$v!=='belum_diketahui'))/count($checks),2) : 0;
+  $result['jumlah_kriteria_belum_diketahui']=count(array_filter($states,fn($v)=>$v==='belum_diketahui'));
   $result['sumber_kriteria']=$policy['sources']??[];$result['kriteria_diverifikasi_pada']=$policy['verified_at']??null;
   return $result;
  }
