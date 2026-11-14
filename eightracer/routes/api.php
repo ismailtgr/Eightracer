@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::delete('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'archive']);
     Route::get('/rekomendasi-beasiswa/penerima', [RekomendasiBeasiswaController::class, 'recipients']);
     Route::get('/rekomendasi-beasiswa/saya', [RekomendasiBeasiswaController::class, 'mine']);
+    Route::post('/rekomendasi-beasiswa/saya/generate', [RekomendasiBeasiswaController::class, 'generateMine'])->middleware('throttle:5,1');
     Route::get('/rekomendasi-beasiswa', [RekomendasiBeasiswaController::class, 'index']);
     Route::get('/rekomendasi-beasiswa/{rekomendasi}', [RekomendasiBeasiswaController::class, 'show'])->whereNumber('rekomendasi');
     Route::post('/siswa/{siswa}/rekomendasi-beasiswa/generate', [RekomendasiBeasiswaController::class, 'generate'])->middleware('throttle:5,1');

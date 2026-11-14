@@ -51,11 +51,16 @@ class RecommendationConnectionTest extends TestCase
             'catatan_admin' => 'PRIVATE_NOTE'])->assertOk()->assertJsonPath('data.status_review', 'disetujui')
             ->assertJsonCount(2, 'data.rekomendasi_beasiswa_detail');
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat')
             ->assertJsonPath('data.kandidat.0.beasiswa_id', $b->id)->assertJsonPath('automatic', true)
             ->assertDontSee('source_fingerprint')->assertDontSee('PRIVATE_NOTE');
         $this->getJson('/api/rekomendasi-beasiswa/'.$draft)->assertForbidden();
         $b->update(['is_active' => false]);
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','needs_update')->assertJsonCount(0,'data.kandidat');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.kandidat')->assertDontSee('Program Cukup');
     }
 
@@ -84,6 +89,9 @@ class RecommendationConnectionTest extends TestCase
         $this->patchJson('/api/rekomendasi-beasiswa/'.$r->json('data.id').'/review', ['status_review' => 'disetujui'])->assertUnprocessable();
         $this->assertNull($s->fresh()->nilai_tka);
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(1, 'data.kandidat')->assertJsonPath('data.kandidat.0.evaluasi.lengkap', false);
         $this->postJson('/api/siswa/'.$s->id.'/rekomendasi-beasiswa/generate')->assertForbidden();
     }

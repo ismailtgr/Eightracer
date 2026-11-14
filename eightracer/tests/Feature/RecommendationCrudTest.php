@@ -50,6 +50,9 @@ class RecommendationCrudTest extends TestCase
         };
         $publish(1);
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat');
         $this->signIn($admin);
         $this->patchJson($url, ['siswa_id' => $student->id, 'revision' => 2,
@@ -124,6 +127,9 @@ class RecommendationCrudTest extends TestCase
         $this->patchJson("/api/rekomendasi-beasiswa/$id/detail/$detail", ['siswa_id' => $student->id, 'revision' => 2, 'is_hidden' => true])->assertConflict();
         $this->patchJson("/api/rekomendasi-beasiswa/$id/review", ['revision' => 2, 'status_review' => 'disetujui'])->assertConflict();
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonCount(2, 'data.kandidat');
         $this->signIn($admin);
         $this->patchJson("/api/rekomendasi-beasiswa/$new/review", ['revision' => 1, 'status_review' => 'disetujui'])->assertOk();

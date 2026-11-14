@@ -75,6 +75,9 @@ class GeminiScholarshipTest extends TestCase
             && ! str_contains(json_encode($r->data()), 'PRIVATE_NAME')
             && ! str_contains(json_encode($r->data()), $siswa->nisn));
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('automatic', true)->assertJsonCount(1, 'data.kandidat');
         $this->postJson("/api/siswa/{$siswa->id}/rekomendasi-beasiswa/generate")->assertForbidden();
         $this->signIn($this->user('administrator'));

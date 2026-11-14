@@ -45,6 +45,9 @@ class PrdScholarshipStagesTest extends TestCase
         $this->patchJson("/api/rekomendasi-beasiswa/{$id}/review", ['status_review' => 'disetujui'])->assertOk();
         $b->update(['durasi' => 2]);
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.kandidat.0.beasiswa.konteks', 'Persiapan jenjang berikutnya')->assertJsonPath('data.kandidat.0.beasiswa.durasi', '2.00');
     }
 

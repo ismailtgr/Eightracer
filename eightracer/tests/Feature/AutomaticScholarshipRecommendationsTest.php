@@ -31,20 +31,20 @@ class AutomaticScholarshipRecommendationsTest extends TestCase
         $good=$this->program();$bad=$this->program('Program Nilai Tinggi',95);
         $this->program('Arsip',70,['is_active'=>false]);$this->program('Tutup',70,['tanggal_tutup'=>today()->subDay()]);
         $this->signIn($user);
-        $r=$this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('automatic',true)
+        $r=$this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk()->assertJsonPath('automatic',true)
             ->assertJsonPath('data.llm_used',false)->assertJsonCount(2,'data.kandidat');
         $items=collect($r->json('data.kandidat'))->keyBy('beasiswa_id');
         $this->assertTrue($items[$good->id]['evaluasi']['memenuhi']);$this->assertFalse($items[$bad->id]['evaluasi']['memenuhi']);
         $r->assertDontSee('source_fingerprint')->assertDontSee($user->email)->assertDontSee($s->nisn);
         $this->assertDatabaseCount('rekomendasi_beasiswa',0);Http::assertNothingSent();
         $s->update(['nilai_tka'=>70]);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.kandidat.0.evaluasi.memenuhi',false);
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk()->assertJsonPath('data.kandidat.0.evaluasi.memenuhi',false);
     }
 
     public function test_unknown_data_remains_visible_as_unknown_without_fabricating_eligibility(): void
     {
         $u=$this->account();$s=$this->student($u);$this->classroom($s);$this->program();$this->signIn($u);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.kandidat.0.evaluasi.lengkap',false)
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk()->assertJsonPath('data.kandidat.0.evaluasi.lengkap',false)
             ->assertJsonPath('data.kandidat.0.evaluasi.memenuhi',false)->assertJsonPath('data.kandidat.0.evaluasi.checklist.0.status','belum_diketahui');
         $this->assertNull($s->fresh()->nilai_tka);
     }
@@ -55,8 +55,8 @@ class AutomaticScholarshipRecommendationsTest extends TestCase
         $other=$this->student($this->account(),['nilai_tka'=>100]);$this->classroom($other);$this->program();
         $this->signIn($u);
         $this->getJson('/api/rekomendasi-beasiswa/saya?siswa_id='.$other->id)->assertUnprocessable();
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.kandidat.0.evaluasi.memenuhi',false);
-        $this->signIn($this->account('administrator'));$this->getJson('/api/rekomendasi-beasiswa/saya')->assertForbidden();
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk()->assertJsonPath('data.kandidat.0.evaluasi.memenuhi',false);
+        $this->signIn($this->account('administrator'));$this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertForbidden();
     }
 
     public function test_valid_gemini_explanation_is_cached_and_receives_no_student_identity(): void
@@ -69,7 +69,7 @@ class AutomaticScholarshipRecommendationsTest extends TestCase
             return Http::response(['status'=>'completed','steps'=>[['type'=>'model_output','content'=>[['type'=>'text','text'=>$json]]]]]);
         }]);
         $this->signIn($u);
-        for($i=0;$i<2;$i++)$this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.llm_used',true)
+        for($i=0;$i<2;$i++)$this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk()->assertJsonPath('data.llm_used',true)
             ->assertJsonPath('data.kandidat.0.alasan','Nilai memenuhi kriteria yang tercatat.');
         Http::assertSentCount(1);
     }
@@ -79,7 +79,7 @@ class AutomaticScholarshipRecommendationsTest extends TestCase
         $u=$this->account();$s=$this->student($u);$this->classroom($s);$this->program('Kuliah',80,['jenjang'=>'Kuliah']);
         config(['gemini.api_key'=>'test-only-key']);Http::fake(['generativelanguage.googleapis.com/*'=>Http::response(['error'=>'PRIVATE_PROVIDER_ERROR'],429)]);
         $this->signIn($u);
-        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.target_jenjang','Kuliah')
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk()->assertJsonPath('data.target_jenjang','Kuliah')
             ->assertJsonPath('data.llm_used',false)->assertJsonCount(1,'data.kandidat')->assertDontSee('PRIVATE_PROVIDER_ERROR');
     }
 }

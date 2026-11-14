@@ -90,6 +90,9 @@ class ScholarshipMachineLearningApiTest extends TestCase
             ->assertJsonPath('data.rekomendasi_beasiswa_detail.0.evaluasi_kriteria.pemeringkatan_ml.status', 'applied')->json('data.id');
         $this->patchJson("/api/rekomendasi-beasiswa/{$id}/review", ['status_review' => 'disetujui'])->assertOk();
         $this->signIn($owner);
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()
             ->assertJsonPath('data.kandidat.0.evaluasi.pemeringkatan_ml.metode', 'tfidf-cosine-v1')->assertDontSee('model_hash')->assertDontSee('PRIVATE_');
     }
@@ -153,6 +156,9 @@ class ScholarshipMachineLearningApiTest extends TestCase
         $this->assertSame('sqlite', DB::connection()->getDriverName());
         DB::statement('PRAGMA reverse_unordered_selects = ON');
         try {
+        // Student results now require an explicit personal request, independent of staff review.
+        $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('state','not_started');
+        $this->postJson('/api/rekomendasi-beasiswa/saya/generate')->assertOk();
             $data = $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->json('data.kandidat');
             $this->assertSame([$items[1]->id, $items[0]->id, $items[2]->id], array_column($data, 'beasiswa_id'));
             $this->assertSame([1, 2, 3], array_column(array_column(array_column($data, 'evaluasi'), 'pemeringkatan_ml'), 'peringkat'));

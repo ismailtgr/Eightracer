@@ -135,10 +135,21 @@ class RekomendasiBeasiswaController extends Controller
     public function mine(Request $request)
     {
         abort_unless($request->user()->role === 'siswa', 403);
-        $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah', 'siswa_id' => 'prohibited']);
+        abort_if(array_diff(array_keys($request->all()), ['target_jenjang']), 422);
+        $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah']);
         $student = $request->user()->siswa()->first();
         abort_unless($student, 404, 'Akun belum terhubung dengan data siswa.');
-        return response()->json(app(\App\Services\Beasiswa\AutomaticScholarshipRecommendations::class)
-            ->forStudent($student, $input['target_jenjang'] ?? null));
+        return response()->json(app(\App\Services\Beasiswa\StudentScholarshipResults::class)->read($student));
+    }
+
+    public function generateMine(Request $request)
+    {
+        abort_unless($request->user()->role === 'siswa', 403);
+        abort_if(array_diff(array_keys($request->all()), ['target_jenjang']), 422);
+        $input = $request->validate(['target_jenjang' => 'nullable|in:SMA,Kuliah']);
+        $student = $request->user()->siswa()->first();
+        abort_unless($student, 404, 'Akun belum terhubung dengan data siswa.');
+        return response()->json(app(\App\Services\Beasiswa\StudentScholarshipResults::class)
+            ->generate($student, $input['target_jenjang'] ?? null));
     }
 }
