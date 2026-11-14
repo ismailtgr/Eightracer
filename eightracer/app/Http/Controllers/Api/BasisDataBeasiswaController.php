@@ -122,6 +122,14 @@ class BasisDataBeasiswaController extends Controller
         });
     }
 
+    public function activate(Request $request, BasisDataBeasiswa $beasiswa)
+    {
+        $this->admin($request);
+        abort_if(count($request->all()) > 0, 422, 'Aktivasi hanya mengubah status program.');
+        $beasiswa->update(['is_active' => true]);
+        return response()->json(['message'=>'Beasiswa berhasil diaktifkan.', 'data'=>$this->catalogData($beasiswa->load('kriteriaKelayakanBeasiswa'))]);
+    }
+
     public function archive(Request $request, BasisDataBeasiswa $beasiswa)
     {
         $this->admin($request);

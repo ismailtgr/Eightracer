@@ -103,14 +103,12 @@ class ScholarshipChatOverviewTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_general_preparation_is_available_when_catalog_and_class_profile_are_missing(): void
+    public function test_recommendation_chat_rejects_unverified_active_class_status(): void
     {
         $user = $this->account();
         $this->student($user);
         $this->signIn($user);
-        $this->postJson('/api/chat-beasiswa', ['message' => 'Apa yang perlu aku persiapkan?'])->assertOk()
-            ->assertJsonPath('data.status', 'preparation_guidance')->assertJsonCount(0, 'data.candidates')
-            ->assertSee('salinan rapor')->assertSee('Jenjang sekolahmu belum tercatat')->assertDontSee('Pilih satu program');
+        $this->postJson('/api/chat-beasiswa', ['message' => 'Apa yang perlu aku persiapkan?'])->assertUnprocessable()->assertSee('siswa aktif SMA 8');
         Http::assertNothingSent();
     }
 

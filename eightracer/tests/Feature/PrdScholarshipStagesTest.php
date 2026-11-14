@@ -48,7 +48,7 @@ class PrdScholarshipStagesTest extends TestCase
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.kandidat.0.beasiswa.konteks', 'Persiapan jenjang berikutnya')->assertJsonPath('data.kandidat.0.beasiswa.durasi', '2.00');
     }
 
-    public function test_actual_college_progress_supplies_ipk_without_requiring_an_active_sma_class(): void
+    public function test_college_alumni_are_reference_only_and_cannot_generate_personal_recommendations(): void
     {
         $s = $this->student(null, ['tahun_lulus' => 2026, 'nilai_tka' => 90]);
         $t = $this->admission($s);
@@ -57,7 +57,7 @@ class PrdScholarshipStagesTest extends TestCase
         $b->kriteriaKelayakanBeasiswa()->create(['nama_kriteria' => 'IPK', 'tipe_kriteria' => 'ipk', 'operator' => '>=', 'nilai_kriteria' => '3.5']);
         $this->fake($b->id);
         $this->signIn($this->account('administrator'));
-        $this->postJson("/api/siswa/{$s->id}/rekomendasi-beasiswa/generate")->assertCreated()->assertJsonPath('data.target_jenjang', 'Kuliah')->assertJsonPath('data.rekomendasi_beasiswa_detail.0.is_recommended', true);
+        $this->postJson("/api/siswa/{$s->id}/rekomendasi-beasiswa/generate")->assertUnprocessable()->assertSee('siswa aktif SMA 8');
     }
 
     public function test_linked_program_changes_make_existing_ai_draft_stale_even_if_status_stays_eligible(): void

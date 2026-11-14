@@ -17,8 +17,10 @@ class SiswaController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $request->validate(['penerima_beasiswa' => 'sometimes|boolean', 'search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P', 'kelas_id' => 'nullable|integer|exists:kelas,id', 'angkatan' => 'nullable|digits:4', 'rekomendasi_published' => 'nullable|boolean']);
+        $request->validate(['aktif_rekomendasi'=>'sometimes|boolean', 'penerima_beasiswa' => 'sometimes|boolean', 'search' => 'nullable|string|max:100', 'per_page' => 'sometimes|integer|between:1,100', 'page' => 'sometimes|integer|min:1', 'jenis_kelamin' => 'nullable|in:L,P', 'kelas_id' => 'nullable|integer|exists:kelas,id', 'angkatan' => 'nullable|digits:4', 'rekomendasi_published' => 'nullable|boolean']);
         $query = Siswa::select(['id', 'nama_lengkap', 'nisn', 'nis', 'jenis_kelamin', 'tahun_lulus'])->with(['riwayatKelas' => fn ($q) => $q->whereNull('tanggal_selesai')->with('kelas')]);
+
+        if ($request->boolean('aktif_rekomendasi')) app(\App\Services\Beasiswa\ActiveScholarshipStudents::class)->restrict($query);
 
         if ($request->boolean('penerima_beasiswa')) {
             app(\App\Services\School\ScholarshipRecipients::class)->restrict($query);
@@ -56,7 +58,7 @@ class SiswaController extends Controller
             'message' => 'Data siswa berhasil diambil',
             'data' => $siswa,
             'filters' => [
-                'cohorts' => Siswa::whereNotNull('tahun_lulus')->distinct()->orderBy('tahun_lulus')->pluck('tahun_lulus'),
+                'cohorts' => ($request->boolean('aktif_rekomendasi') ? app(\App\Services\Beasiswa\ActiveScholarshipStudents::class)->restrict(Siswa::query()) : Siswa::query())->whereNotNull('tahun_lulus')->distinct()->orderBy('tahun_lulus')->pluck('tahun_lulus'),
                 'classrooms' => Kelas::orderBy('nama_kelas')->get(['id', 'nama_kelas']),
             ],
         ]);

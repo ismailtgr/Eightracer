@@ -45,7 +45,7 @@ class ScholarshipMachineLearningTest extends TestCase
         [$ranked] = app(ScholarshipContentRanker::class)->rank($c, [1 => 'bulu tangkis atlet', 2 => 'matematika sains', 3 => 'bulu tangkis atlet'], 'bulu tangkis atlet');
         $this->assertSame(2, $ranked[0]['beasiswa_id']);
         $this->assertNull($ranked[1]['evaluasi']['pemeringkatan_ml']['skor_kemiripan']);
-        $this->assertSame('criteria_incomplete', $ranked[2]['evaluasi']['pemeringkatan_ml']['alasan_status']);
+        $this->assertSame('criteria_incomplete', collect($ranked)->firstWhere('beasiswa_id', 3)['evaluasi']['pemeringkatan_ml']['alasan_status']);
     }
 
     public function test_empty_sparse_and_unknown_inputs_fall_back_without_fabricated_similarity(): void

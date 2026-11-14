@@ -39,7 +39,7 @@ class AutomaticScholarshipRecommendations
         }
         $items = array_map(function ($candidate) use ($explanation) {
             $candidate['evaluasi']['pemeringkatan_ml'] = array_intersect_key($candidate['evaluasi']['pemeringkatan_ml'],
-                array_flip(['metode', 'status', 'alasan_status', 'skor_kemiripan', 'peringkat']));
+                array_flip(['metode', 'status', 'alasan_status', 'skor_kemiripan', 'peringkat', 'unggulan', 'label_unggulan', 'alasan_unggulan']));
             $evaluation = $candidate['evaluasi'];
             $reason = !$evaluation['lengkap'] ? 'Sebagian data atau persyaratan belum tersedia. Periksa rincian kriteria sebelum mendaftar.'
                 : ($evaluation['memenuhi'] ? 'Data yang tersedia memenuhi kriteria yang tercatat. Hasil ini bukan jaminan penerimaan beasiswa.'

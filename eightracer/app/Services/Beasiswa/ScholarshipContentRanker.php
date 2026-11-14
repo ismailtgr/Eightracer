@@ -54,7 +54,9 @@ class ScholarshipContentRanker
         usort($candidates, function ($a, $b) {
             $ae = $a['evaluasi'];
             $be = $b['evaluasi'];
-            $eligible = (int) $be['memenuhi'] <=> (int) $ae['memenuhi'];
+            $bucket = fn ($e) => ($e['memenuhi'] && $e['lengkap']) ? 2
+                : ((! $e['lengkap'] && ! in_array('belum_terpenuhi', array_column($e['checklist'], 'status'), true)) ? 1 : 0);
+            $eligible = $bucket($be) <=> $bucket($ae);
             if ($eligible !== 0) {
                 return $eligible;
             }
@@ -62,6 +64,11 @@ class ScholarshipContentRanker
                 <=> (int) (($ae['pemeringkatan_ml']['alasan_status'] ?? '') === 'exploration_only');
             if ($exploration !== 0) {
                 return $exploration;
+            }
+            // Among eligible options, criterion fit takes precedence over text similarity.
+            if ($ae['memenuhi'] && $ae['lengkap'] && $be['memenuhi'] && $be['lengkap']) {
+                $criteria = ($be['skor'] ?? 0) <=> ($ae['skor'] ?? 0);
+                if ($criteria !== 0) return $criteria;
             }
             // Similarity may reorder eligible alternatives; it cannot change official requirements or scores.
             if (($ae['memenuhi'] && $be['memenuhi']) ||
@@ -74,8 +81,27 @@ class ScholarshipContentRanker
 
             return ($be['skor'] <=> $ae['skor']) ?: ($a['beasiswa_id'] <=> $b['beasiswa_id']);
         });
+        $top = $candidates[0]['evaluasi'] ?? null;
+        $next = $candidates[1]['evaluasi'] ?? null;
+        $highlight = null;
+        if ($top && $top['lengkap'] && $top['memenuhi']) {
+            if (! $next || ! ($next['lengkap'] && $next['memenuhi'])) {
+                $highlight = ['label'=>'Pilihan Sesuai Kriteria', 'reason'=>'Program ini memenuhi kriteria yang tercatat. Pilihan lain belum dapat dinyatakan sesuai.'];
+            } elseif (($top['skor'] ?? 0) > ($next['skor'] ?? 0)) {
+                $highlight = ['label'=>'Paling Sesuai', 'reason'=>'Kecocokan kriteria tercatat tertinggi di antara program yang memenuhi syarat.'];
+            } elseif (($top['pemeringkatan_ml']['status'] ?? '') === 'applied'
+                && ($top['pemeringkatan_ml']['skor_kemiripan'] ?? 0) > ($next['pemeringkatan_ml']['skor_kemiripan'] ?? 0) + 1e-8) {
+                $highlight = ['label'=>'Paling Sesuai', 'reason'=>'Memenuhi kriteria tercatat dan memiliki relevansi minat tertinggi pada pilihan dengan skor kriteria setara.'];
+            }
+        } elseif ($top && ($top['pemeringkatan_ml']['alasan_status'] ?? '') === 'exploration_only'
+            && ($top['pemeringkatan_ml']['skor_kemiripan'] ?? 0) > ($next['pemeringkatan_ml']['skor_kemiripan'] ?? 0) + 1e-8) {
+            $highlight = ['label'=>'Prioritas Dipelajari', 'reason'=>'Relevansi minat tertinggi di antara pilihan dengan data belum lengkap. Persyaratan belum dapat dipastikan terpenuhi.'];
+        }
         foreach ($candidates as $i => &$candidate) {
             $candidate['evaluasi']['pemeringkatan_ml']['peringkat'] = $i + 1;
+            $candidate['evaluasi']['pemeringkatan_ml']['unggulan'] = $i === 0 && $highlight !== null;
+            $candidate['evaluasi']['pemeringkatan_ml']['label_unggulan'] = $i === 0 ? ($highlight['label'] ?? null) : null;
+            $candidate['evaluasi']['pemeringkatan_ml']['alasan_unggulan'] = $i === 0 ? ($highlight['reason'] ?? null) : null;
         }
         unset($candidate);
 

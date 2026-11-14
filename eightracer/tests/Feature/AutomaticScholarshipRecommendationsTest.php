@@ -74,9 +74,9 @@ class AutomaticScholarshipRecommendationsTest extends TestCase
         Http::assertSentCount(1);
     }
 
-    public function test_gemini_failure_keeps_rankings_and_grad_school_preparation_available(): void
+    public function test_gemini_failure_keeps_rankings_and_college_preparation_for_active_sma_students(): void
     {
-        $u=$this->account();$s=$this->student($u,['tahun_lulus'=>2025]);$this->program('Kuliah',80,['jenjang'=>'Kuliah']);
+        $u=$this->account();$s=$this->student($u);$this->classroom($s);$this->program('Kuliah',80,['jenjang'=>'Kuliah']);
         config(['gemini.api_key'=>'test-only-key']);Http::fake(['generativelanguage.googleapis.com/*'=>Http::response(['error'=>'PRIVATE_PROVIDER_ERROR'],429)]);
         $this->signIn($u);
         $this->getJson('/api/rekomendasi-beasiswa/saya')->assertOk()->assertJsonPath('data.target_jenjang','Kuliah')

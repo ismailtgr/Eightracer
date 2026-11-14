@@ -18,10 +18,11 @@ class ScholarshipRecommendationService
 
     public function sources(Siswa $siswa, ?string $target = null): array
     {
+        app(ActiveScholarshipStudents::class)->assertActive($siswa);
         $profile = app(StudentProfile::class)->build($siswa);
         $profile['target_jenjang'] = $target ?? $profile['jenjang'];
         $profile['ml_interest_document'] = $this->interests->document($siswa);
-        $profile['ml_ranking_version'] = [TfidfScholarshipModel::VERSION, 'exploration-20261114-v1', (bool) config('scholarship_ml.enabled', true)];
+        $profile['ml_ranking_version'] = [TfidfScholarshipModel::VERSION, 'criteria-first-highlight-20261114-v2', (bool) config('scholarship_ml.enabled', true)];
         $profile['program_statuses'] = [];
         $programs = ProgramEligibilitas::where('is_active', true)->orderBy('id')->get();
         foreach ($programs as $p) {
