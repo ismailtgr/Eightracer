@@ -17,7 +17,7 @@ class AutomaticScholarshipRecommendations
             $target = $profile['jenjang'] === 'SMA' && $catalog->contains(fn ($p) => in_array($p->jenjang, ['SMA', 'Keduanya'], true)) ? 'SMA' : 'Kuliah';
         }
         $preview = $this->recommendations->preview($student, $target);
-        $key = 'scholarship-auto-v1:'.$student->id.':'.$preview['source_fingerprint'];
+        $key = 'scholarship-auto-friendly-v2:'.$student->id.':'.$preview['source_fingerprint'];
         $explanation = Cache::get($key);
         if (!is_array($explanation)) {
             $explanation = ['llm_used' => false, 'items' => []];

@@ -32,7 +32,7 @@ class RecommendationEditor
                 }
                 $item->update($changes);
             }
-            // Any editorial change withdraws publication until the school reviews it again.
+            // Legacy review fields track internal revisions only; personal automatic results are independent.
             $row->forceFill(['status_review' => 'pending', 'reviewed_by' => null, 'reviewed_at' => null,
                 'revision' => (int) $row->revision + 1])->save();
 

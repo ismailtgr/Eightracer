@@ -34,6 +34,19 @@ class RekomendasiBeasiswaController extends Controller
         ], 201);
     }
 
+    public function save(Request $request, Siswa $siswa, ScholarshipRecommendationService $service)
+    {
+        $this->admin($request);
+        abort_if(array_diff(array_keys($request->all()), ['target_jenjang']), 422);
+        $input = $request->validate(['target_jenjang'=>'nullable|in:SMA,Kuliah']);
+        $record = $service->saveCurrent($siswa, $input['target_jenjang'] ?? null);
+        return response()->json([
+            'message'=>'Rekomendasi berhasil disimpan. Catatan Guru BK bersifat opsional.',
+            'data'=>$record,
+            'meta'=>['automatic'=>true,'requires_review'=>false,'saved'=>true],
+        ]);
+    }
+
     public function preview(Request $request, Siswa $siswa, ScholarshipRecommendationService $service)
     {
         $this->admin($request);

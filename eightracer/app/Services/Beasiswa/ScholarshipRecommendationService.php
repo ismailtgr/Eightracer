@@ -72,6 +72,43 @@ class ScholarshipRecommendationService
         return app(OfficialScholarshipEligibility::class)->evaluate($profile, $criteria, $program);
     }
 
+    /** Optional staff snapshot: no approval gate, no provider call, no duplicate on retry. */
+    public function saveCurrent(Siswa $siswa, ?string $target = null): RekomendasiBeasiswa
+    {
+        $lock = Cache::lock('scholarship-generate:'.$siswa->id, 150);
+        abort_unless($lock->get(), 409, 'Rekomendasi siswa ini sedang diproses. Tunggu hasil sebelum mencoba lagi.');
+        try {
+            return DB::transaction(function () use ($siswa, $target) {
+                $student = Siswa::whereKey($siswa->id)->lockForUpdate()->firstOrFail();
+                $preview = $this->preview($student, $target);
+                $latest = RekomendasiBeasiswa::where('siswa_id', $student->id)
+                    ->where('target_jenjang', $preview['target_jenjang'])->latest('id')->first();
+                if ($latest && $latest->source_fingerprint && hash_equals($latest->source_fingerprint, $preview['source_fingerprint'])) {
+                    return $latest->load('rekomendasiBeasiswaDetail');
+                }
+                $record = RekomendasiBeasiswa::create([
+                    'siswa_id'=>$student->id, 'target_jenjang'=>$preview['target_jenjang'],
+                    'tanggal_rekomendasi'=>today(), 'status_review'=>'pending',
+                    'ai_model'=>null, 'prompt_version'=>'staff-snapshot-v1',
+                    'source_fingerprint'=>$preview['source_fingerprint'],
+                ]);
+                foreach ($preview['kandidat'] as $candidate) {
+                    $evaluation = $candidate['evaluasi'];
+                    $reason = !$evaluation['lengkap'] ? 'Sebagian persyaratan belum dapat dinilai dari data yang tersedia.'
+                        : ($evaluation['memenuhi'] ? 'Data memenuhi kriteria yang tercatat; bukan jaminan penerimaan.' : 'Ada kriteria yang belum terpenuhi.');
+                    $record->rekomendasiBeasiswaDetail()->create([
+                        'beasiswa_id'=>$candidate['beasiswa_id'], 'skor_kecocokan'=>$evaluation['skor'],
+                        'is_recommended'=>$evaluation['memenuhi'], 'alasan_rekomendasi'=>$reason,
+                        'persiapan'=>[], 'evaluasi_kriteria'=>$evaluation, 'beasiswa_snapshot'=>$candidate['beasiswa'],
+                    ]);
+                }
+                [, , $freshFingerprint] = $this->sources($student->fresh(), $preview['target_jenjang']);
+                abort_unless(hash_equals($preview['source_fingerprint'], $freshFingerprint), 409, 'Data sumber berubah. Hitung ulang rekomendasi.');
+                return $record->load('rekomendasiBeasiswaDetail');
+            });
+        } finally { $lock->release(); }
+    }
+
     public function generate(Siswa $siswa, ?string $target = null): RekomendasiBeasiswa
     {
         $lock = Cache::lock('scholarship-generate:'.$siswa->id, max(150, (int) config('gemini.timeout', 90) + 60));
