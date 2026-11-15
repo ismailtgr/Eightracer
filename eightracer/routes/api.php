@@ -45,6 +45,10 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::put('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'update']);
     Route::post('/beasiswa/{beasiswa}/activate', [BasisDataBeasiswaController::class, 'activate'])->whereNumber('beasiswa');
     Route::delete('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'archive']);
+    Route::get('/rekomendasi-program', [\App\Http\Controllers\Api\ProgramScholarshipAnalysisController::class, 'index']);
+    Route::post('/rekomendasi-program/{beasiswa}/analisis', [\App\Http\Controllers\Api\ProgramScholarshipAnalysisController::class, 'analyse'])->whereNumber('beasiswa')->middleware('throttle:30,1');
+    Route::post('/rekomendasi-program/{beasiswa}/siswa/{siswa}/penjelasan', [\App\Http\Controllers\Api\ProgramScholarshipAnalysisController::class, 'explain'])->whereNumber(['beasiswa','siswa'])->middleware('throttle:5,1');
+    Route::post('/rekomendasi-program/{beasiswa}/siswa/{siswa}/catatan', [\App\Http\Controllers\Api\ProgramScholarshipAnalysisController::class, 'note'])->whereNumber(['beasiswa','siswa'])->middleware('throttle:10,1');
     Route::get('/rekomendasi-beasiswa/penerima', [RekomendasiBeasiswaController::class, 'recipients']);
     Route::get('/rekomendasi-beasiswa/saya', [RekomendasiBeasiswaController::class, 'mine']);
     Route::post('/rekomendasi-beasiswa/saya/generate', [RekomendasiBeasiswaController::class, 'generateMine'])->middleware('throttle:5,1');

@@ -35,7 +35,7 @@ class ScholarshipRecommendationService
         return [$profile, $catalog, hash('sha256', json_encode([$profile, $catalog->toArray(), $programs->toArray()], JSON_THROW_ON_ERROR))];
     }
 
-    public function preview(Siswa $siswa, ?string $target = null): array
+    public function preview(Siswa $siswa, ?string $target = null, ?int $programId = null): array
     {
         [$profile, $catalog, $fingerprint] = $this->sources($siswa, $target);
         abort_if($profile['target_jenjang'] === null, 422, 'Jenjang siswa belum diketahui. Lengkapi riwayat kelas aktif SMA.');
@@ -62,6 +62,7 @@ class ScholarshipRecommendationService
         }
         abort_if(count($candidates) === 0, 422, 'Belum ada beasiswa aktif yang sesuai jenjang.');
         [$candidates, $ml] = $this->ranker->rank($candidates, $documents, $profile['ml_interest_document']);
+        if ($programId !== null) $candidates = array_values(array_filter($candidates, fn($c) => $c['beasiswa_id'] === $programId));
         $candidates = array_slice($candidates, 0, 20);
 
         return ['target_jenjang' => $profile['target_jenjang'], 'source_fingerprint' => $fingerprint,
