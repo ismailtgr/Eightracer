@@ -123,7 +123,7 @@ class ScholarshipChatOverviewTest extends TestCase
         $this->postJson('/api/chat-beasiswa', ['message' => 'Apa yang perlu aku persiapkan?', 'beasiswa_id' => $first->id])->assertOk()
             ->assertJsonPath('data.beasiswa_id', $first->id)->assertSee('salinan rapor')->assertDontSee('Pilih satu program');
         $this->postJson('/api/chat-beasiswa', ['message' => 'Kalau Beasiswa Lotte bagaimana?', 'beasiswa_id' => $first->id])->assertOk()
-            ->assertJsonPath('data.beasiswa_id', $second->id)->assertJsonPath('data.status', 'belum_memenuhi');
+            ->assertJsonPath('data.beasiswa_id', $second->id)->assertJsonPath('data.status', 'general_information')->assertJsonMissingPath('data.eligibility');
     }
     public function test_friendly_answers_keep_actual_requirements_as_bullets_without_altering_eligibility(): void
     {
@@ -134,8 +134,9 @@ class ScholarshipChatOverviewTest extends TestCase
         $this->assertStringContainsString("**Persyaratan:**\n- Nilai TKA >= 85",$overview->json('data.answer'));
         $this->assertTrue($overview->json('data.candidates.0.evaluasi.memenuhi'));
         $selected=$this->postJson('/api/chat-beasiswa',['message'=>'Apa saja persyaratannya?','beasiswa_id'=>$program->id])->assertOk();
-        $this->assertStringContainsString("**Persyaratan dan Hasil Pemeriksaan:**\n- ",$selected->json('data.answer'));
-        $this->assertTrue($selected->json('data.eligibility.memenuhi'));
+        $this->assertStringContainsString("**Persyaratan Umum:**\n- ",$selected->json('data.answer'));
+        $selected->assertJsonMissingPath('data.eligibility')->assertJsonPath('data.status','general_information');
+        $this->assertSame(90.0,(float)$student->fresh()->nilai_tka);
         $this->assertStringContainsString('**Langkah Berikutnya:**',$selected->json('data.answer'));
         Http::assertNothingSent();
     }

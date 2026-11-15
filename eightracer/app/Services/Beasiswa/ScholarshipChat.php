@@ -12,6 +12,27 @@ use Illuminate\Support\Facades\Validator;
 
 class ScholarshipChat
 {
+    /** General program information never evaluates the student's private profile. */
+    public function information(\App\Models\BasisDataBeasiswa $program, string $question, bool $localPreview=false): array
+    {
+        $data=app(StudentScholarshipCatalog::class)->program($program->load('kriteriaKelayakanBeasiswa'),true,$localPreview);
+        $name=strip_tags($data['name']);
+        $answer="Yuk, kenali **".$name."**! 🎓\n\n**Penyelenggara:**\n".($data['provider']??'Informasi penyelenggara belum tersedia.');
+        if(preg_match('/penerima|alumni|\bsiapa\b/iu',$question)) {
+            $rows=array_map(fn($a)=>'- '.$a['name'].' — '.($a['university']??'-').', '.($a['program']??'-'),$data['recipients']['data']);
+            $answer.="\n\n**Penerima dari SMA 8:**\n".($rows?implode("\n",$rows):'Data penerima belum tersedia untuk ditampilkan.');
+        } elseif(preg_match('/syarat|kriteria|dokumen/iu',$question)) {
+            $rows=array_map(fn($c)=>'- '.$c['name'].': '.$c['operator'].' '.$c['required'],$data['criteria']);
+            $answer.="\n\n**Persyaratan Umum:**\n".($rows?implode("\n",$rows):'Persyaratan mengikuti ketentuan resmi penyelenggara.');
+        } elseif(preg_match('/persiap|siapkan|pendaftar|mendaftar/iu',$question)) {
+            $answer.="\n\n**Persiapan Umum:**\n- Siapkan salinan rapor dan identitas.\n- Periksa dokumen wajib pada ketentuan resmi penyelenggara.\n- Catat jadwal dan tata cara pendaftaran.\n\nDaftar ini merupakan panduan persiapan umum.";
+        } else $answer.="\n\n**Tentang Beasiswa:**\n".($data['description']??'Rincian program belum tersedia.');
+        $period=$data['opens']||$data['closes']?implode(' – ',array_filter([$data['opens'],$data['closes']])):($data['period']??'Menunggu jadwal resmi.');
+        $answer.="\n\n**Periode Pendaftaran:**\n".$period."\n\n**Langkah Berikutnya:**\n- Periksa ketentuan dan jadwal resmi penyelenggara.\n- Jika ingin mengetahui kecocokan pribadi, minta perhitungan berdasarkan profilmu.";
+        return ['answer'=>$answer,'llm_used'=>false,'status'=>'general_information','beasiswa_id'=>$program->id,'suggestions'=>[],
+            'sources'=>[['id'=>'catalog:'.$program->id,'label'=>'Informasi beasiswa sekolah','url'=>$data['registrationUrl']]]];
+    }
+
     public function answer(Siswa $student, array $input): array
     {
         [$profile, $catalog] = app(ScholarshipRecommendationService::class)->sources($student, $input['target_jenjang'] ?? null);

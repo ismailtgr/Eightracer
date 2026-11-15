@@ -37,6 +37,8 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
         Route::post('/step-4', [AlumniFormController::class, 'step4']);
         Route::get('/summary', [AlumniFormController::class, 'summary']);
     });
+    Route::get('/beasiswa-siswa', [\App\Http\Controllers\Api\StudentScholarshipCatalogController::class, 'index']);
+    Route::get('/beasiswa-siswa/{beasiswa}', [\App\Http\Controllers\Api\StudentScholarshipCatalogController::class, 'show'])->whereNumber('beasiswa');
     Route::get('/beasiswa', [BasisDataBeasiswaController::class, 'index']);
     Route::get('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'show']);
     Route::post('/beasiswa', [BasisDataBeasiswaController::class, 'store']);
