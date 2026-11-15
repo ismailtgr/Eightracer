@@ -10,7 +10,7 @@ class SchoolAccess
 {
     public static function canAuthenticate(?User $user): bool
     {
-        return $user !== null && ($user->email_verified_at !== null
+        return $user !== null && ($user->role === 'administrator' || $user->email_verified_at !== null
             || ($user->role === 'siswa' && $user->school_provisioned_at !== null && $user->siswa()->exists()));
     }
 

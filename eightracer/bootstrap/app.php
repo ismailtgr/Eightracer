@@ -46,8 +46,9 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->report(function (\Throwable $error) {
             if (app()->bound('request') && request()->is('api/*')) {
-                \Illuminate\Support\Facades\Log::error('API request failed', [
+                \Illuminate\Support\Facades\Log::error('API request failed: '.$error->getMessage(), [
                     'exception_type' => get_class($error), 'route' => request()->route()?->uri(),
+                    'trace' => $error->getTraceAsString(),
                 ]);
                 return false;
             }
