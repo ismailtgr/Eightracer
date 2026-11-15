@@ -30,7 +30,14 @@ class AlumniService
             $revision = (int) AlumniProgress::where("study_tracer_id", $tracer->id)->where("periode", $d["periode"])->max("revision") + 1;
             if ($previous) {
                 $previous = AlumniProgress::where('siswa_id', $s->id)->lockForUpdate()->findOrFail($previous->id);
-                abort_unless($previous->is_current && (int) $previous->study_tracer_id === $tracer->id && $previous->periode === $d['periode'], 409);
+                abort_unless($previous->is_current && (int) $previous->study_tracer_id === $tracer->id, 409, 'Baris progres tidak lagi aktif pada penerimaan ini.');
+                if ($previous->periode === null) {
+                    // Baris lama hasil impor bisa belum memiliki periode; boleh dilengkapi tanpa mengubah identitas periode yang sudah ada.
+                    abort_if(AlumniProgress::where('study_tracer_id', $tracer->id)->where('periode', $d['periode'])->where('is_current', true)
+                        ->where('id', '<>', $previous->id)->exists(), 409, 'Periode tersebut sudah tercatat pada penerimaan ini.');
+                } else {
+                    abort_unless($previous->periode === $d['periode'], 409, 'Periode tidak dapat diubah. Koreksi hanya untuk periode yang sama.');
+                }
                 $revision = $previous->revision + 1;
                 $previous->update(['is_current' => false, 'is_published' => false]);
             } else {

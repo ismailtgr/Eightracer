@@ -60,6 +60,42 @@ class AlumniProgressEditorTest extends TestCase
         $this->postJson($url, $this->payload())->assertCreated()->assertJsonPath('data.revision', 3);
     }
 
+    public function test_legacy_progress_without_period_can_be_completed_and_keeps_history(): void
+    {
+        $admission = $this->admission($this->student(null, ['tahun_lulus' => 2024]));
+        $legacy = AlumniProgress::create(['siswa_id' => $admission->siswa_id, 'study_tracer_id' => $admission->id,
+            'tahun_lulus' => '2024', 'periode' => null, 'semester' => null, 'status_pendidikan' => null,
+            'tanggal_update' => '2026-11-12', 'revision' => 1, 'is_current' => true]);
+        $this->signIn($this->account('administrator'));
+        $url = '/api/alumni/'.$admission->id.'/college-progress';
+        $new = $this->putJson($url.'/'.$legacy->id, $this->payload())->assertCreated()
+            ->assertJsonPath('data.revision', 2)->json('data.id');
+        $this->assertNotSame($legacy->id, $new);
+        $archived = AlumniProgress::findOrFail($legacy->id);
+        $this->assertFalse($archived->is_current);
+        $this->assertNull($archived->periode);
+        $this->assertDatabaseHas('alumni_progress', ['id' => $new, 'periode' => 'Ganjil 2026/2027', 'semester' => 1,
+            'status_pendidikan' => 'aktif', 'is_current' => true, 'supersedes_id' => $legacy->id]);
+        $this->getJson('/api/b4/alumni/'.$admission->id)->assertOk()->assertJsonCount(1, 'data.progress')
+            ->assertJsonPath('data.progress.0.periode', 'Ganjil 2026/2027')->assertJsonPath('data.status_terakhir', 'aktif');
+    }
+
+    public function test_completing_legacy_period_rejects_duplicate_current_period(): void
+    {
+        $admission = $this->admission($this->student(null, ['tahun_lulus' => 2024]));
+        $legacy = AlumniProgress::create(['siswa_id' => $admission->siswa_id, 'study_tracer_id' => $admission->id,
+            'tahun_lulus' => '2024', 'periode' => null, 'semester' => null, 'status_pendidikan' => null,
+            'tanggal_update' => '2026-11-12', 'revision' => 1, 'is_current' => true]);
+        $this->signIn($this->account('administrator'));
+        $url = '/api/alumni/'.$admission->id.'/college-progress';
+        $existing = $this->postJson($url, $this->payload())->assertCreated()->json('data.id');
+        $this->putJson($url.'/'.$legacy->id, $this->payload())->assertConflict();
+        $this->assertDatabaseCount('alumni_progress', 2);
+        $this->assertTrue((bool) AlumniProgress::findOrFail($legacy->id)->is_current);
+        $this->assertNull(AlumniProgress::findOrFail($legacy->id)->periode);
+        $this->assertTrue((bool) AlumniProgress::findOrFail($existing)->is_current);
+    }
+
     public function test_staff_auth_and_admission_scope_cannot_be_bypassed(): void
     {
         $admission = $this->admission($this->student(null, ['tahun_lulus' => 2024]));
