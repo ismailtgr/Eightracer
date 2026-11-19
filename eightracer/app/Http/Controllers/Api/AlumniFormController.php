@@ -14,9 +14,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Services\PerguruanTinggiClassifier;
 
 class AlumniFormController extends Controller
-{
+{    
     private function getSiswa()
     {
         $user = Auth::user();
@@ -114,6 +115,14 @@ class AlumniFormController extends Controller
         if (! $perguruanTinggi) {
             throw ValidationException::withMessages(['perguruan_tinggi_id' => 'Perguruan tinggi tidak valid.']);
         }
+       
+        if (empty($perguruanTinggi->jenis_pt)) {
+            $jenisPt = PerguruanTinggiClassifier::classify($perguruanTinggi->nama_pt);
+            if ($jenisPt) {
+                $perguruanTinggi->update(['jenis_pt' => $jenisPt]);
+            }
+        }
+
 
         DB::transaction(function () use ($siswa, $validated, $perguruanTinggi) {
             $studyTracer = StudyTracer::updateOrCreate(

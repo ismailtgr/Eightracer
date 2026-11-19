@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use App\Services\PerguruanTinggiClassifier;
 
 class AlumniSheetImport implements ToCollection, WithHeadingRow
 {
@@ -150,6 +151,12 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
             ['jenis_pt' => null, 'kode_pt' => null, 'lokasi' => null]
         );
 
+        if (empty($perguruanTinggi->jenis_pt)) {
+            $jenisPt = PerguruanTinggiClassifier::classify($pt);
+            if ($jenisPt) {
+                $perguruanTinggi->update(['jenis_pt' => $jenisPt]);
+            }
+        }
         $pilihanKe = $this->parseInt($this->getValue($row, $this->config['pilihan_ke'] ?? null));
 
         $kontak = $this->getValue($row, $this->config['kontak_wa'] ?? null);
@@ -437,7 +444,7 @@ class AlumniSheetImport implements ToCollection, WithHeadingRow
 
         return round($total / 8, 5);
     }
-
+    
     private function getValue(Collection $row, ?string $key): mixed
     {
         if (! $key) {
