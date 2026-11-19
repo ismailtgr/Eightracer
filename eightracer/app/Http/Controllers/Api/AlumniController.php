@@ -97,6 +97,7 @@ class AlumniController extends Controller
             'univ'               => $st->perguruanTinggi->nama_pt ?? null,
             'univ_singkat'       => $st->perguruanTinggi->nama_singkat ?? null,
             'provinsi'           => $st->perguruanTinggi->provinsi ?? null,
+            'jenis_kampus' => $st->perguruanTinggi->jenis_pt ?? null,
             'prodi'              => $st->program_studi,
             'strata'             => $st->strata_pendidikan,
             'jalur_masuk'        => $st->jalur_masuk,
