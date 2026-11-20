@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use App\Services\PerguruanTinggiClassifier;
 
 class AlumniFormController extends Controller
-{
+{    
     private function getSiswa()
     {
         $user = Auth::user();
@@ -82,6 +83,17 @@ class AlumniFormController extends Controller
 
             // 2. Simpan Study Tracer (Skor UTBK diisi nanti di Step 2)
             $pilihan = is_numeric($validated['pilihan_ke']) ? (int)$validated['pilihan_ke'] : null;
+        if (! $perguruanTinggi) {
+            throw ValidationException::withMessages(['perguruan_tinggi_id' => 'Perguruan tinggi tidak valid.']);
+        }
+       
+        if (empty($perguruanTinggi->jenis_pt)) {
+            $jenisPt = PerguruanTinggiClassifier::classify($perguruanTinggi->nama_pt);
+            if ($jenisPt) {
+                $perguruanTinggi->update(['jenis_pt' => $jenisPt]);
+            }
+        }
+
 
             $studyTracer = StudyTracer::updateOrCreate(
                 [
