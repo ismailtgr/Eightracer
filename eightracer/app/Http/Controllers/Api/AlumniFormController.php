@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 use App\Services\PerguruanTinggiClassifier;
 
 class AlumniFormController extends Controller
@@ -31,7 +32,6 @@ class AlumniFormController extends Controller
     public function status(Request $request)
     {
         $siswa = $this->getSiswa();
-
         $progress = AlumniProgress::where('siswa_id', $siswa->id)->first();
         $studyTracer = StudyTracer::where('siswa_id', $siswa->id)->first();
 
@@ -39,79 +39,50 @@ class AlumniFormController extends Controller
             'siswa' => [
                 'id' => $siswa->id,
                 'nama_lengkap' => $siswa->nama_lengkap,
-                'nisn' => $siswa->nisn,
             ],
             'sudah_mengisi' => $progress !== null,
-            'status_pendidikan' => $progress->status_pendidikan ?? null,
-            'study_tracer_id' => $studyTracer->id ?? null,
-            'tanggal_update' => $progress->tanggal_update ?? null,
+            'step_1_selesai' => $studyTracer !== null,
+            'data_kuliah' => $studyTracer ? [
+                'perguruan_tinggi' => $studyTracer->perguruanTinggi->nama_pt ?? null,
+                'program_studi' => $studyTracer->program_studi,
+                'jalur_masuk' => $studyTracer->jalur_masuk,
+            ] : null,
         ]);
     }
 
-    public function step1(Request $request)
+    // ==========================================
+    // BAGIAN 1: DATA PENERIMAAN (KAMPUS)
+    // ==========================================
+    public function submitStep1(Request $request)
     {
         $siswa = $this->getSiswa();
 
         $validated = $request->validate([
-            'status' => 'required|in:kuliah,tidak_kuliah',
-            'keterangan_tidak_kuliah' => 'required_if:status,tidak_kuliah|in:bekerja,wirausaha,lainnya',
+            'strata_pendidikan' => 'required|in:D3,D4,S1',
+            'program_studi' => 'required|string|max:255',
+            'nama_pt' => 'required|string|max:255',
+            'jenis_pt' => 'required|in:Negeri,Swasta,Ikatan Dinas,Luar Negeri',
+            'jalur_masuk' => 'required|string|max:100',
+            'pilihan_ke' => 'required|string', // 1,2,3,4, atau Tanpa Pilihan
+            'kontak_wa_terbaru' => 'required|string|min:9|max:20',
+            'is_pelamar_kipk' => 'required|boolean',
+            'beasiswa' => 'nullable|string|max:255',
+            'lembaga_penyalur' => 'nullable|string|max:255',
         ]);
 
-        if ($validated['status'] === 'tidak_kuliah') {
-            AlumniProgress::updateOrCreate(
-                ['siswa_id' => $siswa->id],
+        DB::transaction(function () use ($siswa, $validated) {
+            // 1. Simpan Perguruan Tinggi
+            $perguruanTinggi = PerguruanTinggi::firstOrCreate(
+                ['nama_pt' => strtoupper(trim($validated['nama_pt']))],
                 [
-                    'study_tracer_id' => null,
-                    'tahun_lulus' => date('Y'),
-                    'status_pendidikan' => $validated['keterangan_tidak_kuliah'] ?? 'tidak_kuliah',
-                    'ipk_terkini' => null,
-                    'tanggal_update' => Carbon::now()->toDateString(),
+                    'jenis_pt' => $validated['jenis_pt'],
+                    'kode_pt' => null,
+                    'lokasi' => $validated['lembaga_penyalur'] ? json_encode(['lembaga_penyalur' => $validated['lembaga_penyalur']]) : null
                 ]
             );
 
-            return response()->json([
-                'message' => 'Status berhasil disimpan. Terima kasih telah mengisi form.',
-                'lanjut_ke_step2' => false,
-            ]);
-        }
-
-        // Jika kuliah, simpan sementara di session/atau kembalikan flag
-        return response()->json([
-            'message' => 'Status kuliah dipilih. Lanjutkan ke langkah 2.',
-            'lanjut_ke_step2' => true,
-        ]);
-    }
-
-    public function step2(Request $request)
-    {
-        $siswa = $this->getSiswa();
-
-        $validated = $request->validate([
-            'perguruan_tinggi_id' => 'nullable|exists:perguruan_tinggi,id',
-            'nama_pt_baru' => 'required_without:perguruan_tinggi_id|nullable|string|max:255',
-            'program_studi' => 'required|string|max:255',
-            'strata_pendidikan' => 'required|in:D3,D4,S1,S2,S3',
-            'jalur_masuk' => 'required|string|max:100',
-            'sub_jalur_mandiri' => 'nullable|string|max:100',
-            'pilihan_ke' => 'nullable|integer|min:1|max:5',
-            'status_penerimaan' => 'required|in:diterima,tidak_diterima,menunggu',
-            'nilai_rapor_pendaftaran' => 'nullable|numeric|min:0|max:100',
-            'skor_utbk' => 'nullable|numeric|min:0|max:1000',
-            'is_pelamar_kipk' => 'boolean',
-            'kontak_wa_terbaru' => 'nullable|string|min:9|max:20',
-        ]);
-
-        // Resolve PT
-        $perguruanTinggi = null;
-        if (! empty($validated['perguruan_tinggi_id'])) {
-            $perguruanTinggi = PerguruanTinggi::find($validated['perguruan_tinggi_id']);
-        } elseif (! empty($validated['nama_pt_baru'])) {
-            $perguruanTinggi = PerguruanTinggi::firstOrCreate(
-                ['nama_pt' => strtoupper(trim($validated['nama_pt_baru']))],
-                ['jenis_pt' => null, 'kode_pt' => null, 'lokasi' => null]
-            );
-        }
-
+            // 2. Simpan Study Tracer (Skor UTBK diisi nanti di Step 2)
+            $pilihan = is_numeric($validated['pilihan_ke']) ? (int)$validated['pilihan_ke'] : null;
         if (! $perguruanTinggi) {
             throw ValidationException::withMessages(['perguruan_tinggi_id' => 'Perguruan tinggi tidak valid.']);
         }
@@ -124,7 +95,6 @@ class AlumniFormController extends Controller
         }
 
 
-        DB::transaction(function () use ($siswa, $validated, $perguruanTinggi) {
             $studyTracer = StudyTracer::updateOrCreate(
                 [
                     'siswa_id' => $siswa->id,
@@ -134,147 +104,258 @@ class AlumniFormController extends Controller
                 ],
                 [
                     'strata_pendidikan' => $validated['strata_pendidikan'],
-                    'sub_jalur_mandiri' => $validated['sub_jalur_mandiri'] ?? null,
-                    'pilihan_ke' => $validated['pilihan_ke'] ?? null,
-                    'status_penerimaan' => $validated['status_penerimaan'],
-                    'nilai_rapor_pendaftaran' => $validated['nilai_rapor_pendaftaran'] ?? null,
-                    'skor_utbk' => $validated['skor_utbk'] ?? null,
-                    'is_pelamar_kipk' => $validated['is_pelamar_kipk'] ?? false,
-                    'kontak_wa_terbaru' => $validated['kontak_wa_terbaru'] ?? null,
-                    'izinkan_tampil_di_buku' => false,
+                    'pilihan_ke' => $pilihan,
+                    'status_penerimaan' => 'diterima',
+                    'is_pelamar_kipk' => $validated['is_pelamar_kipk'],
+                    'kontak_wa_terbaru' => $validated['kontak_wa_terbaru'],
+                    'izinkan_tampil_di_buku' => true,
                     'tanggal_pengisian' => Carbon::now()->toDateString(),
                 ]
             );
 
+            // 3. Simpan Alumni Progress
             AlumniProgress::updateOrCreate(
                 ['siswa_id' => $siswa->id],
                 [
                     'study_tracer_id' => $studyTracer->id,
                     'tahun_lulus' => date('Y'),
                     'status_pendidikan' => 'kuliah',
-                    'ipk_terkini' => null,
                     'tanggal_update' => Carbon::now()->toDateString(),
                 ]
             );
+
+            // 4. Simpan Beasiswa ke tabel prestasi_murid
+            if (!empty($validated['beasiswa']) && strtoupper($validated['beasiswa']) !== 'TIDAK') {
+                $prestasiBeasiswa = PrestasiMurid::updateOrCreate(
+                    ['siswa_id' => $siswa->id, 'nama_kompetisi' => 'BEASISWA: ' . strtoupper($validated['beasiswa'])],
+                    ['jenis_prestasi' => 'Beasiswa', 'tingkat' => 'Perguruan Tinggi', 'status_verifikasi' => 'pending']
+                );
+                StudyTracerPrestasi::firstOrCreate(['study_tracer_id' => $studyTracer->id, 'prestasi_murid_id' => $prestasiBeasiswa->id]);
+            }
         });
 
         return response()->json([
-            'message' => 'Data kuliah berhasil disimpan.',
-            'lanjut_ke_step3' => true,
+            'message' => 'Data penerimaan berhasil disimpan. Silakan lanjut ke pendataan skor UTBK.',
+            'lanjut_ke_step2' => true,
         ]);
     }
 
-    public function step3(Request $request)
+    public function daftarPtn()
     {
-        $siswa = $this->getSiswa();
-
-        $validated = $request->validate([
-            'prestasi' => 'nullable|array',
-            'prestasi.*.nama_kompetisi' => 'required_with:prestasi|string|max:255',
-            'prestasi.*.tingkat' => 'required_with:prestasi|in:Sekolah,Kota,Provinsi,Nasional,Internasional',
-            'prestasi.*.peringkat' => 'nullable|string|max:50',
-            'prestasi.*.tahun' => 'nullable|integer|min:2000|max:' . date('Y'),
-        ]);
-
-        $studyTracer = StudyTracer::where('siswa_id', $siswa->id)->first();
-
-        if (! $studyTracer) {
-            throw ValidationException::withMessages(['study_tracer' => 'Siswa belum mengisi data kuliah (step 2).']);
-        }
-
-        if (! empty($validated['prestasi'])) {
-            foreach ($validated['prestasi'] as $p) {
-                $prestasi = PrestasiMurid::updateOrCreate(
-                    [
-                        'siswa_id' => $siswa->id,
-                        'nama_kompetisi' => trim($p['nama_kompetisi']),
-                        'tahun' => $p['tahun'] ?? null,
-                    ],
-                    [
-                        'jenis_prestasi' => 'Lomba',
-                        'bidang' => null,
-                        'tingkat' => $p['tingkat'],
-                        'peringkat' => $p['peringkat'] ?? null,
-                        'bobot_persentase' => null,
-                        'status_verifikasi' => 'pending',
-                        'penyelenggara' => null,
-                        'file_bukti_url' => null,
-                    ]
-                );
-
-                StudyTracerPrestasi::updateOrCreate(
-                    [
-                        'study_tracer_id' => $studyTracer->id,
-                        'prestasi_murid_id' => $prestasi->id,
-                    ]
-                );
-            }
-        }
-
         return response()->json([
-            'message' => 'Data prestasi berhasil disimpan.',
-            'lanjut_ke_step4' => true,
+            'data' => array_merge(
+                config('alumni.daftar_ptn_snbp', []),
+                ['LAINNYA']
+            ),
         ]);
     }
 
-    public function step4(Request $request)
+
+    public function submitSnbp(Request $request)
     {
         $siswa = $this->getSiswa();
 
+        $daftarPtn = config('alumni.daftar_ptn_snbp', []);
+
         $validated = $request->validate([
+            'strata_pendidikan' => 'required|in:S1,D4,D3',
+
+            'program_studi' => 'required|string|max:255',
+
+            'ptn' => [
+                'required',
+                'string',
+                Rule::in(array_merge($daftarPtn, ['LAINNYA'])),
+            ],
+
+            'nama_pt_lainnya' => [
+                'nullable',
+                'required_if:ptn,LAINNYA',
+                'string',
+                'max:255',
+            ],
+
+            'pilihan_ke' => 'required|integer|in:1,2',
+
             'kontak_wa_terbaru' => 'required|string|min:9|max:20',
-            'izinkan_tampil_di_buku' => 'required|boolean',
+
+            'is_pelamar_kipk' => 'required|boolean',
+
+            'peringkat_eligible_pdss' => 'required|integer|min:1',
+
+            'is_memiliki_sertifikat_snbp' => 'required|boolean',
+
+            'deskripsi_sertifikat_snbp' => 'nullable|string|max:5000',
         ]);
 
-        $studyTracer = StudyTracer::where('siswa_id', $siswa->id)->first();
+        $memilikiSertifikat = (bool) $validated['is_memiliki_sertifikat_snbp'];
 
-        if ($studyTracer) {
-            $studyTracer->update([
-                'kontak_wa_terbaru' => $validated['kontak_wa_terbaru'],
-                'izinkan_tampil_di_buku' => $validated['izinkan_tampil_di_buku'],
+        $deskripsiSertifikat = trim(
+            $validated['deskripsi_sertifikat_snbp'] ?? ''
+        );
+
+        if ($memilikiSertifikat && $deskripsiSertifikat === '') {
+            throw ValidationException::withMessages([
+                'deskripsi_sertifikat_snbp' =>
+                'Deskripsi sertifikat wajib diisi jika memiliki sertifikat.',
             ]);
         }
 
-        AlumniProgress::updateOrCreate(
-            ['siswa_id' => $siswa->id],
-            ['tanggal_update' => Carbon::now()->toDateString()]
-        );
+        if (! $memilikiSertifikat) {
+            $deskripsiSertifikat = '-';
+        }
+
+        $namaPt = $validated['ptn'] === 'LAINNYA'
+            ? $validated['nama_pt_lainnya']
+            : $validated['ptn'];
+
+        $namaPt = mb_strtoupper(trim($namaPt));
+        $programStudi = mb_strtoupper(trim($validated['program_studi']));
+
+        $studyTracer = DB::transaction(function () use (
+            $siswa,
+            $validated,
+            $namaPt,
+            $programStudi,
+            $memilikiSertifikat,
+            $deskripsiSertifikat
+        ) {
+            $perguruanTinggi = PerguruanTinggi::firstOrCreate(
+                ['nama_pt' => $namaPt],
+                [
+                    'jenis_pt' => 'Negeri',
+                    'kode_pt' => null,
+                    'lokasi' => null,
+                ]
+            );
+
+            $existingRecords = StudyTracer::where('siswa_id', $siswa->id)
+                ->where('jalur_masuk', 'SNBP')
+                ->lockForUpdate()
+                ->get();
+
+            if ($existingRecords->count() > 1) {
+                throw ValidationException::withMessages([
+                    'snbp' => 'Ditemukan lebih dari satu data SNBP. Silakan hubungi administrator.',
+                ]);
+            }
+
+            $studyTracer = $existingRecords->first() ?? new StudyTracer();
+
+            $studyTracer->fill([
+                'siswa_id' => $siswa->id,
+                'perguruan_tinggi_id' => $perguruanTinggi->id,
+                'strata_pendidikan' => $validated['strata_pendidikan'],
+                'program_studi' => $programStudi,
+                'jalur_masuk' => 'SNBP',
+                'pilihan_ke' => $validated['pilihan_ke'],
+                'status_penerimaan' => 'diterima',
+                'kontak_wa_terbaru' => $validated['kontak_wa_terbaru'],
+                'is_pelamar_kipk' => $validated['is_pelamar_kipk'],
+                'izinkan_tampil_di_buku' => true,
+                'tanggal_pengisian' => Carbon::now()->toDateString(),
+                'peringkat_eligible_pdss' => $validated['peringkat_eligible_pdss'],
+                'is_memiliki_sertifikat_snbp' => $memilikiSertifikat,
+                'deskripsi_sertifikat_snbp' => $memilikiSertifikat
+                    ? $deskripsiSertifikat
+                    : '-',
+            ]);
+
+            $studyTracer->save();
+
+            return $studyTracer;
+        });
 
         return response()->json([
-            'message' => 'Form berhasil diselesaikan.',
-        ]);
+            'message' => 'Data penerimaan SNBP berhasil disimpan.',
+            'jalur_masuk' => 'SNBP',
+            'data' => [
+                'strata_pendidikan' => $studyTracer->strata_pendidikan,
+                'program_studi' => $studyTracer->program_studi,
+                'nama_pt' => $namaPt,
+                'pilihan_ke' => $studyTracer->pilihan_ke,
+                'peringkat_eligible_pdss' => $studyTracer->peringkat_eligible_pdss,
+                'is_memiliki_sertifikat_snbp' => $studyTracer->is_memiliki_sertifikat_snbp,
+                'deskripsi_sertifikat_snbp' => $studyTracer->deskripsi_sertifikat_snbp,
+            ],
+        ], 200);
     }
 
-    public function summary(Request $request)
+
+    // ==========================================
+    // BAGIAN 2: PENDATAAN SKOR UTBK & PRESTASI
+    // ==========================================
+    public function submitStep2(Request $request)
     {
         $siswa = $this->getSiswa();
+        $studyTracer = StudyTracer::where('siswa_id', $siswa->id)->first();
 
-        $progress = AlumniProgress::where('siswa_id', $siswa->id)->first();
-        $studyTracer = StudyTracer::with('perguruanTinggi')->where('siswa_id', $siswa->id)->first();
-        $prestasi = PrestasiMurid::where('siswa_id', $siswa->id)->get();
+        if (! $studyTracer) {
+            throw ValidationException::withMessages(['error' => 'Selesaikan Bagian 1 terlebih dahulu.']);
+        }
+
+        $validated = $request->validate([
+            'kpu' => 'nullable|numeric',
+            'kk' => 'nullable|numeric',
+            'ppu' => 'nullable|numeric',
+            'kbm' => 'nullable|numeric',
+            'lbin_saintek' => 'nullable|numeric',
+            'lbin_soshum' => 'nullable|numeric',
+            'lbig' => 'nullable|numeric',
+            'pm' => 'nullable|numeric',
+            'lampiran_prestasi' => 'nullable|string',
+        ]);
+
+        DB::transaction(function () use ($siswa, $studyTracer, $validated) {
+            // 1. Hitung Rata-rata UTBK (jika diisi)
+            $vals = array_filter([
+                $validated['kpu'] ?? 0,
+                $validated['kk'] ?? 0,
+                $validated['ppu'] ?? 0,
+                $validated['kbm'] ?? 0,
+                $validated['lbin_saintek'] ?? 0,
+                $validated['lbin_soshum'] ?? 0,
+                $validated['lbig'] ?? 0,
+                $validated['pm'] ?? 0
+            ], fn($v) => $v > 0);
+
+            $skorUtbk = null;
+            if (count($vals) > 0) {
+                $skorUtbk = round(array_sum($vals) / count($vals), 5);
+                $studyTracer->update(['skor_utbk' => $skorUtbk]);
+            }
+
+            // 2. Simpan Rincian UTBK ke prestasi_murid
+            if ($skorUtbk !== null) {
+                $rincian = json_encode([
+                    'KPU' => $validated['kpu'] ?? 0,
+                    'KK' => $validated['kk'] ?? 0,
+                    'PPU' => $validated['ppu'] ?? 0,
+                    'KBM' => $validated['kbm'] ?? 0,
+                    'LBIN SAINTEK' => $validated['lbin_saintek'] ?? 0,
+                    'LBIN SOSHUM' => $validated['lbin_soshum'] ?? 0,
+                    'LBIG' => $validated['lbig'] ?? 0,
+                    'PM' => $validated['pm'] ?? 0
+                ]);
+                $prestasiUtbk = PrestasiMurid::updateOrCreate(
+                    ['siswa_id' => $siswa->id, 'nama_kompetisi' => 'RINCIAN SKOR UTBK'],
+                    ['jenis_prestasi' => 'Skor UTBK', 'bidang' => $rincian, 'status_verifikasi' => 'verified']
+                );
+                StudyTracerPrestasi::firstOrCreate(['study_tracer_id' => $studyTracer->id, 'prestasi_murid_id' => $prestasiUtbk->id]);
+            }
+
+            // 3. Simpan Lampiran Prestasi (teks)
+            if (!empty($validated['lampiran_prestasi'])) {
+                $prestasiTeks = PrestasiMurid::updateOrCreate(
+                    ['siswa_id' => $siswa->id, 'nama_kompetisi' => 'PRESTASI LAINNYA'],
+                    ['jenis_prestasi' => 'Lainnya', 'bidang' => $validated['lampiran_prestasi'], 'status_verifikasi' => 'pending']
+                );
+                StudyTracerPrestasi::firstOrCreate(['study_tracer_id' => $studyTracer->id, 'prestasi_murid_id' => $prestasiTeks->id]);
+            }
+        });
 
         return response()->json([
-            'status' => $progress->status_pendidikan ?? null,
-            'kuliah' => $studyTracer ? [
-                'perguruan_tinggi' => $studyTracer->perguruanTinggi->nama_pt ?? null,
-                'program_studi' => $studyTracer->program_studi,
-                'strata_pendidikan' => $studyTracer->strata_pendidikan,
-                'jalur_masuk' => $studyTracer->jalur_masuk,
-                'sub_jalur_mandiri' => $studyTracer->sub_jalur_mandiri,
-                'pilihan_ke' => $studyTracer->pilihan_ke,
-                'status_penerimaan' => $studyTracer->status_penerimaan,
-                'nilai_rapor_pendaftaran' => $studyTracer->nilai_rapor_pendaftaran,
-                'skor_utbk' => $studyTracer->skor_utbk,
-                'is_pelamar_kipk' => $studyTracer->is_pelamar_kipk,
-                'kontak_wa_terbaru' => $studyTracer->kontak_wa_terbaru,
-                'izinkan_tampil_di_buku' => $studyTracer->izinkan_tampil_di_buku,
-            ] : null,
-            'prestasi' => $prestasi->map(fn($p) => [
-                'nama_kompetisi' => $p->nama_kompetisi,
-                'tingkat' => $p->tingkat,
-                'peringkat' => $p->peringkat,
-                'tahun' => $p->tahun,
-            ]),
+            'message' => 'Pendataan skor UTBK dan prestasi berhasil diselesaikan.',
         ]);
     }
 }

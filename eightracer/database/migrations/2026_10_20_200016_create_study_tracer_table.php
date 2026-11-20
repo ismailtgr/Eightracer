@@ -25,6 +25,9 @@ return new class extends Migration
             $table->boolean('is_pelamar_kipk')->default(false);
             $table->boolean('izinkan_tampil_di_buku')->default(false);
             $table->date('tanggal_pengisian')->nullable();
+            $table->unsignedInteger('peringkat_eligible_pdss')->nullable();
+            $table->boolean('is_memiliki_sertifikat_snbp')->default(false);
+            $table->text('deskripsi_sertifikat_snbp')->nullable();
         });
     }
 

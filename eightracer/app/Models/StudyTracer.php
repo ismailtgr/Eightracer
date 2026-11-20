@@ -29,6 +29,9 @@ class StudyTracer extends Model
         'is_pelamar_kipk',
         'izinkan_tampil_di_buku',
         'tanggal_pengisian',
+        'peringkat_eligible_pdss',
+        'is_memiliki_sertifikat_snbp',
+        'deskripsi_sertifikat_snbp',
     ];
 
     protected function casts(): array
@@ -39,6 +42,8 @@ class StudyTracer extends Model
             'is_pelamar_kipk' => 'boolean',
             'izinkan_tampil_di_buku' => 'boolean',
             'tanggal_pengisian' => 'date:Y-m-d',
+            'peringkat_eligible_pdss' => 'integer',
+            'is_memiliki_sertifikat_snbp' => 'boolean',
         ];
     }
 
