@@ -15,11 +15,12 @@ Route::get('/perguruan-tinggi', [PerguruanTinggiController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('alumni-form')->group(function () {
         Route::get('/status', [AlumniFormController::class, 'status']);
-        Route::post('/step-1', [AlumniFormController::class, 'step1']);
-        Route::post('/step-2', [AlumniFormController::class, 'step2']);
-        Route::post('/step-3', [AlumniFormController::class, 'step3']);
-        Route::post('/step-4', [AlumniFormController::class, 'step4']);
-        Route::get('/summary', [AlumniFormController::class, 'summary']);
+        Route::post('/step-1', [AlumniFormController::class, 'submitStep1']);
+        Route::post('/step-2', [AlumniFormController::class, 'submitStep2']);
+
+        Route::get('/daftar-ptn', [AlumniFormController::class, 'daftarPtn']);
+        Route::get('/snbp', [AlumniFormController::class, 'showSnbp']);
+        Route::post('/snbp', [AlumniFormController::class, 'submitSnbp']);
     });
 });
 
