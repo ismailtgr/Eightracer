@@ -59,9 +59,13 @@ class ScholarshipChatOverviewTest extends TestCase
         $this->program('Program Akademik', 85);
         $this->signIn($user);
         $this->postJson('/api/chat-beasiswa', ['message' => 'Aku cocok beasiswa apa'])->assertOk()
-            ->assertJsonPath('data.candidates.0.evaluasi.lengkap', false)
-            ->assertJsonPath('data.candidates.0.evaluasi.memenuhi', false)
-            ->assertSee('Data belum cukup');
+            ->assertJsonPath('data.status', 'general_information')
+            ->assertJsonPath('data.ranking.alasan_status', 'profile_insufficient')
+            ->assertJsonCount(0, 'data.candidates')
+            ->assertJsonMissingPath('data.eligibility')
+            ->assertSee('Data profilmu belum cukup');
+        $this->assertDatabaseCount('student_scholarship_results', 0);
+        Http::assertNothingSent();
     }
 
     public function test_overview_gemini_cannot_invent_awards_or_receive_student_identity(): void

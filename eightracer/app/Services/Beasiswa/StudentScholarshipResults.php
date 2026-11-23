@@ -23,6 +23,10 @@ class StudentScholarshipResults {
  }
  public function generate(Siswa $student, ?string $target=null): array {
   app(ActiveScholarshipStudents::class)->assertActive($student);
+  [$profile,$catalog]=$this->recommendations->sources($student,$target);
+  $guidance=app(ScholarshipGeneralGuidance::class);
+  if(!$guidance->hasAssessmentData($profile)) return ['state'=>'general_information','data'=>$guidance->answer(
+   $catalog->toArray(),'Beasiswa apa yang cocok buat aku?',null,(bool)config('scholarship_ml.enabled',true))];
   if(!Schema::hasTable('student_scholarship_results'))throw new \Illuminate\Http\Exceptions\HttpResponseException(response()->json(['message'=>'Layanan rekomendasi sedang disiapkan. Silakan coba beberapa saat lagi.'],503));
   $lock=Cache::lock('student-scholarship-request:'.$student->id,150);
   abort_unless($lock->get(),409,'Rekomendasi siswa ini sedang diproses. Tunggu hasil sebelum mencoba lagi.');

@@ -97,6 +97,14 @@ class StudyTracerController extends Controller
         if ($preview->enabled($r)) {
             $result = $this->query($r)->where('status_penerimaan', 'diterima')->latest('id')
                 ->paginate($r->integer('per_page', 20))->through(fn ($t) => $preview->admission($t))->toArray();
+            if ($r->boolean('include_filters')) {
+                $visible = StudyTracer::where('status_penerimaan', 'diterima')->with(['siswa','perguruanTinggi'])->get();
+                $result['filters'] = [
+                    'universities'=>$visible->filter(fn($t)=>$t->perguruanTinggi)->map(fn($t)=>['value'=>(string)$t->perguruan_tinggi_id,'label'=>$t->perguruanTinggi->nama_pt])->unique('value')->sortBy('label')->values(),
+                    'programs'=>$visible->pluck('program_studi')->filter()->unique()->sort()->values(),
+                    'paths'=>$visible->map(fn($t)=>app(AlumniAdmissionPath::class)->label($t))->filter()->unique()->sort()->values(),
+                ];
+            }
             return response()->json($result + ['preview' => true, 'notice' => 'Pratinjau lokal data alumni; izin publikasi belum diubah.']);
         }
         $query = $this->query($r, true)->with(['alumniProgress' => fn ($q) => $q->where('is_current', true)->where('is_published', true)
