@@ -39,6 +39,11 @@ class ScholarshipChat
         // A program named in the new message overrides the previous conversation context.
         $named = $this->findInMessage($input['message'], $catalog);
         $selected = $named ?? (isset($input['beasiswa_id']) ? $catalog->firstWhere('id', $input['beasiswa_id']) : null);
+        $general = app(ScholarshipGeneralGuidance::class);
+        if (!$general->hasAssessmentData($profile)) {
+            return $general->answer($catalog->toArray(), $input['message'], $selected ? (int) $selected->id : null,
+                (bool) config('scholarship_ml.enabled', true));
+        }
         $intent = $this->intent($input['message']);
         if (! $selected) {
             // Only a genuinely ambiguous named program needs clarification.
