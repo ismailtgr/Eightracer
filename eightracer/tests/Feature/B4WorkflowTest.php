@@ -62,9 +62,11 @@ class B4WorkflowTest extends TestCase
         return SchoolImportBatch::findOrFail($batch['id']);
     }
 
+    private static int $catalogSequence = 0;
+
     private function catalog(): BasisDataBeasiswa
     {
-        $b = BasisDataBeasiswa::create(['nama_beasiswa' => 'Beasiswa Uji', 'deskripsi' => 'Contoh sintetis untuk tes', 'jenjang' => 'SMA', 'is_active' => true]);
+        $b = BasisDataBeasiswa::create(['nama_beasiswa' => 'Beasiswa Uji '.(++self::$catalogSequence), 'deskripsi' => 'Contoh sintetis untuk tes', 'jenjang' => 'SMA', 'is_active' => true]);
         $b->kriteriaKelayakanBeasiswa()->create(['nama_kriteria' => 'TKA', 'tipe_kriteria' => 'nilai_tka', 'operator' => '>=', 'nilai_kriteria' => '80']);
 
         return $b;

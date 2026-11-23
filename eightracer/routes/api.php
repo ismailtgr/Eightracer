@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum', 'token.lifetime', 'throttle:api'])->group(fun
     Route::get('/beasiswa', [BasisDataBeasiswaController::class, 'index']);
     Route::get('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'show']);
     Route::post('/beasiswa', [BasisDataBeasiswaController::class, 'store']);
+    Route::post('/beasiswa/bulk', [BasisDataBeasiswaController::class, 'bulk']);
     Route::put('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'update']);
     Route::post('/beasiswa/{beasiswa}/activate', [BasisDataBeasiswaController::class, 'activate'])->whereNumber('beasiswa');
     Route::delete('/beasiswa/{beasiswa}', [BasisDataBeasiswaController::class, 'archive']);

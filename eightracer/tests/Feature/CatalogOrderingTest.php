@@ -13,10 +13,10 @@ class CatalogOrderingTest extends TestCase
 
     public function test_catalog_sorts_active_first_then_name_ignoring_case_with_stable_ties(): void
     {
-        $names = [['Zeta', true], ['Arsip A', false], ['beta', true], [' Alpha ', true], ['alpha', true], ['Arsip Z', false]];
+        $names = [['Zeta', 'Kuliah', true], ['Arsip A', 'Kuliah', false], ['beta', 'Kuliah', true], [' Alpha ', 'SMA', true], ['alpha', 'Kuliah', true], ['Arsip Z', 'Kuliah', false]];
         $records = [];
-        foreach ($names as [$name, $active]) {
-            $records[] = BasisDataBeasiswa::create(['nama_beasiswa' => $name, 'jenjang' => 'Kuliah', 'is_active' => $active]);
+        foreach ($names as [$name, $jenjang, $active]) {
+            $records[] = BasisDataBeasiswa::create(['nama_beasiswa' => $name, 'jenjang' => $jenjang, 'is_active' => $active]);
         }
         $this->signIn($this->account('administrator'));
         $r = $this->getJson('/api/beasiswa')->assertOk();
