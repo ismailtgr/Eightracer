@@ -41,13 +41,21 @@ class StudentScholarshipCatalog {
    if($award)$status[$admission->id]=['accepted'=>$award->status_beasiswa==='diterima','evidence'=>'confirmed_award'];
    elseif($key==='kip'&&$p->penerima_kipk!==null)$status[$admission->id]=['accepted'=>(bool)$p->penerima_kipk,'evidence'=>'confirmed_award'];
   }
+  $schoolMatches=[];
   $sources=SchoolScholarshipObservation::whereIn('study_tracer_id',$admissions->keys())->get();
   foreach($sources as $source) {
    $admission=$admissions->get($source->study_tracer_id);
-   if(!$admission||(int)$source->siswa_id!==(int)$admission->siswa_id||isset($status[$admission->id]))continue;
+   if(!$admission||(int)$source->siswa_id!==(int)$admission->siswa_id)continue;
    $name=SchoolScholarshipAnalytics::sourceProgram($source);
    if(!$name&&preg_match('/^BEBAS\s+IPI$/iu',trim($source->nilai_sumber)))$name='Bebas IPI';
-   if($name&&$this->key($name)===$key)$status[$admission->id]=['accepted'=>true,'evidence'=>'school_record'];
+   if ($name && $this->key($name) === $key) {
+    $schoolMatches[$admission->id] = true;
+    $status[$admission->id] ??= ['accepted'=>true,'evidence'=>'school_record'];
+   }
+  }
+  // The TELADAN recipient list is reconciled against the school source.
+  if ($key === 'beasiswa teladan') {
+   $status = array_intersect_key($status, $schoolMatches);
   }
   $rows=$admissions->filter(fn($a)=>$status[$a->id]['accepted']??false)->unique('siswa_id')->map(fn($a)=>[
    'admissionId'=>$a->id,'name'=>$a->siswa->nama_lengkap,'university'=>$a->perguruanTinggi?->nama_pt,

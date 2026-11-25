@@ -18,7 +18,7 @@ class ScholarshipChatController extends Controller
     {
         abort_unless($r->user()->role === 'siswa', 403);
         $input=$this->input($r);
-        $personal=(bool)preg_match('/cocok|kelayakan|profil|nilaiku|raporku|penghasilanku|direkomendasikan|sesuai.*(?:saya|aku)|rekomendasi\s+beasiswa/iu',$input['message']);
+        $personal = $service->requestsPersonalAssessment($input['message']);
         if(!$personal && isset($input['beasiswa_id'])) {
             $program=\App\Models\BasisDataBeasiswa::where('is_active',true)->get()->sortByDesc(fn($p)=>mb_strlen($p->nama_beasiswa))->first(fn($p)=>mb_stripos($input['message'],$p->nama_beasiswa)!==false)
                 ?? \App\Models\BasisDataBeasiswa::where('is_active',true)->findOrFail($input['beasiswa_id']);

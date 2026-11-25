@@ -108,15 +108,15 @@ class StudyTracerController extends Controller
             return response()->json($result + ['preview' => true, 'notice' => 'Pratinjau lokal data alumni; izin publikasi belum diubah.']);
         }
         $query = $this->query($r, true)->with(['alumniProgress' => fn ($q) => $q->where('is_current', true)->where('is_published', true)
-            ->with('alumniProgressBeasiswa.beasiswa')->orderByDesc('tanggal_update')->orderByDesc('id')]);
+            ->orderByDesc('tanggal_update')->orderByDesc('id')]);
         $result = $query->latest('id')->paginate($r->integer('per_page', 20))->through(fn ($t) => [
             ...$service->admission($t), 'latest_progress' => $t->alumniProgress->first() ? $service->progress($t->alumniProgress->first()) : null,
         ])->toArray();
         if ($r->boolean('include_filters')) {
-            $visible = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi'])->get();
+            $visible = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa:id,tahun_lulus,catatan', 'perguruanTinggi:id,nama_pt'])->get(['id','siswa_id','perguruan_tinggi_id','program_studi','jalur_masuk','strata_pendidikan']);
             $result['filters'] = [
                 'cohorts' => $visible->pluck('siswa.tahun_lulus')->filter()->unique()->sort()->map(fn ($v) => (string) $v)->values(),
-                'universities' => $visible->map(fn ($t) => ['value' => (string) $t->perguruan_tinggi_id, 'label' => $t->perguruanTinggi->nama_pt])->unique('value')->sortBy('label')->values(),
+                'universities' => $visible->filter(fn ($t) => $t->perguruanTinggi)->map(fn ($t) => ['value' => (string) $t->perguruan_tinggi_id, 'label' => $t->perguruanTinggi->nama_pt])->unique('value')->sortBy('label')->values(),
                 'programs' => $visible->pluck('program_studi')->filter()->unique()->sort()->values(),
                 'paths' => $visible->map(fn ($t) => app(AlumniAdmissionPath::class)->label($t))->filter()->unique()->sort()->values(),
                 'scholarships' => AlumniProgress::where('is_current', true)->where('is_published', true)->whereIn('study_tracer_id', $visible->pluck('id'))
@@ -130,27 +130,35 @@ class StudyTracerController extends Controller
 
     public function studentShow(Request $request, int $id, AlumniService $service)
     {
-        $preview = app(\App\Services\School\LocalStudentPreview::class);
-        if ($preview->enabled($request)) {
-            $row = StudyTracer::where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi'])->findOrFail($id);
-            if (\App\Services\School\LocalExampleRecords::isAlumniExample($row->siswa)) {
-                $progress = $row->alumniProgress()->where('is_current', true)->with('alumniProgressBeasiswa.beasiswa')->orderBy('semester')->get()
-                    ->map(fn ($p) => $service->progress($p))->values();
-                $education = app(AlumniTimeline::class)->educationEvents($row);
-                $timeline = collect($education)->map(fn ($event) => [...$event, 'granularity' => $event['date'] ? 'date' : 'year'])
-                    ->concat($progress->map(fn ($p) => ['type' => 'progress_semester', 'date' => $p['tanggal_update'], 'label' => $p['periode'], 'data' => $p]))->values();
-                return response()->json(['preview' => true, 'data' => ['masuk_pt' => [...$preview->admission($row),
-                    'strata_pendidikan' => $row->strata_pendidikan, 'nilai_rapor_pendaftaran' => $row->nilai_rapor_pendaftaran,
-                    'skor_utbk' => $row->skor_utbk], 'progress' => $progress, 'education_events' => $education, 'timeline' => $timeline]]);
-            }
-            return response()->json(['preview' => true, 'data' => ['masuk_pt' => $preview->admission($row),
-                'scholarship_summary' => app(\App\Services\School\AlumniScholarshipEvidence::class)->summarize($row, true),
-                'progress' => [], 'education_events' => app(AlumniTimeline::class)->educationEvents($row),
-                'timeline' => collect(app(AlumniTimeline::class)->educationEvents($row))->map(fn ($event) => [...$event, 'granularity' => $event['date'] ? 'date' : 'year'])->values()]]);
-        }
-        $t = StudyTracer::where('izinkan_tampil_di_buku', true)->where('status_penerimaan', 'diterima')->with(['siswa', 'perguruanTinggi', 'prestasi'])->findOrFail($id);
+        $record = StudyTracer::where('status_penerimaan', 'diterima')
+            ->whereHas('siswa', fn ($query) => \App\Services\School\LocalExampleRecords::exclude($query))
+            ->with(['siswa', 'perguruanTinggi', 'prestasi'])->findOrFail($id);
 
-        return response()->json(['data' => ['masuk_pt' => $service->admission($t), 'scholarship_summary' => app(\App\Services\School\AlumniScholarshipEvidence::class)->summarize($t, true, false), 'progress' => $t->alumniProgress()->where('is_current', true)->where('is_published', true)->with('alumniProgressBeasiswa.beasiswa')->orderByDesc('tanggal_update')->orderByDesc('id')->get()->map(fn ($p) => $service->progress($p)), 'education_events' => app(AlumniTimeline::class)->educationEvents($t), 'timeline' => $service->timeline($t)]]);
+        $progress = $record->alumniProgress()
+            ->where('siswa_id', $record->siswa_id)
+            ->where('is_current', true)
+            ->whereNotNull('semester')
+            ->with('alumniProgressBeasiswa.beasiswa')
+            ->orderBy('semester')->orderBy('tanggal_update')->orderBy('id')
+            ->get()->map(fn ($row) => $service->progress($row))->values();
+
+        $education = app(AlumniTimeline::class)->educationEvents($record);
+        $timeline = collect($education)
+            ->map(fn ($event) => [...$event, 'granularity' => $event['date'] ? 'date' : 'year'])
+            ->concat($progress->map(fn ($row) => [
+                'type' => 'progress_semester',
+                'date' => $row['tanggal_update'],
+                'label' => $row['periode'] ?: 'Semester '.$row['semester'],
+                'data' => $row,
+            ]))->values();
+
+        return response()->json(['data' => [
+            'masuk_pt' => $service->admission($record),
+            'scholarship_summary' => app(\App\Services\School\AlumniScholarshipEvidence::class)->summarize($record, true),
+            'progress' => $progress,
+            'education_events' => $education,
+            'timeline' => $timeline,
+        ]]);
     }
 
     public function progress(Request $r, int $id, AlumniService $service)

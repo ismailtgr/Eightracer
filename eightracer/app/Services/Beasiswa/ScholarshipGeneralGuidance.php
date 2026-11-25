@@ -46,11 +46,11 @@ class ScholarshipGeneralGuidance
             $parts[] = '**'.$name."**\n\n**Penyelenggara:** ".($this->plain($p['penyelenggara'] ?? '') ?: 'Belum tersedia di katalog.')
                 ."\n\n**Sasaran dan Informasi Program:**\nJenjang: ".$this->plain($p['jenjang'] ?? '')
                 .".\n".($this->plain($p['deskripsi'] ?? '') ?: 'Informasi sasaran dan manfaat belum tersedia di katalog.')
-                ."\n\n**Persyaratan:**\n".($criteria ? implode("\n", $criteria) : 'Rincian persyaratan belum tersedia; periksa pengumuman resmi.')
+                ."\n\n**Persyaratan:**\n".($criteria ? implode("\n", $criteria) : 'Rincian persyaratan belum tersedia. Periksa pengumuman resmi.')
                 ."\n\n**Jadwal Pendaftaran:**\n- Dibuka: ".$this->date($p['tanggal_buka'] ?? null)
                 ."\n- Ditutup: ".$this->date($p['tanggal_tutup'] ?? null)
                 ."\n\n**Cara Mendaftar:**\n- Periksa persyaratan, manfaat, dokumen, dan tahapan seleksi pada pengumuman resmi."
-                ."\n- Ikuti petunjuk pendaftaran penyelenggara; tahapan yang belum tercatat tidak dapat dipastikan."
+                ."\n- Ikuti petunjuk pendaftaran penyelenggara. Periksa tahapan seleksi pada pengumuman resmi."
                 .($url ? "\n- Tautan penyelenggara: ".$url : "\n- Tautan pendaftaran belum tersedia di katalog.");
             $sources[] = ['id' => 'catalog:'.$p['id'], 'label' => $name, 'url' => $url];
             $suggestions[] = array_intersect_key($p, array_flip(['id', 'nama_beasiswa', 'jenjang']));

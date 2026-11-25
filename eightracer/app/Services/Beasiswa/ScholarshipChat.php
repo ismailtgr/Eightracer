@@ -18,10 +18,10 @@ class ScholarshipChat
         $data=app(StudentScholarshipCatalog::class)->program($program->load('kriteriaKelayakanBeasiswa'),true,$localPreview);
         $name=strip_tags($data['name']);
         $answer="Yuk, kenali **".$name."**! 🎓\n\n**Penyelenggara:**\n".($data['provider']??'Informasi penyelenggara belum tersedia.');
-        if(preg_match('/penerima|alumni|\bsiapa\b/iu',$question)) {
+        if(preg_match('/penerima|alumni/iu',$question)) {
             $rows=array_map(fn($a)=>'- '.$a['name'].' — '.($a['university']??'-').', '.($a['program']??'-'),$data['recipients']['data']);
             $answer.="\n\n**Penerima dari SMA 8:**\n".($rows?implode("\n",$rows):'Data penerima belum tersedia untuk ditampilkan.');
-        } elseif(preg_match('/syarat|kriteria|dokumen/iu',$question)) {
+        } elseif(preg_match('/syarat|kriteria|dokumen|kelayakan|untuk siapa|siapa yang bisa/iu',$question)) {
             $rows=array_map(fn($c)=>'- '.$c['name'].': '.$c['operator'].' '.$c['required'],$data['criteria']);
             $answer.="\n\n**Persyaratan Umum:**\n".($rows?implode("\n",$rows):'Persyaratan mengikuti ketentuan resmi penyelenggara.');
         } elseif(preg_match('/persiap|siapkan|pendaftar|mendaftar/iu',$question)) {
@@ -33,12 +33,20 @@ class ScholarshipChat
             'sources'=>[['id'=>'catalog:'.$program->id,'label'=>'Informasi beasiswa sekolah','url'=>$data['registrationUrl']]]];
     }
 
+    public function requestsPersonalAssessment(string $question): bool
+    {
+        return (bool) preg_match('/\b(?:profilku|raporku|nilaiku|penghasilanku|kecocokanku)\b|\b(?:aku|saya)\b.{0,55}\b(?:cocok|layak|memenuhi|lolos)\b|\b(?:cocok|layak|sesuai)\s+(?:buat|untuk)\s+(?:aku|saya)\b|\b(?:untukku|buatku)\b.{0,35}\b(?:cocok|layak)\b|\b(?:cocok|layak|sesuai)\s+untukku\b|\b(?:hitung|cek|nilai)\b.{0,30}\b(?:kecocokan|kelayakan)\b/iu', $question);
+    }
+
     public function answer(Siswa $student, array $input): array
     {
         [$profile, $catalog] = app(ScholarshipRecommendationService::class)->sources($student, $input['target_jenjang'] ?? null);
         // A program named in the new message overrides the previous conversation context.
         $named = $this->findInMessage($input['message'], $catalog);
         $selected = $named ?? (isset($input['beasiswa_id']) ? $catalog->firstWhere('id', $input['beasiswa_id']) : null);
+        if ($selected && !$this->requestsPersonalAssessment($input['message'])) {
+            return $this->information($selected, $input['message']);
+        }
         $general = app(ScholarshipGeneralGuidance::class);
         if (!$general->hasAssessmentData($profile)) {
             return $general->answer($catalog->toArray(), $input['message'], $selected ? (int) $selected->id : null,
@@ -73,17 +81,20 @@ class ScholarshipChat
         $status = ! $evaluation['lengkap'] ? 'belum_dapat_dinilai' : ($evaluation['memenuhi'] ? 'memenuhi_kriteria_tersimpan' : 'belum_memenuhi');
         $name = strip_tags($selected->nama_beasiswa);
         $facts = [
-            'eligibility' => ['text' => "Yuk, kita cek bersama! 🎓\n\n**Hasil Pemeriksaan ".$name.":**\n".str_replace('_', ' ', $status).'. Hasil ini merupakan pemeriksaan kriteria katalog, bukan keputusan penyelenggara.', 'source' => 'catalog:'.$selected->id],
-            'grades' => ['text' => $profile['rata_rapor'] === null ? 'Rapor semester 1-5 belum lengkap sehingga rata-rata belum dihitung.' : 'Rata-rata rapor semester 1-5 yang tercatat: '.round($profile['rata_rapor'], 2).'.', 'source' => 'student:self'],
-            'history' => ['text' => $history['proporsi_diterima_tercatat'] === null ? 'Data hasil beasiswa alumni yang tercatat dan berizin belum cukup untuk menampilkan proporsi penerimaan.' : 'Pada '.$history['jumlah_hasil_terminal'].' alumni dengan hasil terminal yang tercatat dan berizin, '.$history['jumlah_diterima'].' diterima dan '.$history['jumlah_ditolak'].' ditolak. Proporsi diterima dalam catatan ini: '.round(100 * $history['proporsi_diterima_tercatat'], 2).'%. Ini tidak menyatakan peluang lolos pribadi.', 'source' => 'history:'.$selected->id],
+            'eligibility' => ['text' => "Yuk, kita cek bersama! 🎓\n\n**Hasil Pemeriksaan ".$name.":**\n".(match ($status) {
+                'belum_dapat_dinilai' => 'Data belum cukup untuk memeriksa seluruh persyaratan',
+                'memenuhi_kriteria_tersimpan' => 'Data yang tersedia memenuhi kriteria di katalog',
+                default => 'Ada persyaratan yang belum terpenuhi',
+            }).'. Hasil ini merupakan pemeriksaan kriteria katalog, bukan keputusan penyelenggara.', 'source' => 'catalog:'.$selected->id],
+            'history' => ['text' => $history['proporsi_diterima_tercatat'] === null ? 'Data hasil beasiswa alumni yang tercatat dan berizin belum cukup untuk menampilkan proporsi penerimaan.' : 'Pada '.$history['jumlah_hasil_terminal'].' alumni dengan keputusan penerimaan yang tercatat dan berizin, '.$history['jumlah_diterima'].' diterima dan '.$history['jumlah_ditolak'].' ditolak. Proporsi diterima dalam catatan ini: '.round(100 * $history['proporsi_diterima_tercatat'], 2).'%. Ini tidak menyatakan peluang lolos pribadi.', 'source' => 'history:'.$selected->id],
         ];
-        $checks = array_map(fn ($check) => '- '.str_replace('_', ' ', $check['kriteria']).' '.($check['operator'] ?? '').' '.($check['syarat'] ?? '').': '.str_replace('_', ' ', $check['status']), $evaluation['checklist']);
+        $checks = array_map(fn ($check) => '- '.mb_ucfirst(str_replace('_', ' ', $check['kriteria'])).' '.($check['operator'] ?? '').' '.($check['syarat'] ?? '').': '.mb_ucfirst(str_replace('_', ' ', $check['status'])), $evaluation['checklist']);
         $facts['requirements'] = ['text' => "**Persyaratan dan Hasil Pemeriksaan:**\n".($checks ? implode("\n", $checks) : 'Rincian persyaratan belum tercatat.'), 'source' => 'catalog:'.$selected->id];
         if ($range = $history['rentang_rapor_penerima']) {
-            $facts['history_grades'] = ['text' => 'Rentang rapor penerima yang mempunyai lima semester tercatat berada pada bucket '.$range['minimum_bucket'].' sampai '.$range['maximum_bucket'].' (pembulatan 5 poin; '.$range['jumlah_dengan_rapor_lengkap'].' alumni). Rentang ini bukan syarat beasiswa.', 'source' => 'history:'.$selected->id];
+            $facts['history_grades'] = ['text' => 'Rentang rapor penerima yang mempunyai lima semester tercatat berada pada rentang '.$range['minimum_bucket'].' sampai '.$range['maximum_bucket'].' (pembulatan 5 poin; '.$range['jumlah_dengan_rapor_lengkap'].' alumni). Rentang ini bukan syarat beasiswa.', 'source' => 'history:'.$selected->id];
             if ($profile['rata_rapor'] !== null) {
                 $position = $profile['rata_rapor'] < $range['minimum_bucket'] ? 'di bawah' : ($profile['rata_rapor'] > $range['maximum_bucket'] ? 'di atas' : 'di dalam');
-                $facts['comparison'] = ['text' => 'Rata-rata rapor yang tercatat untukmu berada '.$position.' rentang bucket tersebut. Perbandingan ini bersifat deskriptif dan tidak mengubah pemeriksaan syarat resmi.', 'source' => 'history:'.$selected->id];
+                $facts['comparison'] = ['text' => 'Rata-rata rapor yang tercatat untukmu berada '.$position.' rentang tersebut. Perbandingan ini bersifat deskriptif dan tidak mengubah pemeriksaan syarat resmi.', 'source' => 'history:'.$selected->id];
             }
         }
         if ($history['jalur_penerima']) {
@@ -94,7 +105,7 @@ class ScholarshipChat
             $actions['complete'] = 'Lengkapi komponen yang berstatus belum diketahui pada checklist sebelum penilaian akhir.';
         }
         if ($intent === 'preparation') {
-            $facts['preparation'] = ['text' => "**Persiapan ".$name.":**\n- Siapkan salinan rapor dan identitas.\n- Kumpulkan bukti prestasi atau kegiatan yang relevan.\n- Siapkan dokumen ekonomi keluarga jika diminta penyelenggara.\n\nIni panduan umum; dokumen wajib mengikuti ketentuan resmi program.", 'source' => 'guidance:preparation'];
+            $facts['preparation'] = ['text' => "**Persiapan ".$name.":**\n- Siapkan salinan rapor dan identitas.\n- Kumpulkan bukti prestasi atau kegiatan yang relevan.\n- Siapkan dokumen ekonomi keluarga jika diminta penyelenggara.\n\nIni panduan umum. Periksa dokumen wajib pada pengumuman resmi program.", 'source' => 'guidance:preparation'];
             $actions['documents'] = 'Susun dokumen yang kamu miliki dan periksa kelengkapannya sebelum pendaftaran.';
         }
         $message = preg_replace(['~https?://\S+|\S+@\S+~u', '/\b[0-9]{8,16}\b/u'], '[disamarkan]', $input['message']);
@@ -132,7 +143,7 @@ class ScholarshipChat
             'profile' => ['text' => "Yuk, kita pelajari bersama! 🎓\n\n".$intro, 'source' => 'student:self'],
         ];
         if ($intent === 'preparation') {
-            $facts['preparation'] = ['text' => "1. Siapkan salinan rapor dan identitas yang masih berlaku.\n2. Kumpulkan sertifikat prestasi, portofolio, dan pengalaman organisasi yang relevan.\n3. Siapkan dokumen ekonomi keluarga jika diminta penyelenggara.\n4. Buat daftar tenggat dan periksa kembali formulir sebelum dikirim.\nDaftar ini panduan persiapan umum; dokumen wajib mengikuti ketentuan masing-masing program.", 'source' => 'guidance:preparation'];
+            $facts['preparation'] = ['text' => "1. Siapkan salinan rapor dan identitas yang masih berlaku.\n2. Kumpulkan sertifikat prestasi, portofolio, dan pengalaman organisasi yang relevan.\n3. Siapkan dokumen ekonomi keluarga jika diminta penyelenggara.\n4. Buat daftar tenggat dan periksa kembali formulir sebelum dikirim.\nIni panduan persiapan umum. Periksa dokumen wajib untuk setiap program.", 'source' => 'guidance:preparation'];
         }
         if (! $candidates) {
             $facts['availability'] = ['text' => $target ? 'Belum ada program aktif yang sesuai jenjangmu dalam katalog. Kamu tetap dapat mempersiapkan dokumen umum sambil menunggu informasi program.' : 'Jenjang sekolahmu belum tercatat. Lengkapi profil kelas agar pencocokan beasiswa dapat dilakukan.', 'source' => 'catalog:availability'];
@@ -144,7 +155,7 @@ class ScholarshipChat
         foreach ($candidates as $index => $candidate) {
             $evaluation = $candidate['evaluasi'];
             $state = ! $evaluation['lengkap'] ? 'Data belum cukup untuk menilai seluruh syarat' : ($evaluation['memenuhi'] ? 'Memenuhi kriteria yang tercatat' : 'Belum memenuhi seluruh kriteria yang tercatat');
-            $checks = array_map(fn ($check) => ($labels[$check['kriteria']] ?? str_replace('_', ' ', $check['kriteria'])).' '.$check['operator'].' '.$check['syarat'].' ('.str_replace('_', ' ', $check['status']).')', $evaluation['checklist']);
+            $checks = array_map(fn ($check) => ($labels[$check['kriteria']] ?? str_replace('_', ' ', $check['kriteria'])).' '.$check['operator'].' '.$check['syarat'].' ('.mb_ucfirst(str_replace('_', ' ', $check['status'])).')', $evaluation['checklist']);
             $name = strip_tags($candidate['beasiswa']['nama_beasiswa']);
             $facts['program_'.$candidate['beasiswa_id']] = ['text' => '**'.$name."**\n".$state.'.'.($checks ? "\n\n**Persyaratan:**\n- ".implode("\n- ", $checks) : ''), 'source' => 'catalog:'.$candidate['beasiswa_id']];
             if ($intent === 'schedule') {

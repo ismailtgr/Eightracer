@@ -22,6 +22,7 @@ class LocalStudentPreview
             'strata_pendidikan' => $row->strata_pendidikan, 'pilihan_ke' => $row->pilihan_ke,
             'program_studi' => $row->program_studi,
             'jalur_masuk' => app(AlumniAdmissionPath::class)->label($row),
+            'sub_jalur_mandiri' => $row->sub_jalur_mandiri, 
             'status_penerimaan' => $row->status_penerimaan,
             'tahun_masuk_pt' => $row->tahun_masuk_pt, 'prestasi' => []];
     }
