@@ -35,9 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/alumni/import', [AlumniImportController::class, 'import']);
 });
-    Route::prefix('alumni')->group(function () {
-        Route::get('/', [AlumniController::class, 'index']);
-        Route::get('/filter-options', [AlumniController::class, 'filterOptions']);
-        Route::get('/{id}', [AlumniController::class, 'show']);
-    });
+Route::prefix('alumni')->group(function () {
+    Route::get('/', [AlumniController::class, 'index']);
+    Route::get('/filter-options', [AlumniController::class, 'filterOptions']);
+    Route::get('/{id}', [AlumniController::class, 'show']);
 });
+

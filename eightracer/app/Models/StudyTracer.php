@@ -19,6 +19,7 @@ class StudyTracer extends Model
         'buku_alumni_id',
         'strata_pendidikan',
         'program_studi',
+        'program_studi_id',
         'jalur_masuk',
         'sub_jalur_mandiri',
         'pilihan_ke',
@@ -55,6 +56,11 @@ class StudyTracer extends Model
     public function perguruanTinggi(): BelongsTo
     {
         return $this->belongsTo(PerguruanTinggi::class, 'perguruan_tinggi_id');
+    }
+
+    public function programStudi(): BelongsTo
+    {
+        return $this->belongsTo(ProgramStudi::class, 'program_studi_id');
     }
 
     public function bukuAlumni(): BelongsTo
